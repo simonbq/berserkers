@@ -172,6 +172,7 @@ public class Connections : MonoBehaviour {
 	{
 		int id = GetPlayerId(player);
         players[id].connected = false;
+        _players.Remove(id);
 		Debug.Log ("ID: " + id);
 		networkView.RPC ("PlayerDisconnected", RPCMode.All, id);
 	}
