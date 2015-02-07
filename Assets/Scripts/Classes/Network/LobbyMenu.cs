@@ -38,6 +38,10 @@ public class LobbyMenu : MonoBehaviour {
 
 		else
 		{
+			if(GUILayout.Button (Connections.GetInstance().playerInfo.ready ? "Ready" : "Not ready"))
+			{
+				Connections.GetInstance().ToggleReady();
+			}
 			foreach(PlayerInfo p in Connections.GetInstance().players.Values)
 			{
 				GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);

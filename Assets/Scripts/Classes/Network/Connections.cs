@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class PlayerInfo {
-	public PlayerInfo(NetworkPlayer player, int pId, string nickname)
+	public PlayerInfo(NetworkPlayer player, int pId, string nickname, bool isReady)
 	{
 		_name = nickname;
 		_id = pId;
 		_networkPlayer = player;
+		ready = isReady;
 	}
 
 	public bool ready = false;
@@ -46,6 +47,22 @@ public class PlayerInfo {
 public class Connections : MonoBehaviour {
 	public string localNickname = "Unnamed";
 
+	public int playerId
+	{
+		get
+		{
+			return _playerId;
+		}
+	}
+
+	public PlayerInfo playerInfo
+	{
+		get
+		{
+			return players[_playerId];
+		}
+	}
+
 	public bool isConnected
 	{
 		get
@@ -62,6 +79,7 @@ public class Connections : MonoBehaviour {
 		}
 	}
 
+	private int _playerId = 0;
 	private bool _connected = false;
 	private Dictionary<int, PlayerInfo> _players = new Dictionary<int, PlayerInfo>();
 	private static Connections instance;
@@ -76,6 +94,12 @@ public class Connections : MonoBehaviour {
 		return instance;
 	}
 
+	public void ToggleReady()
+	{
+		playerInfo.ready = !playerInfo.ready;
+		networkView.RPC ("Ready", RPCMode.All, playerId, playerInfo.ready);
+	}
+
 	public void HostLobby(int maxPlayers)
 	{
 		Network.InitializeServer (maxPlayers, 61337, !Network.HavePublicAddress ());
@@ -88,9 +112,16 @@ public class Connections : MonoBehaviour {
 		instance = this;
 	}
 
+	void OnPlayerDisconnected(NetworkPlayer player)
+	{
+		int id = _players.FirstOrDefault(x => x.Value.networkPlayer == player).Value.id;
+		Debug.Log ("ID: " + id);
+		networkView.RPC ("PlayerDisconnected", RPCMode.All, id);
+	}
+
 	void OnServerInitialized()
 	{
-		_players.Add (0, new PlayerInfo(Network.player, 0, localNickname));
+		_players.Add (0, new PlayerInfo(Network.player, 0, localNickname, true));
 		_connected = true;
 	}
 
@@ -107,9 +138,26 @@ public class Connections : MonoBehaviour {
 	}
 
 	[RPC]
-	void PlayerConnected(NetworkPlayer player, int id, string nickname)
+	void PlayerDisconnected(int id)
 	{
-		_players.Add (id, new PlayerInfo (player, id, nickname));
+		_players.Remove (id);
+	}
+
+	[RPC]
+	void Ready(int id, bool ready)
+	{
+		players [id].ready = ready;
+	}
+
+	[RPC]
+	void PlayerConnected(NetworkPlayer player, int id, string nickname, bool ready)
+	{
+		_players.Add (id, new PlayerInfo (player, id, nickname, ready));
+
+		if(Network.player == player)
+		{
+			_playerId = id;
+		}
 	}
 
 	[RPC]
@@ -118,15 +166,15 @@ public class Connections : MonoBehaviour {
 		if (Network.isServer) 
 		{
 			int pId = players.Count;
-			PlayerInfo connected = new PlayerInfo(player, pId, nickname);
+			PlayerInfo connected = new PlayerInfo(player, pId, nickname, false);
 
 			foreach(PlayerInfo p in players.Values)
 			{
-				networkView.RPC("PlayerConnected", player, p.networkPlayer, p.id, p.name);
+				networkView.RPC("PlayerConnected", player, p.networkPlayer, p.id, p.name, p.ready);
 			}
 
 			_players.Add (pId, connected);
-			networkView.RPC("PlayerConnected", RPCMode.All, connected.networkPlayer, connected.id, connected.name);
+			networkView.RPC("PlayerConnected", RPCMode.Others, connected.networkPlayer, connected.id, connected.name, connected.ready);
 		}
 
 		else
