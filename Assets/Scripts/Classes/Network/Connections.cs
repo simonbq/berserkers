@@ -96,12 +96,21 @@ public class Connections : MonoBehaviour {
 		}
 	}
 
+	public NetworkPlayer server
+	{
+		get
+		{
+			return players[0].networkPlayer;
+		}
+	}
+
 	private int _playerId = 0;
 	private PlayerInfo _playerInfo;
 	private bool _connected = false;
 	private bool _started = false;
 	private Dictionary<int, PlayerInfo> _players = new Dictionary<int, PlayerInfo>();
 	private static Connections instance;
+	public static int port = 61337;
 
 	public static Connections GetInstance()
 	{
@@ -116,7 +125,7 @@ public class Connections : MonoBehaviour {
 
 	public void HostLobby(int maxPlayers)
 	{
-		Network.InitializeServer (maxPlayers, 61337, !Network.HavePublicAddress ());
+		Network.InitializeServer (maxPlayers, port, !Network.HavePublicAddress ());
 		MasterServer.RegisterHost ("BerzerkasBananas", localNickname + "'s lobby");
 	}
 
@@ -177,16 +186,8 @@ public class Connections : MonoBehaviour {
 	[RPC]
 	void GotoScene(string name)
 	{
-		if(Application.CanStreamedLevelBeLoaded(name))
-		{
-			Application.LoadLevel (name);
-			Debug.Log ("Going to Scene " + name);
-		}
-
-		else
-		{
-			Debug.Log ("Level doesn't exist");
-		}
+		Application.LoadLevel (name);
+		Debug.Log ("Going to Scene " + name);
 
 		_started = true;
 	}

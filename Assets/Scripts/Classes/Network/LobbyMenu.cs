@@ -31,7 +31,7 @@ public class LobbyMenu : MonoBehaviour {
 
 			if(GUILayout.Button ("Connect"))
 			{
-				Network.Connect (ipNumber, 61337);
+				Network.Connect (ipNumber, Connections.port);
 				Debug.Log ("Connecting to " + ipNumber);
 			}
 		}
@@ -52,7 +52,7 @@ public class LobbyMenu : MonoBehaviour {
 			   !Connections.GetInstance().hasStarted &&
 			   GUILayout.Button("Start game"))
 			{
-				Connections.GetInstance().StartGame("bq is noob");
+				Connections.GetInstance().StartGame("Level");
 			}
 		}
 	}
