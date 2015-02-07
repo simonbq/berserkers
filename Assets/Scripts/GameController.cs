@@ -86,6 +86,6 @@ public class GameController : MonoBehaviour {
 
 		//Debug.Log ("Spawned powerup at "+selectSpawnPoint.transform.position);
 
-		return Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 2, 0), selectSpawnPoint.transform.rotation) as GameObject;
+		return Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.5f, 0), selectSpawnPoint.transform.rotation) as GameObject;
 	}
 }
