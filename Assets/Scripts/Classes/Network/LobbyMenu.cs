@@ -38,13 +38,21 @@ public class LobbyMenu : MonoBehaviour {
 
 		else
 		{
-			if(GUILayout.Button (Connections.GetInstance().playerInfo.ready ? "Ready" : "Not ready"))
+			if(GUILayout.Button (Connections.GetInstance().playerInfo.ready ? "Not ready" : "Ready"))
 			{
 				Connections.GetInstance().ToggleReady();
 			}
 			foreach(PlayerInfo p in Connections.GetInstance().players.Values)
 			{
 				GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
+			}
+
+			if(Network.isServer &&
+			   Connections.GetInstance().playersReady &&
+			   !Connections.GetInstance().hasStarted &&
+			   GUILayout.Button("Start game"))
+			{
+				Connections.GetInstance().StartGame("bq is noob");
 			}
 		}
 	}

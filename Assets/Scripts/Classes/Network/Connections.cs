@@ -46,6 +46,7 @@ public class PlayerInfo {
 
 public class Connections : MonoBehaviour {
 	public string localNickname = "Unnamed";
+	public string lobbyScene = "Lobby";
 
 	public int playerId
 	{
@@ -59,7 +60,7 @@ public class Connections : MonoBehaviour {
 	{
 		get
 		{
-			return players[_playerId];
+			return _playerInfo;
 		}
 	}
 
@@ -79,18 +80,31 @@ public class Connections : MonoBehaviour {
 		}
 	}
 
+	public bool playersReady
+	{
+		get
+		{
+			return !_players.Any (x => !x.Value.ready);
+		}
+	}
+
+	public bool hasStarted
+	{
+		get
+		{
+			return _started;
+		}
+	}
+
 	private int _playerId = 0;
+	private PlayerInfo _playerInfo;
 	private bool _connected = false;
+	private bool _started = false;
 	private Dictionary<int, PlayerInfo> _players = new Dictionary<int, PlayerInfo>();
 	private static Connections instance;
 
 	public static Connections GetInstance()
 	{
-		if(instance == null)
-		{
-			Debug.LogError("There must be an instance of Connections in order to get the instance!");
-		}
-
 		return instance;
 	}
 
@@ -106,10 +120,33 @@ public class Connections : MonoBehaviour {
 		MasterServer.RegisterHost ("BerzerkasBananas", localNickname + "'s lobby");
 	}
 
+	public void StartGame(string scene)
+	{
+		if(Network.isServer &&
+		   !hasStarted)
+		{
+			if(playersReady)
+			{
+				networkView.RPC ("GotoScene", RPCMode.All, scene);
+			}
+
+			else
+			{
+				Debug.Log ("Players are not ready!!!");
+			}
+		}
+	}
+
 	void Start()
 	{
 		GameObject.DontDestroyOnLoad (this.gameObject);
 		instance = this;
+	}
+
+	void OnDisconnectedFromServer()
+	{
+		Application.LoadLevel (lobbyScene);
+		Destroy (this.gameObject);
 	}
 
 	void OnPlayerDisconnected(NetworkPlayer player)
@@ -121,7 +158,8 @@ public class Connections : MonoBehaviour {
 
 	void OnServerInitialized()
 	{
-		_players.Add (0, new PlayerInfo(Network.player, 0, localNickname, true));
+		_playerInfo = new PlayerInfo (Network.player, 0, localNickname, true);
+		_players.Add (0, _playerInfo);
 		_connected = true;
 	}
 
@@ -129,12 +167,28 @@ public class Connections : MonoBehaviour {
 	{
 		Debug.Log ("Connected!");
 		networkView.RPC ("SendPlayerInfo", RPCMode.Server, Network.player, localNickname);
-		_connected = true;
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)
 	{
 		Debug.Log ("Failed to connect! " + error);
+	}
+
+	[RPC]
+	void GotoScene(string name)
+	{
+		if(Application.CanStreamedLevelBeLoaded(name))
+		{
+			Application.LoadLevel (name);
+			Debug.Log ("Going to Scene " + name);
+		}
+
+		else
+		{
+			Debug.Log ("Level doesn't exist");
+		}
+
+		_started = true;
 	}
 
 	[RPC]
@@ -152,11 +206,14 @@ public class Connections : MonoBehaviour {
 	[RPC]
 	void PlayerConnected(NetworkPlayer player, int id, string nickname, bool ready)
 	{
-		_players.Add (id, new PlayerInfo (player, id, nickname, ready));
+		PlayerInfo connected = new PlayerInfo (player, id, nickname, ready);
+		_players.Add (id, connected);
 
 		if(Network.player == player)
 		{
 			_playerId = id;
+			_playerInfo = connected;
+			_connected = true;
 		}
 	}
 
