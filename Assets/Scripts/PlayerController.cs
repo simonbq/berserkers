@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour {
 		{
 			if(_input != value)
 			{
-				networkView.RPC ("UpdateInput", RPCMode.All, value);
+				networkView.RPC ("UpdateInput", RPCMode.All, Network.player, value);
 			}
 		}
 	}
@@ -40,6 +40,13 @@ public class PlayerController : MonoBehaviour {
 		if(playerInfo.id == Connections.GetInstance().playerId)
 		{
 			input = Input.GetAxis("Horizontal");
+
+            //check for inputdelay
+            if (Input.GetAxis("Horizontal") == 0 &&
+                Input.GetAxis("Horizontal") != _input)
+            {
+                Debug.Log("Actual: " + Input.GetAxis("Horizontal") + " Server: " + _input);
+            }
 		}
 
         if (Network.isServer)
@@ -69,18 +76,20 @@ public class PlayerController : MonoBehaviour {
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
 		int playerState = 0;
+        float clientInput = 0;
 		float mSpeed = 0;
 		Vector3 position = new Vector3();
 		Quaternion rotation = Quaternion.identity; 
 
 		if(stream.isWriting)
 		{
-			playerState = (int)state; 
+			playerState = (int)state;
 			mSpeed = movementSpeed;
 			position = transform.position;
 			rotation = transform.rotation;
 
 			stream.Serialize(ref playerState);
+            stream.Serialize(ref clientInput);
 			stream.Serialize(ref mSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
@@ -89,6 +98,7 @@ public class PlayerController : MonoBehaviour {
 		else
 		{
 			stream.Serialize(ref playerState);
+            stream.Serialize(ref clientInput);
 			stream.Serialize(ref mSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
@@ -101,10 +111,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	[RPC]
-	void UpdateInput(float val)
+	void UpdateInput(NetworkPlayer sender, float val)
 	{
 		_input = val;
-		//Debug.Log ("Got update " + val);
 	}
 
 	[RPC]
