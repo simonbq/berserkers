@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SetMusicVolCommand : Command {
 
-	public override void invoke(int arg) {
-		AudioListener.volume = arg
+	public override void invoke(float arg) {
+		AudioListener.volume = arg;
 	}
 }

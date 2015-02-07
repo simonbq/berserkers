@@ -2,28 +2,30 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class OptionsState : MenuState {
+public class MainState : MenuState {
 
 	List<Button> buttons = new List<Button>();
-	Slider volumeSlider;
-
-	public OptionsState() {
+	
+	public MainState() {
 		Button b;
 		b = new Button (100, 100, 200, 200);
-		b.setText ("Back");
-		b.setOnClick (ButtonActions.back);
+		b.setText ("Options");
+		b.setOnClick (ButtonActions.toOptionsState);
 		buttons.Add (b);
-		volumeSlider = new Slider (100, 400, 100, 50, 0, 1);
-	}
 
+		b = new Button (400, 400, 200, 200);
+		b.setText ("Exit");
+		b.setOnClick (ButtonActions.exit);
+		buttons.Add (b);
+	}
+	
 	public override void update(Menu m) {
 		foreach(Button b in buttons) {
 			b.update(m);
 		}
-		AudioListener.volume = volumeSlider.update (AudioListener.volume);
 	}
 	
 	public override void render() {
-
+		
 	}
 }
