@@ -69,5 +69,5 @@ public class GameController : MonoBehaviour {
 		return Instantiate(playerPrefab, selectSpawnPoint.transform.position + new Vector3(0, 2, 0), selectSpawnPoint.transform.rotation) as GameObject;
 	}
 
-	//public GameObject SpawnPickUp();
+	//public GameObject SpawnPowerUp();
 }
