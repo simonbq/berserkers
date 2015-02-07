@@ -54,12 +54,12 @@ public class PlayerController : MonoBehaviour {
 
 		if(stream.isWriting)
 		{
-			playerState = (int)playerState; 
+			//playerState = (int)playerState; 
 			velocity = rigidbody.velocity;
 			position = transform.position;
 			rotation = transform.rotation;
 
-			stream.Serialize(ref playerState);
+			//stream.Serialize(ref playerState);
 			stream.Serialize(ref velocity);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
@@ -67,10 +67,10 @@ public class PlayerController : MonoBehaviour {
 
 		else
 		{
-			stream.Serialize(ref playerState);
-			stream.Serialize(ref velocity);
-			stream.Serialize(ref position);
-			stream.Serialize(ref rotation);
+			//stream.Serialize(ref playerState);
+			//stream.Serialize(ref velocity);
+			//stream.Serialize(ref position);
+			//stream.Serialize(ref rotation);
 
 
 		}
