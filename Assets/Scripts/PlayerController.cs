@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour {
 		Vector3 position;
 		Quaternion rotation; 
 
-		if(stream.isWriting)
+/*		if(stream.isWriting)
 		{
 			playerState = (int)playerState; 
 			velocity = rigidbody.velocity;
@@ -73,6 +73,6 @@ public class PlayerController : MonoBehaviour {
 			stream.Serialize(ref rotation);
 
 
-		}
+		}*/
 	}
 }
