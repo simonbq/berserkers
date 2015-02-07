@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour {
 		renderer.material.color = Color.black;
 		rigidbody.AddExplosionForce(2000, transform.position + transform.forward*2, 0, 0);
 	}
-
+	/*
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
 		int playerState;
@@ -74,5 +74,5 @@ public class PlayerController : MonoBehaviour {
 
 
 		}
-	}
+	}*/
 }
