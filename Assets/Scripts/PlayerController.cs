@@ -13,6 +13,20 @@ public class PlayerController : MonoBehaviour {
 
 	public AudioClip[] audioClips;
 
+	private float _input = 0;
+
+	private float input
+	{
+		set
+		{
+			if(_input != value)
+			{
+				networkView.RPC ("UpdateInput", RPCMode.All, value);
+			}
+		}
+	}
+
+	public int playerIDD;
 	// Use this for initialization
 	void Start () {
 		state = PlayerState.ALIVE;
@@ -23,19 +37,31 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		if(playerInfo.id == Connections.GetInstance().playerId)
+		{
+			input = Input.GetAxis("Horizontal");
+		}
+
 		if(Network.isServer)
 		{
 			if(state == PlayerState.ALIVE){
+				//Debug.Log ("Input is for player " + playerInfo.name + " is " + _input);
 				rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
 
-				transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + Input.GetAxis("Horizontal") * turnSpeed, transform.eulerAngles.z);
+				transform.Rotate (Vector3.up, _input * turnSpeed);
 			}
 		}
 
 		else
 		{
+
 			//do interpolation here Kappa DansGame
 		}
+	}
+
+	public void SetPlayer(int id)
+	{
+		networkView.RPC ("Spawned", RPCMode.All, id);
 	}
 
 	public void Kill(){
@@ -44,23 +70,23 @@ public class PlayerController : MonoBehaviour {
 		renderer.material.color = Color.black;
 		rigidbody.AddExplosionForce(2000, transform.position + transform.forward*2, 0, 0);
 	}
-	/*
+	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
-		int playerState;
-		Vector3 velocity;
-		Vector3 position;
-		Quaternion rotation; 
+		int playerState = 0;
+		//Vector3 velocity = new Vector3();
+		Vector3 position = new Vector3();
+		Quaternion rotation = Quaternion.identity; 
 
 		if(stream.isWriting)
 		{
 			playerState = (int)playerState; 
-			velocity = rigidbody.velocity;
+			//velocity = rigidbody.velocity;
 			position = transform.position;
 			rotation = transform.rotation;
 
 			stream.Serialize(ref playerState);
-			stream.Serialize(ref velocity);
+			//stream.Serialize(ref velocity);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 		}
@@ -68,11 +94,27 @@ public class PlayerController : MonoBehaviour {
 		else
 		{
 			stream.Serialize(ref playerState);
-			stream.Serialize(ref velocity);
+			//stream.Serialize(ref velocity);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 
-
+			state = (PlayerState)state;
+			//rigidbody.velocity = velocity;
+			transform.position = position;
+			transform.rotation = rotation;
 		}
-	}*/
+	}
+
+	[RPC]
+	void UpdateInput(float val)
+	{
+		_input = val;
+		//Debug.Log ("Got update " + val);
+	}
+
+	[RPC]
+	void Spawned(int id)
+	{
+		playerInfo = Connections.GetInstance ().players [id];
+	}
 }

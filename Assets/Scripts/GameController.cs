@@ -46,16 +46,23 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		state = GameState.INGAME;
+		if(Network.isServer)
+		{
+			state = GameState.INGAME;
 
-		foreach(GameObject o in GameObject.FindGameObjectsWithTag("SpawnPoint")){
-			spawnPoints.Add(o);
-			Debug.Log ("Found spawn point: "+o.transform.position);
+			foreach(GameObject o in GameObject.FindGameObjectsWithTag("SpawnPoint")){
+				spawnPoints.Add(o);
+				//Debug.Log ("Found spawn point: "+o.transform.position);
+			}
+
+			foreach(PlayerInfo player in Connections.GetInstance().players.Values)
+			{
+				Debug.Log ("Spawning player " + player.name);
+				players.Add (SpawnPlayer(spawnPoints, player.id));
+			}
+
+			SpawnPowerUp(spawnPoints);
 		}
-
-
-		players.Add (SpawnPlayer(spawnPoints));
-		SpawnPowerUp(spawnPoints);
 	}
 	
 	// Update is called once per frame
@@ -63,11 +70,13 @@ public class GameController : MonoBehaviour {
 	
 	}
 
-	public GameObject SpawnPlayer(List<GameObject> mSpawnPoints){
+	public GameObject SpawnPlayer(List<GameObject> mSpawnPoints, int id){
 		GameObject selectSpawnPoint = mSpawnPoints[Random.Range(0, mSpawnPoints.Count)];
-		Debug.Log ("Spawned player at "+selectSpawnPoint.transform.position);
-
-		return Instantiate(playerPrefab, selectSpawnPoint.transform.position + new Vector3(0, 2, 0), selectSpawnPoint.transform.rotation) as GameObject;
+		//Debug.Log ("Spawned player at "+selectSpawnPoint.transform.position);
+		GameObject player = Network.Instantiate(playerPrefab, selectSpawnPoint.transform.position + new Vector3(0, 2, 0), selectSpawnPoint.transform.rotation, id) as GameObject;
+		player.GetComponent<PlayerController> ().SetPlayer (id);
+		player.name = "ID_" + id;
+		return player;
 	}
 
 	public GameObject SpawnPowerUp(List<GameObject> mSpawnPoints){
@@ -75,7 +84,7 @@ public class GameController : MonoBehaviour {
 
 
 
-		Debug.Log ("Spawned powerup at "+selectSpawnPoint.transform.position);
+		//Debug.Log ("Spawned powerup at "+selectSpawnPoint.transform.position);
 
 		return Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 2, 0), selectSpawnPoint.transform.rotation) as GameObject;
 	}
