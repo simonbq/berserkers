@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour {
 	public AudioClip[] audioClips;
 
 	private float _input = 0;
-	private Vector3 netPosition = new Vector3();
 
 	private float input
 	{
@@ -34,11 +33,6 @@ public class PlayerController : MonoBehaviour {
 
 		renderer.material.color = playerColor;
 		//Invoke ("Kill", 2);
-
-		if(!Network.isServer)
-		{
-			rigidbody.isKinematic = true;
-		}
 	}
 	
 	// Update is called once per frame
@@ -48,27 +42,15 @@ public class PlayerController : MonoBehaviour {
 			input = Input.GetAxis("Horizontal");
 		}
 
-		if(Network.isServer)
-		{
-			if(state == PlayerState.ALIVE){
-				//Debug.Log ("Input is for player " + playerInfo.name + " is " + _input);
-				rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
+        if (Network.isServer)
+        {
+            //network specific stuff in here
+        }
 
-				transform.Rotate (Vector3.up, _input * turnSpeed);
-			}
-		}
+		if(state == PlayerState.ALIVE){
+			rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
 
-		else
-		{
-			float dist = Vector3.Distance(transform.position, netPosition);
-			float localSpeed = Mathf.Max(movementSpeed, dist);
-			Vector3 localPos = Vector3.Lerp(transform.position, netPosition, movementSpeed * Time.fixedDeltaTime);
-			Vector3 targetPos = localPos + transform.rotation.eulerAngles * localSpeed;
-
-			transform.position = Vector3.MoveTowards(localPos, targetPos, localSpeed * Time.fixedDeltaTime);
-
-			//Quaternion predict = Quaternion.FromToRotation(transform.eulerAngles, new Vector3(0, _input, 0));
-			//transform.rotation = Quaternion.Lerp (transform.rotation, predict, Time.fixedDeltaTime);
+			transform.Rotate (Vector3.up, _input * turnSpeed);
 		}
 	}
 
@@ -93,7 +75,7 @@ public class PlayerController : MonoBehaviour {
 
 		if(stream.isWriting)
 		{
-			playerState = (int)playerState; 
+			playerState = (int)state; 
 			mSpeed = movementSpeed;
 			position = transform.position;
 			rotation = transform.rotation;
@@ -111,9 +93,9 @@ public class PlayerController : MonoBehaviour {
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 
-			state = (PlayerState)state;
+			state = (PlayerState)playerState;
 			movementSpeed = mSpeed;
-			netPosition = position;
+			transform.position = position;
 			transform.rotation = rotation;
 		}
 	}
