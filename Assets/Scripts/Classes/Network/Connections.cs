@@ -96,8 +96,14 @@ public class Connections : MonoBehaviour {
 
 	void OnConnectedToServer()
 	{
-		networkView.RPC ("SendPlayerInfo", RPCMode.Server, localNickname);
+		Debug.Log ("Connected!");
+		networkView.RPC ("SendPlayerInfo", RPCMode.Server, Network.player, localNickname);
 		_connected = true;
+	}
+
+	void OnFailedToConnect(NetworkConnectionError error)
+	{
+		Debug.Log ("Failed to connect! " + error);
 	}
 
 	[RPC]

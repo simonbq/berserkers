@@ -3,15 +3,7 @@ using System.Collections;
 
 public class LobbyMenu : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	string ipNumber = "127.0.0.1";
 
 	void OnGUI()
 	{
@@ -31,6 +23,17 @@ public class LobbyMenu : MonoBehaviour {
 			GUILayout.Label ("Nickname");
 			Connections.GetInstance ().localNickname = GUILayout.TextField (Connections.GetInstance ().localNickname, GUILayout.Width (300));
 			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label("IP");
+			ipNumber = GUILayout.TextField (ipNumber, GUILayout.Width (300));
+			GUILayout.EndHorizontal();
+
+			if(GUILayout.Button ("Connect"))
+			{
+				Network.Connect (ipNumber, 61337);
+				Debug.Log ("Connecting to " + ipNumber);
+			}
 		}
 
 		else
