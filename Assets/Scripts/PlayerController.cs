@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	public int playerIDD;
 	// Use this for initialization
 	void Start () {
 		state = PlayerState.ALIVE;
@@ -34,6 +33,14 @@ public class PlayerController : MonoBehaviour {
 		renderer.material.color = playerColor;
 		//Invoke ("Kill", 2);
 	}
+
+    void Update()
+    {
+        if (!playerInfo.connected)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
