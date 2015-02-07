@@ -5,9 +5,11 @@ public class PlayerController : MonoBehaviour {
 	public enum PlayerState { ALIVE, DEAD };
 	public PlayerState state;
 
+	//Player variables
     public float movementSpeed;
 	public float turnSpeed;
 	public Color playerColor;
+
 	public AudioClip[] audioClips;
 
 	// Use this for initialization
@@ -19,11 +21,11 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		if(state == PlayerState.ALIVE){
-		rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
+			rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
 
-		transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + Input.GetAxis("Horizontal") * turnSpeed, transform.eulerAngles.z);
+			transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + Input.GetAxis("Horizontal") * turnSpeed, transform.eulerAngles.z);
 		}
 	}
 
