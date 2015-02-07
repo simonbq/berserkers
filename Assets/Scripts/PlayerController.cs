@@ -13,6 +13,19 @@ public class PlayerController : MonoBehaviour {
 
 	public AudioClip[] audioClips;
 
+	private float _input = 0;
+
+	private float input
+	{
+		set
+		{
+			if(input != value)
+			{
+				networkView.RPC ("UpdateInput", RPCMode.Server, value);
+			}
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		state = PlayerState.ALIVE;
@@ -28,12 +41,17 @@ public class PlayerController : MonoBehaviour {
 			if(state == PlayerState.ALIVE){
 				rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
 
-				transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + Input.GetAxis("Horizontal") * turnSpeed, transform.eulerAngles.z);
+				transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + _input * turnSpeed, transform.eulerAngles.z);
 			}
 		}
 
 		else
 		{
+			if(playerInfo.networkPlayer == Network.player)
+			{
+				input = Input.GetAxis("Horizontal");
+			}
+
 			//do interpolation here Kappa DansGame
 		}
 	}
@@ -47,10 +65,10 @@ public class PlayerController : MonoBehaviour {
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
-		int playerState;
-		Vector3 velocity;
-		Vector3 position;
-		Quaternion rotation; 
+		int playerState = 0;
+		Vector3 velocity = new Vector3();
+		Vector3 position = new Vector3();
+		Quaternion rotation = Quaternion.identity; 
 
 		if(stream.isWriting)
 		{
@@ -72,7 +90,16 @@ public class PlayerController : MonoBehaviour {
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 
-
+			state = (PlayerState)state;
+			rigidbody.velocity = velocity;
+			transform.position = position;
+			transform.rotation = rotation;
 		}
+	}
+
+	[RPC]
+	void UpdateInput(float val)
+	{
+		_input = val;
 	}
 }
