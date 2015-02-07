@@ -51,14 +51,19 @@ public class PlayerController : MonoBehaviour {
 
         if (Network.isServer)
         {
-            //network specific stuff in here
+            if (state == PlayerState.ALIVE)
+            {
+                rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
+
+                transform.Rotate(Vector3.up, _input * turnSpeed);
+            }
         }
 
-		if(state == PlayerState.ALIVE){
-			rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
-
-			transform.Rotate (Vector3.up, _input * turnSpeed);
-		}
+        else
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles + Vector3.up * turnSpeed * _input), turnSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward * movementSpeed, movementSpeed);
+        }
 	}
 
 	public void SetPlayer(int id)
@@ -76,7 +81,6 @@ public class PlayerController : MonoBehaviour {
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
 		int playerState = 0;
-        float clientInput = 0;
 		float mSpeed = 0;
 		Vector3 position = new Vector3();
 		Quaternion rotation = Quaternion.identity; 
@@ -89,7 +93,6 @@ public class PlayerController : MonoBehaviour {
 			rotation = transform.rotation;
 
 			stream.Serialize(ref playerState);
-            stream.Serialize(ref clientInput);
 			stream.Serialize(ref mSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
@@ -98,7 +101,6 @@ public class PlayerController : MonoBehaviour {
 		else
 		{
 			stream.Serialize(ref playerState);
-            stream.Serialize(ref clientInput);
 			stream.Serialize(ref mSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
