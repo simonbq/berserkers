@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour {
 	public AudioClip[] audioClips;
 
 	private float _input = 0;
+	private Vector3 netPosition = new Vector3();
 
 	private float input
 	{
@@ -33,6 +34,11 @@ public class PlayerController : MonoBehaviour {
 
 		renderer.material.color = playerColor;
 		//Invoke ("Kill", 2);
+
+		if(!Network.isServer)
+		{
+			rigidbody.isKinematic = true;
+		}
 	}
 	
 	// Update is called once per frame
@@ -54,8 +60,15 @@ public class PlayerController : MonoBehaviour {
 
 		else
 		{
+			float dist = Vector3.Distance(transform.position, netPosition);
+			float localSpeed = Mathf.Max(movementSpeed, dist);
+			Vector3 localPos = Vector3.Lerp(transform.position, netPosition, movementSpeed * Time.fixedDeltaTime);
+			Vector3 targetPos = localPos + transform.rotation.eulerAngles * localSpeed;
 
-			//do interpolation here Kappa DansGame
+			transform.position = Vector3.MoveTowards(localPos, targetPos, localSpeed * Time.fixedDeltaTime);
+
+			//Quaternion predict = Quaternion.FromToRotation(transform.eulerAngles, new Vector3(0, _input, 0));
+			//transform.rotation = Quaternion.Lerp (transform.rotation, predict, Time.fixedDeltaTime);
 		}
 	}
 
@@ -74,19 +87,19 @@ public class PlayerController : MonoBehaviour {
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
 		int playerState = 0;
-		//Vector3 velocity = new Vector3();
+		float mSpeed = 0;
 		Vector3 position = new Vector3();
 		Quaternion rotation = Quaternion.identity; 
 
 		if(stream.isWriting)
 		{
 			playerState = (int)playerState; 
-			//velocity = rigidbody.velocity;
+			mSpeed = movementSpeed;
 			position = transform.position;
 			rotation = transform.rotation;
 
 			stream.Serialize(ref playerState);
-			//stream.Serialize(ref velocity);
+			stream.Serialize(ref mSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 		}
@@ -94,13 +107,13 @@ public class PlayerController : MonoBehaviour {
 		else
 		{
 			stream.Serialize(ref playerState);
-			//stream.Serialize(ref velocity);
+			stream.Serialize(ref mSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 
 			state = (PlayerState)state;
-			//rigidbody.velocity = velocity;
-			transform.position = position;
+			movementSpeed = mSpeed;
+			netPosition = position;
 			transform.rotation = rotation;
 		}
 	}
