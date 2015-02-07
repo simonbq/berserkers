@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour {
 
 	//Prefabs
 	public GameObject playerPrefab;
+	public GameObject powerupPrefab;
 
 	void Awake()
 	{
@@ -54,6 +55,7 @@ public class GameController : MonoBehaviour {
 
 
 		players.Add (SpawnPlayer(spawnPoints));
+		SpawnPowerUp(spawnPoints);
 	}
 	
 	// Update is called once per frame
@@ -62,12 +64,19 @@ public class GameController : MonoBehaviour {
 	}
 
 	public GameObject SpawnPlayer(List<GameObject> mSpawnPoints){
-
 		GameObject selectSpawnPoint = mSpawnPoints[Random.Range(0, mSpawnPoints.Count)];
 		Debug.Log ("Spawned player at "+selectSpawnPoint.transform.position);
 
 		return Instantiate(playerPrefab, selectSpawnPoint.transform.position + new Vector3(0, 2, 0), selectSpawnPoint.transform.rotation) as GameObject;
 	}
 
-	//public GameObject SpawnPowerUp();
+	public GameObject SpawnPowerUp(List<GameObject> mSpawnPoints){
+		GameObject selectSpawnPoint = mSpawnPoints[Random.Range(0, mSpawnPoints.Count)];
+
+
+
+		Debug.Log ("Spawned powerup at "+selectSpawnPoint.transform.position);
+
+		return Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 2, 0), selectSpawnPoint.transform.rotation) as GameObject;
+	}
 }
