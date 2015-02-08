@@ -36,7 +36,6 @@ public class PlayerController : MonoBehaviour {
 
     public float stunDuration;
 
-
     public Animator animator;
     public Material playerMaterial;
 
@@ -183,11 +182,7 @@ public class PlayerController : MonoBehaviour {
 
                     networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 					Debug.Log ("Killed by " + hitPlayer.playerInfo.id);
-
-                    if (this.playerInfo.killstreaks.GetKills() == 0)
-                    {
-                        networkView.RPC("PlayNoKill", RPCMode.All);
-                    }
+                   
                     this.playerInfo.killstreaks.Died();
 
                     int playersAlive = 0;
@@ -351,13 +346,6 @@ public class PlayerController : MonoBehaviour {
 				SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
 			}
 		}
-	}
-
-	[RPC]
-	void PlayNoKill()
-	{
-		if (Connections.GetInstance ().playerId == playerInfo.id)
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerNoKill);
 	}
 
 	[RPC]
