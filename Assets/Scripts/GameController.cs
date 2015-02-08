@@ -79,7 +79,9 @@ public class GameController : MonoBehaviour {
         {
             foreach (GameObject player in players)
             {
-                player.transform.position = spawnPoints[Random.Range(0, spawnPoints.Count)].transform.position;
+                GameObject selectSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
+                player.transform.position =  selectSpawnPoint.transform.position + new Vector3(0, 2, 0);
+                player.transform.rotation = selectSpawnPoint.transform.rotation;
 
                 PlayerController pc = player.GetComponent<PlayerController>();
                 pc.state = PlayerController.PlayerState.ALIVE;
