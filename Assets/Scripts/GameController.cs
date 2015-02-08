@@ -144,7 +144,7 @@ public class GameController : MonoBehaviour {
 
 			if(!Physics.CheckSphere(selected.transform.position + Vector3.up, 1.5f, 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Powerup")))
 			{
-				Debug.Log ("Found spawnpoint!");
+				//Debug.Log ("Found spawnpoint!");
 				return selected;
 			}
 
