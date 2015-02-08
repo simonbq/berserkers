@@ -14,6 +14,8 @@ public class PlayerInfo {
 
 	public bool ready = false;
     public bool connected = true;
+	public int kills = 0;
+	public int deaths = 0;
 
 	private NetworkPlayer _networkPlayer;
 	private int _id;

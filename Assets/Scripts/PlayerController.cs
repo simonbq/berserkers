@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
-	public enum PlayerState { ALIVE, DEAD };
+	public enum PlayerState { ALIVE, DEAD, STUNNED };
 	public PlayerState state;
 	public PlayerInfo playerInfo;
 
@@ -58,7 +58,8 @@ public class PlayerController : MonoBehaviour {
 
         if (Network.isServer)
         {
-            if (state == PlayerState.ALIVE)
+            if (state == PlayerState.ALIVE &&
+			    state != PlayerState.STUNNED)
             {
                 rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
 
@@ -76,13 +77,6 @@ public class PlayerController : MonoBehaviour {
 	public void SetPlayer(int id)
 	{
 		networkView.RPC ("Spawned", RPCMode.All, id);
-	}
-
-	public void Kill(){
-		Debug.Log ("Kill player");
-		state = PlayerState.DEAD;
-		renderer.material.color = Color.black;
-		rigidbody.AddExplosionForce(2000, transform.position + transform.forward*2, 0, 0);
 	}
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
@@ -117,6 +111,27 @@ public class PlayerController : MonoBehaviour {
 			transform.position = position;
 			transform.rotation = rotation;
 		}
+	}
+
+	[RPC]
+	void Stunned(float duration)
+	{
+		//stun stuff here
+		state = PlayerState.STUNNED;
+	}
+
+
+	[RPC]
+	void Kill(int killerId)
+	{
+		//You can get killerId by killerGameObject.GetInstance<PlayerController>().playerInfo.id
+		Connections.GetInstance ().players [killerId].kills++;
+		playerInfo.deaths++;
+
+		Debug.Log ("Kill player");
+		state = PlayerState.DEAD;
+		renderer.material.color = Color.black;
+		rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
 	}
 
 	[RPC]
