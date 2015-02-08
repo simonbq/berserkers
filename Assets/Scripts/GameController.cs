@@ -9,11 +9,7 @@ public class GameController : MonoBehaviour {
 	{
 		get
 		{
-			if(_instance == null)
-			{
-				_instance = GameObject.FindObjectOfType<GameController>();
-				DontDestroyOnLoad(_instance.gameObject);
-			}
+			_instance = GameObject.FindObjectOfType<GameController>();
 			return _instance;
 		}
 	}
@@ -37,7 +33,6 @@ public class GameController : MonoBehaviour {
 		if(_instance == null)
 		{
 			_instance = this;
-			DontDestroyOnLoad(this);
 		}
 		else
 		{
