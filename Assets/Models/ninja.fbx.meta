@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3a48b1b36ebfd2b43a6d528aa6b34d06
+guid: c543fdcc90a7ddc41a7b5da5babb65b5
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
@@ -94,9 +94,10 @@ ModelImporter:
     4300008: l_sword
     4300010: body
     4300012: hair
-    7400000: Run1
-    7400002: Run2
+    7400000: Run 1
+    7400002: Run 2
     7400004: Attack
+    7400006: Idle
     9500000: //RootNode
     13700000: body
     13700002: hair
@@ -122,7 +123,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Run1
+      name: Run 1
       takeName: Take 001
       firstFrame: 0
       lastFrame: 15
@@ -232,10 +233,10 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: Run2
+      name: Run 2
       takeName: Take 001
       firstFrame: 20
-      lastFrame: 36
+      lastFrame: 35
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -352,6 +353,116 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: group1
+        weight: 1
+      - path: group1/body
+        weight: 1
+      - path: group1/hair
+        weight: 1
+      - path: group1/l_sandal
+        weight: 1
+      - path: group1/l_sword
+        weight: 1
+      - path: group1/poncho
+        weight: 1
+      - path: group1/r_sandal
+        weight: 1
+      - path: group1/r_sword
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_hip_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_hip_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_knee_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_hip_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_knee_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_foot_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_hip_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_knee_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_foot_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_ball_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_hip_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_hip_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_knee_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_hip_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_knee_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_foot_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_hip_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_knee_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_foot_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_ball_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_shoulder_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_shoulder_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_elbow_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_shoulder_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_elbow_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_hand_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_shoulder_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_elbow_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_hand_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:L_hand_2_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:neck_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:neck_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:neck_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_2_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:neck_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:hair_1_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:neck_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:hair_1_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:hair_2_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:neck_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:head_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:hair_1_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:hair_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:hair_3_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:poncho_1_back
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:poncho_1_back/Samurai_skeleton_rig_animated:Samurai_skinned_animated:poncho_2_back
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:poncho_1_front
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:poncho_1_front/Samurai_skeleton_rig_animated:Samurai_skinned_animated:poncho_2_front
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_shoulder_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_shoulder_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_elbow_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_shoulder_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_elbow_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_hand_joint
+        weight: 1
+      - path: Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle4/Samurai_skeleton_rig_animated:Samurai_skinned_animated:nurbsCircle3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:transform3/Samurai_skeleton_rig_animated:Samurai_skinned_animated:pelvis_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_2_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_3_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:spine_4_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_shoulder_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_elbow_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_hand_joint/Samurai_skeleton_rig_animated:Samurai_skinned_animated:R_hand_2_joint
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle
+      takeName: Take 001
+      firstFrame: 120
+      lastFrame: 136
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0

@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	public void Start () {
 		state = PlayerState.STUNNED;
+        animator.SetBool("idle", true);
         Invoke("MakeAlive", 2.0f);
 
 		renderer.material.color = playerColor;
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour {
         {
             Destroy(this.gameObject);
         }
-
+        
         if (CheckNearbyPlayers(2.0f))
         {
             animator.SetBool("enemyclose", true);
@@ -192,6 +193,8 @@ public class PlayerController : MonoBehaviour {
 	void Stunned(float duration)
 	{
 		//stun stuff here
+
+        animator.SetBool("idle", true);
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
         transform.Rotate(new Vector3(0, 180, 0));
@@ -212,6 +215,7 @@ public class PlayerController : MonoBehaviour {
     void MakeAlive()
     {
         state = PlayerState.ALIVE;
+        animator.SetBool("idle", false);
     }
 
 	[RPC]
