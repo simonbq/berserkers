@@ -52,12 +52,7 @@ public class GameController : MonoBehaviour {
 				spawnPoints.Add(o);
 				//Debug.Log ("Found spawn point: "+o.transform.position);
 			}
-
-			foreach(PlayerInfo player in Connections.GetInstance().players.Values)
-			{
-				Debug.Log ("Spawning player " + player.name);
-				players.Add (SpawnPlayer(player.id));
-			}
+            SpawnPlayers();
 		}
 	}
 	
@@ -69,6 +64,30 @@ public class GameController : MonoBehaviour {
 			powerupSpawned = false;
 		}
 	}
+
+    public void SpawnPlayers()
+    {
+        if (players.Count == 0)
+        {
+            foreach (PlayerInfo player in Connections.GetInstance().players.Values)
+            {
+                Debug.Log("Spawning player " + player.name);
+                players.Add(SpawnPlayer(player.id));
+            }
+        }
+        else
+        {
+            foreach (GameObject player in players)
+            {
+                player.transform.position = spawnPoints[Random.Range(0, spawnPoints.Count)].transform.position;
+
+                PlayerController pc = player.GetComponent<PlayerController>();
+                pc.state = PlayerController.PlayerState.ALIVE;
+
+            }
+        }
+        
+    }
 
 	GameObject SpawnPlayer(int id){
 		GameObject selectSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
