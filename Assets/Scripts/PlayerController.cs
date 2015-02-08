@@ -99,10 +99,8 @@ public class PlayerController : MonoBehaviour {
 					state = PlayerState.DEAD;
 					rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
 
-					networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
-                }
-                else
-                {
+                    networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+
                     int playersAlive = 0;
                     foreach (GameObject player in GameController.instance.players)
                     {
@@ -114,6 +112,7 @@ public class PlayerController : MonoBehaviour {
                         GameController.instance.Invoke("SpawnPlayers", 3);
                     }
                 }
+
                 if (hitPlayer.movementSpeed == this.movementSpeed &&
 				    state != PlayerState.STUNNED)
                 {
