@@ -17,6 +17,8 @@ public class PlayerInfo {
 	public int kills = 0;
 	public int deaths = 0;
 
+	public Killstreaks killstreaks = new Killstreaks ();
+
 	private NetworkPlayer _networkPlayer;
 	private int _id;
 	private string _name;
