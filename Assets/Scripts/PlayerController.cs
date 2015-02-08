@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour {
         Invoke("MakeAlive", 2.0f);
 
 		Invoke ("AnnouncerStart", 2.0f);
+		Debug.Log ("Should play sound for round start soon");
 
 		//renderer.material.color = playerColor;
 		movementSpeed = startSpeed;
@@ -315,6 +316,7 @@ public class PlayerController : MonoBehaviour {
 	void AnnouncerStart()
 	{
 		SoundStore.instance.Play (SoundStore.instance.AnnouncerStart);
+		Debug.Log ("Play round start sound now");
 	}
 
 	void Firstblood()
