@@ -28,11 +28,13 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
-		state = PlayerState.ALIVE;
+	public void Start () {
+		state = PlayerState.STUNNED;
+        Invoke("MakeAlive", 2.0f);
 
 		renderer.material.color = playerColor;
-		//Invoke ("Kill", 2);
+		
+
 	}
 
     void Update()
@@ -97,8 +99,20 @@ public class PlayerController : MonoBehaviour {
 					state = PlayerState.DEAD;
 					rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
 
-					networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+                    networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+
+                    int playersAlive = 0;
+                    foreach (GameObject player in GameController.instance.players)
+                    {
+                        if (player.GetComponent<PlayerController>().state == PlayerState.ALIVE)
+                            playersAlive++;
+                    }
+                    if (playersAlive < 2)
+                    {
+                        GameController.instance.Invoke("SpawnPlayers", 3);
+                    }
                 }
+
                 if (hitPlayer.movementSpeed == this.movementSpeed &&
 				    state != PlayerState.STUNNED)
                 {
@@ -177,7 +191,11 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void PlayStunnedFX()
 	{
-		//stunfx
+		if (Connections.GetInstance ().playerId == playerInfo.id) 
+		{
+			ScreenShaker.instance.Shake (1, 1);
+		}
+
 	}
 
 	[RPC]
@@ -189,7 +207,7 @@ public class PlayerController : MonoBehaviour {
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//playerspecific sound
+			ScreenShaker.instance.Shake (1, 1);
 		}
 	}
 

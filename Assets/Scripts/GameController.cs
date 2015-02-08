@@ -53,14 +53,7 @@ public class GameController : MonoBehaviour {
 				//Debug.Log ("Found spawn point: "+o.transform.position);
 			}
 
-			foreach(PlayerInfo player in Connections.GetInstance().players.Values)
-			{
-				Debug.Log ("Spawning player " + player.name);
-				GameObject playerObject = SpawnPlayer(player.id);
-				players.Add (playerObject);
-
-				Camera.main.GetComponent<CameraController>().player = playerObject.GetComponent<PlayerController>();
-			}
+			SpawnPlayers();
 		}
 	}
 	
@@ -72,6 +65,34 @@ public class GameController : MonoBehaviour {
 			powerupSpawned = false;
 		}
 	}
+
+    public void SpawnPlayers()
+    {
+		if (players.Count == 0)
+        {
+			foreach (PlayerInfo player in Connections.GetInstance().players.Values)
+            {
+				Debug.Log ("Spawning player " + player.name);
+				GameObject playerObject = SpawnPlayer(player.id);
+				players.Add (playerObject);
+				
+				Camera.main.GetComponent<CameraController>().player = playerObject.GetComponent<PlayerController>();
+			}
+		}
+        else
+        {
+            foreach (GameObject player in players)
+            {
+                GameObject selectSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
+                player.transform.position =  selectSpawnPoint.transform.position + new Vector3(0, 2, 0);
+                player.transform.rotation = selectSpawnPoint.transform.rotation;
+
+                PlayerController pc = player.GetComponent<PlayerController>();
+                pc.Start();
+            }
+        }
+        
+    }
 
 	GameObject SpawnPlayer(int id){
 		GameObject selectSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
