@@ -143,7 +143,8 @@ public class PlayerController : MonoBehaviour {
 
                 PlayerController hitPlayer = collision.gameObject.GetComponent<PlayerController>();
 				Debug.Log ("Hit player " + hitPlayer.name);
-                if (hitPlayer.movementSpeed > this.movementSpeed)
+
+                if (hitPlayer.currentSpeed > this.movementSpeed)
                 {
                     Debug.Log("Kill player");
                     state = PlayerState.DEAD;
