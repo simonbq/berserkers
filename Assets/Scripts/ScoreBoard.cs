@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+public enum Announcments {
+	BRING_HONOR, DOUBLE_KILL, FIRST_BLOOD, GO, GOJIRA_KILL,
+	LOTS_OF_KILL_LITTLE_TIME, MANY_KILL, READY, SET, SOON
+}
+
 public class ScoreBoard : MonoBehaviour {
+	public static ScoreBoard instance { get; set; }
 	public static readonly Vector2 SCREEN_SIZE = new Vector2 (1920, 1080);
 	
 	public Rect area;
@@ -11,16 +18,19 @@ public class ScoreBoard : MonoBehaviour {
 	public Texture statics;
 	public Texture speedometer_bg;
 	public Texture[] playerIcons = new Texture[8];
+	public Texture[] announcements = new Texture[10];
+	private Texture currentAnnouncement = null;
 	public Material speedometer_mat;
 	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
 	public Rect speedometer_rect = new Rect(0, 0, 512, 512);
-
+	public Rect announcerRect = new Rect (800, 300, 256, 512);
 	public Texture nosmoke_tex;
 	public Rect nosmoke_rect = new Rect(0, 0, 0, 0);
 
 	private List<PlayerInfo> playas;
 	// Use this for initialization
 	void Awake () {
+		instance = this;
 		//speedometer_rect = new Rect (SCREEN_SIZE.x-600, 0, 600, 400);
 	}
 	
@@ -72,9 +82,56 @@ public class ScoreBoard : MonoBehaviour {
 		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / 0.5f);
 		if(Event.current.rawType == EventType.repaint)
 			Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
+		if(currentAnnouncement != null) {
+			GUI.DrawTexture(announcerRect, currentAnnouncement);
+		}
+
 		GUIUtility.ScaleAroundPivot (Vector2.one * f, nosmoke_rect.center);
 		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
 		Debug.Log (nosmoke_rect.center);
 		GUIUtility.ScaleAroundPivot (-Vector2.one * f, nosmoke_rect.center);
+	}
+
+	private IEnumerator tempdisplay (int id, float duration) {
+		Texture t = announcements [id];
+		currentAnnouncement = t;
+		yield return new WaitForSeconds (duration);
+		if(currentAnnouncement == t)
+			currentAnnouncement = null;
+	}
+
+	public void Display(Announcments announcment, float duration) {
+		switch(announcment) {
+		case Announcments.BRING_HONOR:
+			StartCoroutine(tempdisplay(0, duration));
+			break;
+		case Announcments.DOUBLE_KILL:
+			StartCoroutine(tempdisplay(1, duration));
+			break;
+		case Announcments.FIRST_BLOOD:
+			StartCoroutine(tempdisplay(2, duration));
+			break;
+		case Announcments.GO:
+			StartCoroutine(tempdisplay(3, duration));
+			break;
+		case Announcments.GOJIRA_KILL:
+			StartCoroutine(tempdisplay(4, duration));
+			break;
+		case Announcments.LOTS_OF_KILL_LITTLE_TIME:
+			StartCoroutine(tempdisplay(5, duration));
+			break;
+		case Announcments.MANY_KILL:
+			StartCoroutine(tempdisplay(6, duration));
+			break;
+		case Announcments.READY:
+			StartCoroutine(tempdisplay(7, duration));
+			break;
+		case Announcments.SET:
+			StartCoroutine(tempdisplay(8, duration));
+			break;
+		case Announcments.SOON:
+			StartCoroutine(tempdisplay(9, duration));
+			break;
+		}
 	}
 }
