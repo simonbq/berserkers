@@ -12,8 +12,9 @@ public class PlayerController : MonoBehaviour {
 	public Color playerColor;
     public float stunDuration;
 
-
 	private float _input = 0;
+
+	private Killstreaks killstreaks = new Killstreaks ();
 
 	private float input
 	{
@@ -101,14 +102,41 @@ public class PlayerController : MonoBehaviour {
 					rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
 
 					networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+
+					if (killstreaks.GetKills() == 0) {
+						SoundStore.instance.Play(SoundStore.instance.AnnouncerNoKill);
+					}
+					killstreaks.Died();
                 }
-                if (hitPlayer.movementSpeed == this.movementSpeed &&
-				    state != PlayerState.STUNNED)
+                else if (hitPlayer.movementSpeed == this.movementSpeed &&
+				    state != PlayerState.STUNNED) {
 					SoundStore.instance.PlayRandom (SoundStore.instance.StunSound);
 					SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
-                {
+                
                     Stunned(stunDuration);
                 }
+
+				else { //Got a kill
+
+					SoundStore.instance.PlayRandom(SoundStore.instance.KillShout);
+					SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
+					killstreaks.AddKill();
+					if (killstreaks.GetFastKills() == 2) {
+						SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
+					}
+					else if (killstreaks.GetFastKills() == 3) {
+						SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
+					}
+					else if (killstreaks.GetKills() == 3) {
+						SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
+					}
+					else if (killstreaks.GetKills() == 5) {
+						SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
+					}
+					else if (killstreaks.GetKills() == 7) {
+						SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
+					}
+				}
             }
 
             if (collision.gameObject.tag == "Wall" &&
