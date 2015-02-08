@@ -17,7 +17,7 @@ public class AlphaMaterial : MonoBehaviour
 	void Start()
 	{
         //ps = GetComponentInChildren
-		changedMaterial = renderer.material;
+		//changedMaterial = renderer.material;
 		colorTint = Color.black; //Setting the default value
 		//renderer.sharedMaterial = new Material (renderer.sharedMaterial);
 	}
