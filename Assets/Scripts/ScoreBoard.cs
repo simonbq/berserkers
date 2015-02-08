@@ -9,10 +9,13 @@ public class ScoreBoard : MonoBehaviour {
 	private Matrix4x4 matrix;
 	private Vector3 scale = new Vector3();
 	public Texture statics;
+	public Texture speedometer_bg;
+	public Material speedometer_mat;
 	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
+	private Rect speedometer_rect;
 	// Use this for initialization
 	void Awake () {
-		
+		speedometer_rect = new Rect (0, 0, 512, 512);
 	}
 	
 	// Update is called once per frame
@@ -49,5 +52,9 @@ public class ScoreBoard : MonoBehaviour {
 			// }
 			GUILayout.EndArea ();	
 		}
+		speedometer_mat.SetFloat ("cutoff", Random.Range(0.0f, 1.0f));
+
+		//GUI.DrawTexture (speedometer_rect, speedometer_bg);
+		Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
 	}
 }
