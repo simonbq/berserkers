@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GameController : MonoBehaviour {
 
@@ -138,11 +139,12 @@ public class GameController : MonoBehaviour {
 
 		do
 		{
-			List<GameObject> remaining = spawnPoints.FindAll (x => !visited.Exists(y => x == y));
+			List<GameObject> remaining = spawnPoints.Except(visited).ToList();
 			GameObject selected = remaining[Random.Range (0, remaining.Count)];
 
-			if(!Physics.CheckSphere(selected.transform.position + Vector3.up, 0.5f, 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Powerup")))
+			if(!Physics.CheckSphere(selected.transform.position + Vector3.up, 1.5f, 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Powerup")))
 			{
+				Debug.Log ("Found spawnpoint!");
 				return selected;
 			}
 
