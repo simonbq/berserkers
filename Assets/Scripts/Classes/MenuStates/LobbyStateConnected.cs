@@ -34,6 +34,11 @@ public class LobbyStateConnected : MenuState {
 	public override void update(Menu m) {
 		data.menu = m;
 
+		foreach(PlayerInfo p in Connections.GetInstance().players.Values)
+		{
+			GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
+		}
+
 		foreach(Button b in buttons) {
 			b.update(data);
 		}
