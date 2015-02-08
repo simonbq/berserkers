@@ -3,12 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Deployment;
 
+public class Star {
+	public Rect rect;
+	private Texture tex;
+	public Star(Rect rect, Texture tex) {
+		this.rect = rect;
+		this.tex = tex;
+	}
+
+	public void gui() {
+		GUI.DrawTexture (rect, tex);
+	}
+}
+
 public class Menu : MonoBehaviour {
 	public static readonly Vector2 SCREEN_SIZE = new Vector2 (1920, 1080);
 	private Vector2 screenScale;
 	public Texture background;
 	public Texture spinThing;
 	public Texture TitleText;
+	public Texture[] stars;
 	private MenuState current;
 	private Stack<MenuState> history = new Stack<MenuState>();
 	public GUISkin skin;
@@ -59,6 +73,15 @@ public class Menu : MonoBehaviour {
 		GUIUtility.ScaleAroundPivot (-Vector2.one * scalify, titleArea.center);
 		//GUIUtility.ScaleAroundPivot (-(Vector2.one * scalify), new Vector2(titleArea.center.x * scale.x, titleArea.center.y * scale.y));
 
+	}
+
+	private IEnumerator star() {
+		/*Star s = new Star (new Rect (-100, Random.Range (100, 900), 64, 64));
+		while(s.rect.x < SCREEN_SIZE.x + 100) {
+
+			yield return null;
+		}*/
+		yield return null;
 	}
 
 	public void setCurrent(MenuState state) {
