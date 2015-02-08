@@ -14,8 +14,6 @@ public class PlayerController : MonoBehaviour {
 
 	private float _input = 0;
 
-	private Killstreaks killstreaks = new Killstreaks ();
-
 	private float input
 	{
 		set
@@ -103,10 +101,10 @@ public class PlayerController : MonoBehaviour {
 
 					networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 
-					if (killstreaks.GetKills() == 0) {
+					if (this.playerInfo.killstreaks.GetKills() == 0) {
 						SoundStore.instance.Play(SoundStore.instance.AnnouncerNoKill);
 					}
-					killstreaks.Died();
+					this.playerInfo.killstreaks.Died();
                 }
                 else if (hitPlayer.movementSpeed == this.movementSpeed &&
 				    state != PlayerState.STUNNED) {
@@ -201,20 +199,22 @@ public class PlayerController : MonoBehaviour {
 		SoundStore.instance.PlayRandom (SoundStore.instance.KillSound);
 		SoundStore.instance.PlayRandom (SoundStore.instance.KillShout);
 
-		killstreaks.AddKill();
-		if (killstreaks.GetFastKills() == 2) {
+		Killstreaks killerKillstreak = Connections.GetInstance ().players [killerId].killstreaks;
+
+		killerKillstreak.AddKill ();
+		if (killerKillstreak.GetFastKills() == 2) {
 			SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
 		}
-		else if (killstreaks.GetFastKills() == 3) {
+		else if (killerKillstreak.GetFastKills() == 3) {
 			SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
 		}
-		else if (killstreaks.GetKills() == 3) {
+		else if (killerKillstreak.GetKills() == 3) {
 			SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
 		}
-		else if (killstreaks.GetKills() == 5) {
+		else if (killerKillstreak.GetKills() == 5) {
 			SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
 		}
-		else if (killstreaks.GetKills() == 7) {
+		else if (killerKillstreak.GetKills() == 7) {
 			SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
 		}
 
