@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour {
 
 	private float _input = 0;
 
+	private bool firstblood = false;
+
 	private float input
 	{
 		set
@@ -26,11 +28,13 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
-		state = PlayerState.ALIVE;
+	public void Start () {
+		state = PlayerState.STUNNED;
+        Invoke("MakeAlive", 2.0f);
 
 		renderer.material.color = playerColor;
-		//Invoke ("Kill", 2);
+		
+
 	}
 
     void Update()
@@ -102,16 +106,27 @@ public class PlayerController : MonoBehaviour {
 					networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 
 					if (this.playerInfo.killstreaks.GetKills() == 0) {
-						SoundStore.instance.Play(SoundStore.instance.AnnouncerNoKill);
+						networkView.RPC ("PlayNoKill", RPCMode.All);
 					}
 					this.playerInfo.killstreaks.Died();
+
+					int playersAlive = 0;
+					foreach (GameObject player in GameController.instance.players)
+					{
+						if (player.GetComponent<PlayerController>().state == PlayerState.ALIVE)
+							playersAlive++;
+					}
+					if (playersAlive < 2)
+					{
+						GameController.instance.Invoke("SpawnPlayers", 3);
+					}
+					if (playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood) {
+						Firstblood();
+					}
                 }
                 else if (hitPlayer.movementSpeed == this.movementSpeed &&
-				    state != PlayerState.STUNNED) {
-					SoundStore.instance.PlayRandom (SoundStore.instance.StunSound);
-					SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
-                
-                    Stunned(stunDuration);
+				         state != PlayerState.STUNNED) {
+					Stunned(stunDuration);
                 }
             }
 
@@ -184,10 +199,33 @@ public class PlayerController : MonoBehaviour {
         state = PlayerState.ALIVE;
     }
 
+	void Firstblood()
+	{
+		firstblood = true;
+		networkView.RPC ("PlayFirstBlood", RPCMode.All);
+	}
+
 	[RPC]
 	void PlayStunnedFX()
 	{
-		//stunfx
+		if (Connections.GetInstance ().playerId == playerInfo.id) 
+		{
+			ScreenShaker.instance.Shake (1, 1);
+		}
+		SoundStore.instance.PlayRandom (SoundStore.instance.StunSound);
+		SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
+	}
+
+	[RPC]
+	void PlayNoKill()
+	{
+		SoundStore.instance.Play(SoundStore.instance.AnnouncerNoKill);
+	}
+
+	[RPC]
+	void PlayFirstBlood()
+	{
+		SoundStore.instance.Play (SoundStore.instance.AnnouncerFirstBlood);
 	}
 
 	[RPC]
@@ -220,7 +258,7 @@ public class PlayerController : MonoBehaviour {
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//playerspecific sound
+			ScreenShaker.instance.Shake (1, 1);
 		}
 	}
 

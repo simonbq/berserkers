@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Button {
 	public static readonly Vector2 BUTTON_NORM = new Vector2 (192, 128);
+	public static readonly Vector2 BUTTON_SMALL = new Vector2 (96, 64);
 	private Rect area;
 	private GUIContent content;
 	private System.Action<ActionData> onClick;
