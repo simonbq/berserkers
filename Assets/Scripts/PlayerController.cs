@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
+	public void Start () {
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", 2.0f);
 
