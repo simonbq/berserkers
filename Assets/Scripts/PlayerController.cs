@@ -131,6 +131,8 @@ public class PlayerController : MonoBehaviour {
                 {
                     Stunned(stunDuration);
                 }
+
+				_input = 0;
             }
 
             if (collision.gameObject.tag == "Wall" &&
