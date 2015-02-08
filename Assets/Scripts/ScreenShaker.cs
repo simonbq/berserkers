@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class ScreenShaker : MonoBehaviour {
-	public ScreenShaker instance { get; private set; }
+	public static ScreenShaker instance { get; private set; }
 	//private float intensity;
 	//private float duration;
 	//private float elapsed = 0.0f;
