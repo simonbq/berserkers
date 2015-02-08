@@ -6,7 +6,7 @@ public class Killstreaks {
 	private int killsInARow = 0;
 	private int fastKillsInARow = 0;
 
-	private float fastKillTime = 1.0f;
+	private const float fastKillTime = 1.5f;
 
 	public void AddKill() {
 		if (lastKillTime + fastKillTime < Time.time) { //failed to kill fast

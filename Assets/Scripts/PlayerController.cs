@@ -115,28 +115,6 @@ public class PlayerController : MonoBehaviour {
                 
                     Stunned(stunDuration);
                 }
-
-				else { //Got a kill
-
-					SoundStore.instance.PlayRandom(SoundStore.instance.KillShout);
-					SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
-					killstreaks.AddKill();
-					if (killstreaks.GetFastKills() == 2) {
-						SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
-					}
-					else if (killstreaks.GetFastKills() == 3) {
-						SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
-					}
-					else if (killstreaks.GetKills() == 3) {
-						SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
-					}
-					else if (killstreaks.GetKills() == 5) {
-						SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
-					}
-					else if (killstreaks.GetKills() == 7) {
-						SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
-					}
-				}
             }
 
             if (collision.gameObject.tag == "Wall" &&
@@ -222,6 +200,23 @@ public class PlayerController : MonoBehaviour {
 		playerInfo.deaths++;
 		SoundStore.instance.PlayRandom (SoundStore.instance.KillSound);
 		SoundStore.instance.PlayRandom (SoundStore.instance.KillShout);
+
+		killstreaks.AddKill();
+		if (killstreaks.GetFastKills() == 2) {
+			SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
+		}
+		else if (killstreaks.GetFastKills() == 3) {
+			SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
+		}
+		else if (killstreaks.GetKills() == 3) {
+			SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
+		}
+		else if (killstreaks.GetKills() == 5) {
+			SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
+		}
+		else if (killstreaks.GetKills() == 7) {
+			SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
+		}
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
