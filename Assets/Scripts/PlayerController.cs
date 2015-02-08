@@ -91,6 +91,11 @@ public class PlayerController : MonoBehaviour {
                     networkView.RPC("Stunned", RPCMode.All, stunDuration);
                 }
             }
+
+            if (collision.gameObject.tag == "Wall")
+            {
+                networkView.RPC("Stunned", RPCMode.All, stunDuration);
+            }
         }
     }
 
@@ -139,6 +144,7 @@ public class PlayerController : MonoBehaviour {
 		//stun stuff here
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
+        transform.Rotate(new Vector3(0, 180, 0));
 	}
     void MakeAlive()
     {
