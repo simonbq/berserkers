@@ -193,7 +193,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			ScreenShaker.instance.Shake (1, 1);
+			//ScreenShaker.instance.Shake (1, 1);
 		}
 
 	}
@@ -207,7 +207,7 @@ public class PlayerController : MonoBehaviour {
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			ScreenShaker.instance.Shake (1, 1);
+			//ScreenShaker.instance.Shake (1, 1);
 		}
 	}
 
