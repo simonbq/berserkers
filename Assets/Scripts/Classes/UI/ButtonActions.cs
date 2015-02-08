@@ -55,6 +55,11 @@ public class ButtonActions {
 		Connections.GetInstance().HostLobby(8);
 	}
 
+	public static System.Action<ActionData> refresh { get { return _refresh; } }
+	private static void _refresh(ActionData data) {
+
+	}
+
 	public static System.Action<ActionData> ready { get { return _ready; } }
 	private static void _ready(ActionData data) {
 		Connections.GetInstance ().ToggleReady ();

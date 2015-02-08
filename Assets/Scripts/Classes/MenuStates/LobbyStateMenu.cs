@@ -19,17 +19,17 @@ public class LobbyStateMenu : MenuState {
 
 		Button b;
 
-		b = new Button (50, 50, Button.BUTTON_NORM);
+		b = new Button (512, 0, Button.BUTTON_NORM);
 		b.setOnClick (ButtonActions.connect);
 		b.setText ("Connect");
 		buttons.Add (b);
 
-		b = new Button (200, 50, Button.BUTTON_NORM);
+		b = new Button (32, 256, Button.BUTTON_NORM);
 		b.setOnClick (ButtonActions.host);
 		b.setText ("Host");
 		buttons.Add (b);
 
-		b = new Button (200, 200, Button.BUTTON_NORM);
+		b = new Button (256, 256, Button.BUTTON_NORM);
 		b.setOnClick (ButtonActions.back);
 		b.setText ("Back");
 		buttons.Add (b);
@@ -39,7 +39,7 @@ public class LobbyStateMenu : MenuState {
 		data.menu = m;
 
 		GUILayout.BeginHorizontal ();
-		GUILayout.Label ("Nickname");
+		GUILayout.Label ("Nickname", GUILayout.MaxWidth(200));
 		Connections.GetInstance ().localNickname = GUILayout.TextField (Connections.GetInstance ().localNickname, GUILayout.Width (300));
 		GUILayout.EndHorizontal ();
 		

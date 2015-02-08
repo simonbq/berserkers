@@ -15,8 +15,8 @@ public class OptionsState : MenuState {
 		b.setText ("Back");
 		b.setOnClick (ButtonActions.back);
 		buttons.Add (b);
-		volumeSlider = new Slider (100, 400, 100, 50, 0, 1, "Volume");
-		graphicsSlider = new Slider(100, 500, 100, 50, 0, 1, "Graphics");
+		volumeSlider = new Slider (100, 400, 128, 128, 0, 1, "Volume");
+		graphicsSlider = new Slider(100, 500, 128, 128, 0, 1, "Graphics");
 		data = new ActionData ();
 	}
 

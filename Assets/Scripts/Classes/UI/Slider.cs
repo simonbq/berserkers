@@ -23,7 +23,13 @@ public class Slider {
 	}
 
 	public float update(float current) {
-		GUI.Label (textRect, title);
-		return GUI.HorizontalSlider (rect, current, start, end);
+		GUILayout.BeginArea (rect);
+		//GUILayout.BeginHorizontal ();
+		//GUI.Label (textRect, title);
+		GUILayout.Label (title, GUILayout.MinWidth(rect.width));
+		float v = GUILayout.HorizontalSlider (current, start, end);
+		//GUILayout.EndHorizontal ();
+		GUILayout.EndArea ();
+		return v; //GUI.HorizontalSlider (rect, current, start, end);
 	}
 }
