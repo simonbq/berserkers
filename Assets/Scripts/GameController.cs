@@ -128,7 +128,7 @@ public class GameController : MonoBehaviour {
 
 		if(selectSpawnPoint != null)
 		{
-			Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.5f, 0), selectSpawnPoint.transform.rotation, 0);
+			Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0);
 
 			powerupSpawned = true;
 		}
