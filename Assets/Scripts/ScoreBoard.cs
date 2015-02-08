@@ -17,6 +17,8 @@ public class ScoreBoard : MonoBehaviour {
 
 	public Texture nosmoke_tex;
 	public Rect nosmoke_rect = new Rect(0, 0, 0, 0);
+
+	private List<PlayerInfo> playas;
 	// Use this for initialization
 	void Awake () {
 		//speedometer_rect = new Rect (SCREEN_SIZE.x-600, 0, 600, 400);
@@ -28,6 +30,11 @@ public class ScoreBoard : MonoBehaviour {
 		float height = Screen.height / SCREEN_SIZE.y;
 		scale = new Vector3(width, height, 0);
 		matrix = Matrix4x4.TRS (scale, Quaternion.identity, new Vector3(scale.x, scale.y, 1));
+
+		PlayerInfo[] players = new PlayerInfo[Connections.GetInstance().players.Values.Count];
+		Connections.GetInstance().players.Values.CopyTo(players, 0);
+		playas = new List<PlayerInfo>(players);
+		playas.Sort();
 	}
 	
 	void OnGUI() {
@@ -35,7 +42,7 @@ public class ScoreBoard : MonoBehaviour {
 		if(skin != null) {
 			GUI.skin = skin;
 		}
-		//GUI.DrawTexture (BACKGROUND_AREA, statics);
+		GUI.DrawTexture (BACKGROUND_AREA, statics);
 		if(Input.GetKey(KeyCode.Tab))
 		{
 			GUILayout.BeginArea (area, GUI.skin.box);
@@ -45,10 +52,7 @@ public class ScoreBoard : MonoBehaviour {
 			GUILayout.Label ("Deaths");
 			GUILayout.EndHorizontal ();
 
-			PlayerInfo[] players = new PlayerInfo[Connections.GetInstance().players.Values.Count];
-			Connections.GetInstance().players.Values.CopyTo(players, 0);
-			List<PlayerInfo> playas = new List<PlayerInfo>(players);
-			playas.Sort();
+
 			foreach(PlayerInfo p in playas)
 			{
 				GUILayout.BeginHorizontal ();
