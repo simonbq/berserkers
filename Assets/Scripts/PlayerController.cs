@@ -96,9 +96,8 @@ public class PlayerController : MonoBehaviour {
 	void Start()
 	{
 		startSpeed = movementSpeed;
-
+		state = PlayerState.STUNNED;
 		Reset ();
-
 
 		if(model != null)
 		{
@@ -242,7 +241,6 @@ public class PlayerController : MonoBehaviour {
                     //rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
 
                     networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
-					Debug.Log ("Killed by " + hitPlayer.playerInfo.id);
                    
                     this.playerInfo.killstreaks.Died();
 
@@ -434,8 +432,7 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void PlayDeathShout()
 	{
-		if (Connections.GetInstance ().playerId == playerInfo.id)
-			SoundStore.instance.PlayRandom (SoundStore.instance.DeathShout);
+		SoundStore.instance.PlayRandom (SoundStore.instance.DeathShout);
 	}
 
 	[RPC]

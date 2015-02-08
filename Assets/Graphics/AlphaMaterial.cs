@@ -40,7 +40,7 @@ public class AlphaMaterial : MonoBehaviour
 
     public void SetActivated(bool mActivated)
     {
-        Debug.Log("Set activated " + mActivated);
+        //Debug.Log("Set activated " + mActivated);
         if (mActivated)
         {
             startColor = Color.black;
