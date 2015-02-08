@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
-	public enum PlayerState { ALIVE, DEAD, STUNNED };
+	public enum PlayerState { ALIVE = 0, DEAD, STUNNED };
 	public PlayerState state;
 	public PlayerInfo playerInfo;
 
@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     public float movementSpeed;
 	public float turnSpeed;
 	public Color playerColor;
+    public float stunDuration;
 
 	public AudioClip[] audioClips;
 
@@ -74,9 +75,24 @@ public class PlayerController : MonoBehaviour {
         }
 	}
 
-	public void Update(){
-
-	}
+    void OnCollisionEnter(Collision collision)
+    {
+        if (Network.isServer)
+        {
+            if (collision.gameObject.tag == "Player")
+            {
+                PlayerController hitPlayer = collision.gameObject.GetComponent<PlayerController>();
+                if (hitPlayer.movementSpeed > this.movementSpeed)
+                {
+                    networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+                }
+                if (hitPlayer.movementSpeed == this.movementSpeed)
+                {
+                    networkView.RPC("Stunned", RPCMode.All, stunDuration);
+                }
+            }
+        }
+    }
 
 	public void SetPlayer(int id)
 	{
@@ -122,13 +138,17 @@ public class PlayerController : MonoBehaviour {
 	{
 		//stun stuff here
 		state = PlayerState.STUNNED;
+        Invoke("MakeAlive", duration);
 	}
-
+    void MakeAlive()
+    {
+        state = PlayerState.ALIVE;
+    }
 
 	[RPC]
 	void Kill(int killerId)
 	{
-		//You can get killerId by killerGameObject.GetInstance<PlayerController>().playerInfo.id
+		//You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
 		Connections.GetInstance ().players [killerId].kills++;
 		playerInfo.deaths++;
 
