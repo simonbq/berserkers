@@ -33,6 +33,7 @@ public class SoundStore : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		instance = this;
+        DontDestroyOnLoad(this);
 	}
 
 	public void Play(AudioClip clip) {
