@@ -12,6 +12,7 @@ public class musicEngine : MonoBehaviour {
 	int randomPrevious = 0;
 
 	int levelCurrent = 0;
+	int previousLevel = 0;
 
 	System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
@@ -20,13 +21,13 @@ public class musicEngine : MonoBehaviour {
 		audio.volume = volume;
 	}
 
-	public void musicSetLevel(int level)
+	void OnLevelWasLoaded()
 	{
-		if (level != levelCurrent)
+		if (Application.loadedLevel != previousLevel)
 		{
 			audio.Stop();
 			progression = 0;
-			levelCurrent = level;
+			previousLevel = Application.loadedLevel;
 		}
 	}
 
@@ -37,10 +38,7 @@ public class musicEngine : MonoBehaviour {
 
 	void Update ()
 	{
-		musicSetLevel (Application.loadedLevel);
-		Debug.Log (Application.loadedLevel);
-
-		if (levelCurrent == 0)
+		if (Application.loadedLevelName == "Lobby")
 		{
 			if (stopwatch.ElapsedMilliseconds >= music_0_Clips[0].length*1000 || progression == 0)
 			{
@@ -53,7 +51,7 @@ public class musicEngine : MonoBehaviour {
 			}
 		}
 
-		else if (levelCurrent == 1)
+		else if (Application.loadedLevelName == "Level")
 		{
 			if (stopwatch.ElapsedMilliseconds >= music_1_Clips[randomPrevious].length*1000-2000 || progression == 0)
 			{
@@ -68,12 +66,14 @@ public class musicEngine : MonoBehaviour {
 				{
 					while(randomCurrent == randomPrevious)
 					{
-						randomCurrent = Random.Range (1,4);
+						randomCurrent = Random.Range (1,8);
 					}
 					
 					randomPrevious = randomCurrent;
 					
 					audio.PlayOneShot (music_1_Clips[randomCurrent]);
+
+					Debug.Log (randomCurrent);
 				}
 				
 				stopwatch.Reset();
