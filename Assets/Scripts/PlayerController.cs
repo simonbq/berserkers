@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour {
     public float movementSpeed;
 	public float turnSpeed;
 
-    public float OVERKILLSPEED = 0.45f;
+    public float OVERKILLSPEED = 0.30f;
 
     public Material[] materials;
     public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
