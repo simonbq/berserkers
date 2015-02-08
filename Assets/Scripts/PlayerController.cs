@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour {
     public float movementSpeed;
 	public float turnSpeed;
 
+    private AudioSource mAudioSource;
+
     public float OVERKILLSPEED = 0.30f;
 
     public Material[] materials;
@@ -95,7 +97,8 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start()
 	{
-		startSpeed = movementSpeed;
+        mAudioSource = GetComponent<AudioSource>();
+        startSpeed = movementSpeed;
 		state = PlayerState.STUNNED;
 		Reset ();
 
@@ -206,6 +209,7 @@ public class PlayerController : MonoBehaviour {
         if (movementSpeed >= OVERKILLSPEED)
         {
             SoundStore.instance.Play(SoundStore.instance.SonicBoom);
+            mAudioSource.Play();
             ActivateEffects(true);
         }
     }
@@ -214,6 +218,7 @@ public class PlayerController : MonoBehaviour {
         movementSpeed = mSpeed;
         if (mSpeed < OVERKILLSPEED)
         {
+            mAudioSource.Stop();
             ActivateEffects(false);
         }
     }
