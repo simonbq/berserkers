@@ -30,11 +30,15 @@ public class PlayerController : MonoBehaviour {
 	//Player variables
     public float movementSpeed;
 	public float turnSpeed;
-	public Color playerColor;
+
+    public Material[] materials;
+    public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
+
     public float stunDuration;
 
 
     public Animator animator;
+    public Material playerMaterial;
 
 	private float _input = 0;
 	private float startSpeed;
@@ -60,6 +64,17 @@ public class PlayerController : MonoBehaviour {
 		startSpeed = movementSpeed;
 
 		Reset ();
+
+        //GameObject ninja = GameObject.Find(transform.name + "/ninja");
+
+
+        foreach (Renderer r in GetComponentsInChildren<Renderer>())
+        {
+            if (r.transform.name != "Blood Particle System")
+                r.material = materials[playerInfo.id];
+        }
+        movementSpeed = startSpeed;
+        currentSpeed = 0;
 	}
 
 	public void Reset () {
@@ -67,11 +82,12 @@ public class PlayerController : MonoBehaviour {
         animator.SetBool("idle", true);
         Invoke("MakeAlive", 2.0f);
 
-		renderer.material.color = playerColor;
+		//renderer.material.color = playerColor;
 		movementSpeed = startSpeed;
 		currentSpeed = 0;
 
 		networkView.RPC ("ForcePosition", RPCMode.All, transform.position);
+
 	}
 
     void Update()
