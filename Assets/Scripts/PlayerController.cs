@@ -126,7 +126,7 @@ public class PlayerController : MonoBehaviour {
                 }
                 else if (hitPlayer.movementSpeed == this.movementSpeed &&
 				         state != PlayerState.STUNNED) {
-					Stunned(stunDuration);
+					Stunned(stunDuration, false);
                 }
             }
 
@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour {
 			    state != PlayerState.STUNNED)
 				SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundWall);
             {
-                Stunned(stunDuration);
+                Stunned(stunDuration, true);
             }
         }
     }
@@ -186,13 +186,13 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 	
-	void Stunned(float duration)
+	void Stunned(float duration, bool wall)
 	{
 		//stun stuff here
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
         transform.Rotate(new Vector3(0, 180, 0));
-		networkView.RPC ("PlayStunnedFX", RPCMode.All);
+		networkView.RPC ("PlayStunnedFX", RPCMode.All, wall);
 	}
     void MakeAlive()
     {
@@ -206,13 +206,16 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	[RPC]
-	void PlayStunnedFX()
+	void PlayStunnedFX(bool wall)
 	{
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
 			ScreenShaker.instance.Shake (1, 1);
 		}
-		SoundStore.instance.PlayRandom (SoundStore.instance.StunSound);
+		if (wall)
+			SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundWall);
+		else 
+			SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundPlayer);
 		SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
 	}
 
