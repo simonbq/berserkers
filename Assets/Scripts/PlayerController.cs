@@ -103,6 +103,7 @@ public class PlayerController : MonoBehaviour {
             if (collision.gameObject.tag == "Player")
             {
                 animator.SetTrigger("attack");
+                Debug.Log("Set trigger attack");
 
                 PlayerController hitPlayer = collision.gameObject.GetComponent<PlayerController>();
                 if (hitPlayer.movementSpeed > this.movementSpeed)
