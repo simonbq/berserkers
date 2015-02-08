@@ -57,6 +57,8 @@ public class PlayerController : MonoBehaviour {
 	void Start()
 	{
 		startSpeed = movementSpeed;
+
+		Reset ();
 	}
 
 	public void Reset () {
@@ -90,6 +92,7 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		Debug.Log ("ID: " + playerInfo.id + " State: " + state);
 		if(playerInfo.id == Connections.GetInstance().playerId)
 		{
 			input = Input.GetAxis("Horizontal");
@@ -141,7 +144,9 @@ public class PlayerController : MonoBehaviour {
                 Debug.Log("Set trigger attack");
 
                 PlayerController hitPlayer = collision.gameObject.GetComponent<PlayerController>();
-                if (hitPlayer.movementSpeed > this.movementSpeed)
+				Debug.Log ("Hit player " + hitPlayer.name);
+
+                if (hitPlayer.currentSpeed > this.movementSpeed)
                 {
                     Debug.Log("Kill player");
                     state = PlayerState.DEAD;
@@ -151,6 +156,7 @@ public class PlayerController : MonoBehaviour {
                     rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
 
                     networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+					Debug.Log ("Killed by " + hitPlayer.playerInfo.id);
 
                     if (this.playerInfo.killstreaks.GetKills() == 0)
                     {
@@ -178,18 +184,18 @@ public class PlayerController : MonoBehaviour {
                 {
                     Stunned(stunDuration, false, collision.contacts[0].normal);
                 }
-
-
-                if (collision.gameObject.tag == "Wall" &&
-                    state != PlayerState.STUNNED)
-                    SoundStore.instance.PlayRandom(SoundStore.instance.StunSoundWall);
-                {
-                    Stunned(stunDuration, true, collision.contacts[0].normal);
-                }
             }
-        }
-    }
 
+			if (collision.gameObject.tag == "Wall" &&
+			    state != PlayerState.STUNNED)
+			{
+				SoundStore.instance.PlayRandom(SoundStore.instance.StunSoundWall);
+
+				Stunned(stunDuration, true, collision.contacts[0].normal);
+			}
+		}
+	}
+	
 	public void SetPlayer(int id)
 	{
 		networkView.RPC ("Spawned", RPCMode.All, id);
@@ -250,10 +256,10 @@ public class PlayerController : MonoBehaviour {
         animator.SetBool("idle", true);
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
-		transform.rotation = Quaternion.Euler (Vector3.Reflect (transform.forward, -normal));
+		transform.forward = Vector3.Reflect (transform.forward, normal);
 
 
-		rigidbody.AddExplosionForce(500, transform.position - transform.forward * 2, 0, 0);
+		rigidbody.AddExplosionForce(750, transform.position - transform.forward * 2, 0, 0);
 		networkView.RPC ("PlayStunnedFX", RPCMode.All, wall);
 		movementSpeed = startSpeed;
 		currentSpeed = 0;
@@ -321,6 +327,8 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void Kill(int killerId)
 	{
+		Debug.Log (playerInfo.id + " got killed by " + killerId);
+
 		//You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
 		Connections.GetInstance ().players [killerId].kills++;
 		playerInfo.deaths++;
