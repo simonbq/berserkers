@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour {
 
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
-            if (r.transform.name != "Blood Particle System" && r.transform.name != "SpeedSphere" && r.transform.parent.name != "FireEffect")
+            if (r.transform.name != "Blood Particle System" && r.transform.parent.name != "SpeedSphere" && r.transform.parent.name != "FireEffect")
                 r.material = materials[playerInfo.id];
         }
         movementSpeed = startSpeed;
@@ -280,7 +280,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		//stun stuff here
 
-        animator.SetBool("idle", true);
+        animator.SetBool("stunned", true);
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
 		transform.forward = Vector3.Reflect (transform.forward, normal);
@@ -316,6 +316,7 @@ public class PlayerController : MonoBehaviour {
     {
         state = PlayerState.ALIVE;
         animator.SetBool("idle", false);
+        animator.SetBool("stunned", false);
         ActivateEffects(true);
     }
 
