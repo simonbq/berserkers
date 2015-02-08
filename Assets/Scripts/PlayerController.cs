@@ -119,7 +119,6 @@ public class PlayerController : MonoBehaviour {
 
 	public void Reset () {
 		state = PlayerState.STUNNED;
-        animator.SetBool("idle", true);
         Invoke("MakeAlive", 2.0f);
 
 		Invoke ("AnnouncerStart", 2.0f);
@@ -406,6 +405,8 @@ public class PlayerController : MonoBehaviour {
 		transform.position = pos;
 		HideModel (false);
 		ShowRagdoll (false);
+
+        animator.SetBool("idle", true);
 	}
 
 	[RPC]
