@@ -5,7 +5,10 @@ using System.Deployment;
 
 public class Menu : MonoBehaviour {
 	public static readonly Vector2 SCREEN_SIZE = new Vector2 (1920, 1080);
+	private Vector2 screenScale;
 	public Texture background;
+	public Texture spinThing;
+	public Texture TitleText;
 	private MenuState current;
 	private Stack<MenuState> history = new Stack<MenuState>();
 	public GUISkin skin;
@@ -13,8 +16,19 @@ public class Menu : MonoBehaviour {
 	private Vector3 scale = new Vector3();
 
 	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
+	private Rect spinThingArea = new Rect(0, 0, 4000, 4000);
+	private Rect titleArea = new Rect (0, 0, 1596, 453);
+	public AnimationCurve titleAwesomenessCurve;
 	// Use this for initialization
 	void Awake () {
+		spinThingArea.center = SCREEN_SIZE / 2;
+		spinThingArea.y += 800;
+		spinThingArea.x += 300;
+
+		titleArea.center = SCREEN_SIZE / 2;
+		titleArea.y += 300;
+
+		Debug.Log (titleArea.center);
 		current = MenuStates.MAIN;
 
 	}
@@ -24,6 +38,7 @@ public class Menu : MonoBehaviour {
 		float width = Screen.width / SCREEN_SIZE.x;
 		float height = Screen.height / SCREEN_SIZE.y;
 		scale = new Vector3(width, height, 0);
+		screenScale = new Vector2 (width, height);
 		matrix = Matrix4x4.TRS (scale, Quaternion.identity, new Vector3(scale.x, scale.y, 1));
 	}
 
@@ -32,11 +47,18 @@ public class Menu : MonoBehaviour {
 		if(skin != null) {
 			GUI.skin = skin;
 		}
-		float rotate = Time.time;
-		GUIUtility.RotateAroundPivot (rotate, new Vector2(Screen.width, Screen.height) / 2);
+		float rotate = Time.time * 57;
+		float scalify = titleAwesomenessCurve.Evaluate ((Time.time/2.0f) % 1);
 		GUI.DrawTexture (BACKGROUND_AREA, background);
-		GUIUtility.RotateAroundPivot (-rotate, new Vector2(Screen.width, Screen.height) / 2);
+		GUIUtility.RotateAroundPivot (rotate, new Vector2(spinThingArea.center.x * scale.x, spinThingArea.center.y * scale.y));
+		GUI.DrawTexture (spinThingArea, spinThing);
+		GUIUtility.RotateAroundPivot (-rotate, new Vector2(spinThingArea.center.x * scale.x, spinThingArea.center.y * scale.y));
 		current.update (this);
+		GUIUtility.ScaleAroundPivot (Vector2.one * scalify, titleArea.center);//new Vector2(titleArea.center.x * scale.x, titleArea.center.y * scale.y));
+		GUI.DrawTexture (titleArea, TitleText);
+		GUIUtility.ScaleAroundPivot (-Vector2.one * scalify, titleArea.center);
+		//GUIUtility.ScaleAroundPivot (-(Vector2.one * scalify), new Vector2(titleArea.center.x * scale.x, titleArea.center.y * scale.y));
+
 	}
 
 	public void setCurrent(MenuState state) {

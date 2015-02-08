@@ -8,7 +8,8 @@ public class ScoreBoard : MonoBehaviour {
 	public GUISkin skin;
 	private Matrix4x4 matrix;
 	private Vector3 scale = new Vector3();
-
+	public Texture statics;
+	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
 	// Use this for initialization
 	void Awake () {
 		
@@ -27,7 +28,7 @@ public class ScoreBoard : MonoBehaviour {
 		if(skin != null) {
 			GUI.skin = skin;
 		}
-
+		GUI.DrawTexture (BACKGROUND_AREA, statics);
 		if(Input.GetKey(KeyCode.Tab))
 		{
 			GUILayout.BeginArea (area, GUI.skin.box);
