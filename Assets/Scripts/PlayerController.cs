@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour {
 
     public Material[] materials;
     public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
-	private PlayerColor color;
 
     public float stunDuration;
 
@@ -62,15 +61,17 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start()
 	{
-        color = (PlayerColor)Connections.GetInstance().playerId;
 		startSpeed = movementSpeed;
 
 		Reset ();
 
-        GameObject ninja = GameObject.Find("ninja");
-        foreach (Renderer r in ninja.GetComponentsInChildren<Renderer>())
+        //GameObject ninja = GameObject.Find(transform.name + "/ninja");
+
+
+        foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
-            r.material = materials[(int)color];
+            if (r.transform.name != "Blood Particle System")
+                r.material = materials[playerInfo.id];
         }
         movementSpeed = startSpeed;
         currentSpeed = 0;
