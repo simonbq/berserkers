@@ -83,9 +83,12 @@ public class Menu : MonoBehaviour {
 		titleArea.center = SCREEN_SIZE / 2;
 		titleArea.y += 300;
 
-		Debug.Log (titleArea.center);
 		current = MenuStates.MAIN;
-
+		float width = Screen.width / SCREEN_SIZE.x;
+		float height = Screen.height / SCREEN_SIZE.y;
+		scale = new Vector3(width, height, 0);
+		screenScale = new Vector2 (width, height);
+		matrix = Matrix4x4.TRS (scale, Quaternion.identity, new Vector3(scale.x, scale.y, 1));
 	}
 	
 	// Update is called once per frame
@@ -125,7 +128,6 @@ public class Menu : MonoBehaviour {
 	}
 
 	private IEnumerator star() {
-		Debug.Log ("STAR");
 		Star s = new Star (new Rect (Random.Range (100, 1820), 1200, Random.Range(32, 64), Random.Range(32, 64)), stars[Random.Range(0, stars.Length)]);
 		starsAnchor.Add (s);
 		float v = Random.Range (0.8f, 1.0f);
