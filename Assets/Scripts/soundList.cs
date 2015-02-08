@@ -14,7 +14,7 @@ public class soundList : MonoBehaviour {
 	
 	}
 
-	void Play(int index) {
+	public void Play(int index) {
 		if (index >= audioClips.Length || index < 0) {
 			Debug.LogError ("invalid index : soundList.Play(int index)");		
 		} 
@@ -24,11 +24,11 @@ public class soundList : MonoBehaviour {
 			audio.Play();
 		}
 	}
-	void Play() {
+	public void Play() {
 		Play (0);
 	}
 
-	void PlayRandom() {
+	public void PlayRandom() {
 		if (audioClips.Length < 1) {
 			Debug.LogError ("there are no audio clips in this list");
 		}
