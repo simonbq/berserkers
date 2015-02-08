@@ -2,18 +2,20 @@
 using System.Collections;
 
 public class ScreenShaker : MonoBehaviour {
-	public ScreenShaker instance { get; private set; }
+	public static ScreenShaker instance { get; private set; }
 	//private float intensity;
 	//private float duration;
 	//private float elapsed = 0.0f;
 	private float tick;
+	public float constIntensity { get; private set; }
 	public AnimationCurve shakeFalloff;
 	public bool testMode = false;
 	//private bool shaking = false;
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		instance = this;
 		tick = Time.time;
+		constIntensity = 0.0f;
 	}
 	
 	// Update is called once per frame
@@ -22,7 +24,7 @@ public class ScreenShaker : MonoBehaviour {
 			tick = Time.time + Random.Range(0.1f, 2.0f);
 			Shake (Random.Range(0.0f, 0.5f), Random.Range(0.0f, 6.0f));
 		}
-		transform.position = Vector3.zero;
+		transform.position = Random.insideUnitSphere.normalized * constIntensity;
 	}
 
 	private IEnumerator ShakeNBake(float intensity, float duration) {
@@ -43,5 +45,9 @@ public class ScreenShaker : MonoBehaviour {
 	public void Shake(float intensity = 1.0f, float duration = 1.0f) {
 		StartCoroutine (ShakeNBake(intensity, duration));
 
+	}
+
+	public void SetConstantShakyness(float intensity) {
+		constIntensity = intensity;
 	}
 }
