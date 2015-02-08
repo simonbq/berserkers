@@ -31,9 +31,9 @@ public class PlayerController : MonoBehaviour {
     public float movementSpeed;
 	public float turnSpeed;
 
-    public Texture[] PlayerTextures;
+    public Material[] materials;
     public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
-	public PlayerColor color;
+	private PlayerColor color;
 
     public float stunDuration;
 
@@ -62,11 +62,16 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start()
 	{
+        color = (PlayerColor)Connections.GetInstance().playerId;
 		startSpeed = movementSpeed;
 
 		Reset ();
 
-        playerMaterial.SetTexture("_MainTex", PlayerTextures[(int)color]);
+        GameObject ninja = GameObject.Find("ninja");
+        foreach (Renderer r in ninja.GetComponentsInChildren<Renderer>())
+        {
+            r.material = materials[(int)color];
+        }
         movementSpeed = startSpeed;
         currentSpeed = 0;
 	}
