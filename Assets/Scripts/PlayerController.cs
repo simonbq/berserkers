@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour {
 
 	public AudioClip[] audioClips;
 
+    public Animator animator;
+
 	private float _input = 0;
 
 	private float input
@@ -42,6 +44,15 @@ public class PlayerController : MonoBehaviour {
         if (!playerInfo.connected)
         {
             Destroy(this.gameObject);
+        }
+
+        if (CheckNearbyPlayers(2.0f))
+        {
+            animator.SetBool("enemyclose", true);
+        }
+        else
+        {
+            animator.SetBool("enemyclose", false);
         }
     }
 	
@@ -91,6 +102,8 @@ public class PlayerController : MonoBehaviour {
         {
             if (collision.gameObject.tag == "Player")
             {
+                animator.SetTrigger("attack");
+
                 PlayerController hitPlayer = collision.gameObject.GetComponent<PlayerController>();
                 if (hitPlayer.movementSpeed > this.movementSpeed)
                 {
@@ -183,6 +196,18 @@ public class PlayerController : MonoBehaviour {
         transform.Rotate(new Vector3(0, 180, 0));
 		networkView.RPC ("PlayStunnedFX", RPCMode.All);
 	}
+
+    /* Check for players within a radius */
+    public bool CheckNearbyPlayers(float mRadius)
+    {
+        bool returnValue = false;
+        if (Physics.CheckSphere(transform.position, mRadius, (1 << LayerMask.NameToLayer("Player"))))
+        {
+            returnValue = true;
+        }
+        return returnValue;
+    }
+
     void MakeAlive()
     {
         state = PlayerState.ALIVE;
