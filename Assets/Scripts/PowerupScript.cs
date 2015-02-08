@@ -20,21 +20,27 @@ public class PowerupScript : MonoBehaviour {
 	void OnTriggerEnter(Collider c){
 		if(Network.isServer &&
 		   c.gameObject.tag == "Player"){
-			c.gameObject.GetComponent<PlayerController>().movementSpeed += speedIncrease;
-			PickUp ();
-			SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpSound);
-			SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpShout);
-
+			PlayerController player = c.gameObject.GetComponent<PlayerController>();
+			player.movementSpeed += speedIncrease;
+			PickUp (player.playerInfo.id);
 		}
 	}
 	
-	void PickUp () {
-		networkView.RPC ("Explode", RPCMode.All);
+	void PickUp (int id) {
+		networkView.RPC ("Explode", RPCMode.All, id);
 		Network.Destroy (gameObject);
 	}
 
 	[RPC]
-	void Explode() {
+	void Explode(int id) {
 		Instantiate (explosion, transform.position, transform.rotation);
+
+		if(Connections.GetInstance().playerId == id)
+		{
+			SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpSound);
+			SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpShout);
+
+			ScreenShaker.instance.Shake (1, 0.2f);
+		}
 	}
 }

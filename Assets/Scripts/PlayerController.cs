@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour {
 
     public Animator animator;
     public Material playerMaterial;
+	public GameObject model;
 
 	private float _input = 0;
 	private float startSpeed;
@@ -67,11 +68,17 @@ public class PlayerController : MonoBehaviour {
         //GameObject ninja = GameObject.Find(transform.name + "/ninja");
 
 
-        foreach (Renderer r in GetComponentsInChildren<Renderer>())
-        {
-            if (r.transform.name != "Blood Particle System" && r.transform.parent.name != "SpeedSphere" && r.transform.parent.name != "FireEffect")
-                r.material = materials[playerInfo.id];
-        }
+		if(model != null)
+		{
+	        foreach (Transform t in model.transform)
+	        {
+	            if (t.renderer != null)
+				{
+	                t.renderer.material = materials[playerInfo.id];
+					Debug.Log ("Changed material to " + materials[playerInfo.id].name);
+				}
+	        }
+		}
         movementSpeed = startSpeed;
         currentSpeed = 0;
 	}
@@ -109,6 +116,7 @@ public class PlayerController : MonoBehaviour {
             Debug.Log(gameObject.name + "Did not find nearby player, setting enemyclose false");
             animator.SetBool("enemyclose", false);
         }
+
     }
 	
 	// Update is called once per frame
@@ -124,6 +132,9 @@ public class PlayerController : MonoBehaviour {
             {
                 Debug.Log("Actual: " + Input.GetAxis("Horizontal") + " Server: " + _input);
             }
+
+			HUDSingleton.instance.speed = currentSpeed;
+			HUDSingleton.instance.onFire = true;
 		}
 
         if (Network.isServer)
@@ -346,7 +357,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//ScreenShaker.instance.Shake (1, 1);
+			ScreenShaker.instance.Shake (1, 0.5f);
 		}
 		if (Connections.GetInstance ().playerId == playerInfo.id)
 		{
@@ -416,7 +427,7 @@ public class PlayerController : MonoBehaviour {
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//ScreenShaker.instance.Shake (1, 1);
+			ScreenShaker.instance.Shake (1, 1);
 		}
 	}
 
