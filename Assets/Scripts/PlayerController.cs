@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour {
                 {
                     Debug.Log("Kill player");
                     state = PlayerState.DEAD;
-                    SoundStore.instance.PlayRandom(SoundStore.instance.DeathShout);
+					networkView.RPC ("PlayDeathShout", RPCMode.All);
 
 
                     rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
@@ -179,8 +179,10 @@ public class PlayerController : MonoBehaviour {
                             playersAlive++;
                     }
                     if (playersAlive < 2)
-                    {
-                        GameController.instance.Invoke("SpawnPlayers", 3);
+					{
+						firstblood = false;
+						networkView.RPC ("PlayWinSound", RPCMode.All);
+						GameController.instance.Invoke("SpawnPlayers", 3);
                     }
                     if (playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
                     {
@@ -197,8 +199,6 @@ public class PlayerController : MonoBehaviour {
 			if (collision.gameObject.tag == "Wall" &&
 			    state != PlayerState.STUNNED)
 			{
-				SoundStore.instance.PlayRandom(SoundStore.instance.StunSoundWall);
-
 				Stunned(stunDuration, true, collision.contacts[0].normal);
 			}
 		}
@@ -330,6 +330,18 @@ public class PlayerController : MonoBehaviour {
 	void PlayFirstBlood()
 	{
 		SoundStore.instance.Play (SoundStore.instance.AnnouncerFirstBlood);
+	}
+
+	[RPC]
+	void PlayDeathShout()
+	{
+		SoundStore.instance.PlayRandom (SoundStore.instance.DeathShout);
+	}
+
+	[RPC]
+	void PlayWinSound()
+	{
+		SoundStore.instance.Play (SoundStore.instance.WinSound);
 	}
 
 	[RPC]

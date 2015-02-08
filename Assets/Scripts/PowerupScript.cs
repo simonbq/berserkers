@@ -13,6 +13,10 @@ public class PowerupScript : MonoBehaviour {
 	void Update () {
 	}
 
+	void Awake () {
+		SoundStore.instance.Play (SoundStore.instance.PowerUpSpawn);
+	}
+
 	void OnTriggerEnter(Collider c){
 		if(Network.isServer &&
 		   c.gameObject.tag == "Player"){
