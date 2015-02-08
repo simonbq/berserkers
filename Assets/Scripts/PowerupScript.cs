@@ -13,19 +13,20 @@ public class PowerupScript : MonoBehaviour {
 	void Update () {
 	}
 
-	void OnCollisionEnter(Collision collision){
+	void OnTriggerEnter(Collider c){
 		if(Network.isServer &&
-		   collision.gameObject.tag == "Player"){
-			collision.gameObject.GetComponent<PlayerController>().movementSpeed++;
+		   c.gameObject.tag == "Player"){
+			c.gameObject.GetComponent<PlayerController>().movementSpeed += speedIncrease;
 			PickUp ();
 		}
 	}
 	
 	void PickUp () {
-		Explode ();
+		networkView.RPC ("Explode", RPCMode.All);
 		Network.Destroy (gameObject);
 	}
 
+	[RPC]
 	void Explode() {
 		Instantiate (explosion, transform.position, transform.rotation);
 	}
