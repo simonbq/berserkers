@@ -16,7 +16,8 @@ public class CameraController : MonoBehaviour {
 	void FixedUpdate () {
 		if(player != null)
 		{
-			Vector3 targetPos = player.transform.position + cameraOffset + player.transform.forward * lookOffset;
+			Vector3 targetPos = player.transform.position + cameraOffset;
+			targetPos = Vector3.Lerp (Vector3.zero, targetPos, lookOffset);
 			transform.position = Vector3.Lerp (transform.position, targetPos, ease * Time.fixedDeltaTime);
 		}
 	}
