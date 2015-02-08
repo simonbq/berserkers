@@ -56,7 +56,10 @@ public class GameController : MonoBehaviour {
 			foreach(PlayerInfo player in Connections.GetInstance().players.Values)
 			{
 				Debug.Log ("Spawning player " + player.name);
-				players.Add (SpawnPlayer(player.id));
+				GameObject playerObject = SpawnPlayer(player.id);
+				players.Add (playerObject);
+
+				Camera.main.GetComponent<CameraController>().player = playerObject.GetComponent<PlayerController>();
 			}
 		}
 	}
