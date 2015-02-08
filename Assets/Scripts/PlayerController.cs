@@ -4,7 +4,28 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 	public enum PlayerState { ALIVE = 0, DEAD, STUNNED };
 	public PlayerState state;
-	public PlayerInfo playerInfo;
+	private PlayerInfo _playerInfo;
+	public PlayerInfo playerInfo
+	{
+		get
+		{
+			return _playerInfo;
+		}
+
+		set
+		{
+			_playerInfo = value;
+			if(_playerInfo.id == Connections.GetInstance().playerId)
+			{
+				CameraController cc = Camera.main.GetComponent<CameraController>();
+				
+				if(cc != null)
+				{
+					cc.player = this;
+				}
+			}
+		}
+	}
 
 	//Player variables
     public float movementSpeed;
@@ -227,7 +248,7 @@ public class PlayerController : MonoBehaviour {
         animator.SetBool("idle", true);
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
-		transform.rotation = Quaternion.Euler (Vector3.Reflect (transform.forward, normal));
+		transform.rotation = Quaternion.Euler (Vector3.Reflect (transform.forward, -normal));
 
 
 		rigidbody.AddExplosionForce(500, transform.position - transform.forward * 2, 0, 0);
