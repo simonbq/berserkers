@@ -18,6 +18,9 @@ public class PowerupScript : MonoBehaviour {
 		   c.gameObject.tag == "Player"){
 			c.gameObject.GetComponent<PlayerController>().movementSpeed += speedIncrease;
 			PickUp ();
+			SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpSound);
+			SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpShout);
+
 		}
 	}
 	
