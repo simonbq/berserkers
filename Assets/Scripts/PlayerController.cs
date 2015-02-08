@@ -30,11 +30,16 @@ public class PlayerController : MonoBehaviour {
 	//Player variables
     public float movementSpeed;
 	public float turnSpeed;
-	public Color playerColor;
+
+    public Texture[] PlayerTextures;
+    public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
+	public PlayerColor color;
+
     public float stunDuration;
 
 
     public Animator animator;
+    public Material playerMaterial;
 
 	private float _input = 0;
 	private float startSpeed;
@@ -59,16 +64,16 @@ public class PlayerController : MonoBehaviour {
 		startSpeed = movementSpeed;
 
 		Reset ();
+
+        playerMaterial.SetTexture("_MainTex", PlayerTextures[(int)color]);
+        movementSpeed = startSpeed;
+        currentSpeed = 0;
 	}
 
 	public void Reset () {
 		state = PlayerState.STUNNED;
         animator.SetBool("idle", true);
         Invoke("MakeAlive", 2.0f);
-
-		renderer.material.color = playerColor;
-		movementSpeed = startSpeed;
-		currentSpeed = 0;
 	}
 
     void Update()
