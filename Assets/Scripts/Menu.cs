@@ -32,7 +32,10 @@ public class Menu : MonoBehaviour {
 		if(skin != null) {
 			GUI.skin = skin;
 		}
+		float rotate = Time.time;
+		GUIUtility.RotateAroundPivot (rotate, new Vector2(Screen.width, Screen.height) / 2);
 		GUI.DrawTexture (BACKGROUND_AREA, background);
+		GUIUtility.RotateAroundPivot (-rotate, new Vector2(Screen.width, Screen.height) / 2);
 		current.update (this);
 	}
 
