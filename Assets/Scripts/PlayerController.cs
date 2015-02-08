@@ -36,9 +36,9 @@ public class PlayerController : MonoBehaviour {
 
     public float stunDuration;
 
-
     public Animator animator;
     public Material playerMaterial;
+	public GameObject model;
 
 	private float _input = 0;
 	private float startSpeed;
@@ -66,11 +66,17 @@ public class PlayerController : MonoBehaviour {
 		Reset ();
 
 
-        foreach (Renderer r in GetComponentsInChildren<Renderer>())
-        {
-            if (r.transform.name != "Blood Particle System" && r.transform.parent.name != "SpeedSphere" && r.transform.parent.name != "FireEffect")
-                r.material = materials[playerInfo.id];
-        }
+		if(model != null)
+		{
+	        foreach (Transform t in model.transform)
+	        {
+	            if (t.renderer != null)
+				{
+	                t.renderer.material = materials[playerInfo.id];
+					Debug.Log ("Changed material to " + materials[playerInfo.id].name);
+				}
+	        }
+		}
         movementSpeed = startSpeed;
         currentSpeed = 0;
 	}
@@ -81,6 +87,7 @@ public class PlayerController : MonoBehaviour {
         Invoke("MakeAlive", 2.0f);
 
 		Invoke ("AnnouncerStart", 2.0f);
+		Debug.Log ("Should play sound for round start soon");
 
 		//renderer.material.color = playerColor;
 		movementSpeed = startSpeed;
@@ -183,11 +190,7 @@ public class PlayerController : MonoBehaviour {
 
                     networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 					Debug.Log ("Killed by " + hitPlayer.playerInfo.id);
-
-                    if (this.playerInfo.killstreaks.GetKills() == 0)
-                    {
-                        networkView.RPC("PlayNoKill", RPCMode.All);
-                    }
+                   
                     this.playerInfo.killstreaks.Died();
 
                     int playersAlive = 0;
@@ -331,6 +334,7 @@ public class PlayerController : MonoBehaviour {
 	void AnnouncerStart()
 	{
 		SoundStore.instance.Play (SoundStore.instance.AnnouncerStart);
+		Debug.Log ("Play round start sound now");
 	}
 
 	void Firstblood()
@@ -362,13 +366,6 @@ public class PlayerController : MonoBehaviour {
 				SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
 			}
 		}
-	}
-
-	[RPC]
-	void PlayNoKill()
-	{
-		if (Connections.GetInstance ().playerId == playerInfo.id)
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerNoKill);
 	}
 
 	[RPC]
