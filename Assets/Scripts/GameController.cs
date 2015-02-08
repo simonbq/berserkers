@@ -28,6 +28,9 @@ public class GameController : MonoBehaviour {
 	//Prefabs
 	public GameObject playerPrefab;
 	public GameObject powerupPrefab;
+	public float powerupSpawnTime = 5f;
+
+	private bool powerupSpawned = true;
 
 	void Awake()
 	{
@@ -58,20 +61,22 @@ public class GameController : MonoBehaviour {
 			foreach(PlayerInfo player in Connections.GetInstance().players.Values)
 			{
 				Debug.Log ("Spawning player " + player.name);
-				players.Add (SpawnPlayer(spawnPoints, player.id));
+				players.Add (SpawnPlayer(player.id));
 			}
-
-			SpawnPowerUp(spawnPoints);
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(powerupSpawned)
+		{
+			Invoke ("SpawnPowerUp", powerupSpawnTime);
+			powerupSpawned = false;
+		}
 	}
 
-	public GameObject SpawnPlayer(List<GameObject> mSpawnPoints, int id){
-		GameObject selectSpawnPoint = mSpawnPoints[Random.Range(0, mSpawnPoints.Count)];
+	GameObject SpawnPlayer(int id){
+		GameObject selectSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
 		//Debug.Log ("Spawned player at "+selectSpawnPoint.transform.position);
 		GameObject player = Network.Instantiate(playerPrefab, selectSpawnPoint.transform.position + new Vector3(0, 2, 0), selectSpawnPoint.transform.rotation, id) as GameObject;
 		player.GetComponent<PlayerController> ().SetPlayer (id);
@@ -79,13 +84,13 @@ public class GameController : MonoBehaviour {
 		return player;
 	}
 
-	public GameObject SpawnPowerUp(List<GameObject> mSpawnPoints){
-		GameObject selectSpawnPoint = mSpawnPoints[Random.Range(0, mSpawnPoints.Count)];
-
-
+	void SpawnPowerUp(){
+		GameObject selectSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
 
 		//Debug.Log ("Spawned powerup at "+selectSpawnPoint.transform.position);
 
-		return Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.5f, 0), selectSpawnPoint.transform.rotation) as GameObject;
+		Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.5f, 0), selectSpawnPoint.transform.rotation, 0);
+
+		powerupSpawned = true;
 	}
 }
