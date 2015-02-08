@@ -198,7 +198,19 @@ public class PlayerController : MonoBehaviour {
 			renderer.material.color = Color.black;
 			//die
 		}
+
+        switch (state)
+        {
+            case PlayerState.ALIVE:
+                animator.SetBool("idle", false);
+                animator.SetBool("stunned", false);
+                break;
+            case PlayerState.STUNNED:
+                animator.SetBool("stunned", true);
+                break;
+        }
 	}
+               
 
     public void AddSpeed(float mSpeed)
     {
@@ -372,8 +384,6 @@ public class PlayerController : MonoBehaviour {
     void MakeAlive()
     {
         state = PlayerState.ALIVE;
-        animator.SetBool("idle", false);
-        animator.SetBool("stunned", false);
         //ActivateEffects(true);
     }
 
