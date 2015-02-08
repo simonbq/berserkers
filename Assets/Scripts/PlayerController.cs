@@ -30,11 +30,15 @@ public class PlayerController : MonoBehaviour {
 	//Player variables
     public float movementSpeed;
 	public float turnSpeed;
-	public Color playerColor;
+
+    public Material[] materials;
+    public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
+
     public float stunDuration;
 
 
     public Animator animator;
+    public Material playerMaterial;
 
 	private float _input = 0;
 	private float startSpeed;
@@ -60,6 +64,17 @@ public class PlayerController : MonoBehaviour {
 		startSpeed = movementSpeed;
 
 		Reset ();
+
+        //GameObject ninja = GameObject.Find(transform.name + "/ninja");
+
+
+        foreach (Renderer r in GetComponentsInChildren<Renderer>())
+        {
+            if (r.transform.name != "Blood Particle System")
+                r.material = materials[playerInfo.id];
+        }
+        movementSpeed = startSpeed;
+        currentSpeed = 0;
 	}
 
 	public void Reset () {
@@ -69,9 +84,12 @@ public class PlayerController : MonoBehaviour {
 
 		Invoke ("AnnouncerStart", 2.0f);
 
-		renderer.material.color = playerColor;
+		//renderer.material.color = playerColor;
 		movementSpeed = startSpeed;
 		currentSpeed = 0;
+
+		networkView.RPC ("ForcePosition", RPCMode.All, transform.position);
+
 	}
 
     void Update()
@@ -110,29 +128,27 @@ public class PlayerController : MonoBehaviour {
 
         if (Network.isServer)
         {
-            if (state == PlayerState.ALIVE &&
-			    state != PlayerState.STUNNED)
+            if (state == PlayerState.ALIVE)
             {
                 rigidbody.MovePosition(transform.position + transform.forward * currentSpeed);
 				currentSpeed = Mathf.Lerp (currentSpeed, movementSpeed, Time.fixedDeltaTime);
 
                 transform.Rotate(Vector3.up, _input * turnSpeed);
             }
+
+			else
+			{
+				currentSpeed = 0;
+			}
         }
 
-        else
+        else if(state == PlayerState.ALIVE)
         {
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles + Vector3.up * turnSpeed * _input), turnSpeed);
-
-			Vector3 targetPos = Vector3.Lerp (transform.position, netPosition, 0.5f);
-
-			if(state != PlayerState.ALIVE)
-			{
-				targetPos = transform.position;
-			}
+			Vector3 targetPos = Vector3.Lerp (transform.position, netPosition, Time.fixedDeltaTime);
 
             transform.position = Vector3.MoveTowards(targetPos, targetPos + transform.forward * currentSpeed, currentSpeed);
 			currentSpeed = Mathf.Lerp (currentSpeed, movementSpeed, Time.fixedDeltaTime);
+			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles + Vector3.up * turnSpeed * _input), turnSpeed);
         }
 
 		if(state == PlayerState.DEAD)
@@ -217,7 +233,7 @@ public class PlayerController : MonoBehaviour {
 		float mSpeed = 0;
 		float cSpeed = 0;
 		Vector3 position = new Vector3();
-		Vector3 velocity = new Vector3();
+		Vector3 velocity = new Vector3 ();
 		Quaternion rotation = Quaternion.identity; 
 
 		if(stream.isWriting)
@@ -247,10 +263,11 @@ public class PlayerController : MonoBehaviour {
 			stream.Serialize(ref rotation);
 
 			state = (PlayerState)playerState;
-			if(state == PlayerState.DEAD)
+			if(state != PlayerState.ALIVE)
 			{
 				rigidbody.velocity = velocity;
 			}
+
 			movementSpeed = mSpeed;
 			currentSpeed = cSpeed;
 			netPosition = position;
@@ -309,6 +326,12 @@ public class PlayerController : MonoBehaviour {
 	{
 		firstblood = true;
 		networkView.RPC ("PlayFirstBlood", RPCMode.All);
+	}
+
+	[RPC]
+	void ForcePosition(Vector3 pos)
+	{
+		transform.position = pos;
 	}
 
 	[RPC]
