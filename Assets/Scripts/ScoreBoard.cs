@@ -70,6 +70,6 @@ public class ScoreBoard : MonoBehaviour {
 		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
 		GUIUtility.ScaleAroundPivot (-Vector2.one * f, nosmoke_rect.center);
 		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / 0.5f);
-		Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
+		Graphics.DrawTexture (speedometer_rect, speedometer_bg, speedometer_mat);
 	}
 }

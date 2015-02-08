@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour {
 
     public Animator animator;
     public Material playerMaterial;
+	public GameObject model;
 
 	private float _input = 0;
 	private float startSpeed;
@@ -68,10 +69,13 @@ public class PlayerController : MonoBehaviour {
         //GameObject ninja = GameObject.Find(transform.name + "/ninja");
 
 
-        foreach (Renderer r in GetComponentsInChildren<Renderer>())
+        foreach (Transform t in model)
         {
-            if (r.transform.name != "Blood Particle System" && r.transform.parent.name != "SpeedSphere" && r.transform.parent.name != "FireEffect")
-                r.material = materials[playerInfo.id];
+            if (t.renderer != null)
+			{
+                t.renderer.material = materials[playerInfo.id];
+				Debug.Log ("Changed material to " + materials[playerInfo.id].name);
+			}
         }
         movementSpeed = startSpeed;
         currentSpeed = 0;
