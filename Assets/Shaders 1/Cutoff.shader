@@ -23,11 +23,22 @@
 
 		void surf (Input IN, inout SurfaceOutput o) {
 			half cutoff = tex2D (_CutoffTex, IN.uv_MainTex).r;
-			half4 c = tex2D (_MainTex, IN.uv_MainTex);
+			half4 bg = tex2D (_MainTex, IN.uv_MainTex);
+			half4 bar = half4(0, 0, 0, 0);
+			
+			if(cutoff < _Cutoff)
+			{
+				bar = tex2D (_BarTex, IN.uv_MainTex);
+			}
+			
+			if(bar.a > 0.05)
+			{
+				bg = bar;
+			}
 			
 			
-			o.Albedo = c.rgb;
-			o.Alpha = c.a;
+			o.Albedo = bg.rgb;
+			o.Alpha = bg.a;
 		}
 		ENDCG
 	} 
