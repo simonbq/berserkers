@@ -342,7 +342,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//ScreenShaker.instance.Shake (1, 1);
+			ScreenShaker.instance.Shake (1, 0.5f);
 		}
 
 		if (wall)
@@ -397,7 +397,7 @@ public class PlayerController : MonoBehaviour {
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//ScreenShaker.instance.Shake (1, 1);
+			ScreenShaker.instance.Shake (1, 1);
 		}
 	}
 
