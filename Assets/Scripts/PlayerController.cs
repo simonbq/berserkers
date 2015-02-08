@@ -191,7 +191,11 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void PlayStunnedFX()
 	{
-		//stunfx
+		if (Connections.GetInstance ().playerId == playerInfo.id) 
+		{
+			ScreenShaker.instance.Shake (1, 1);
+		}
+
 	}
 
 	[RPC]
@@ -203,7 +207,7 @@ public class PlayerController : MonoBehaviour {
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//playerspecific sound
+			ScreenShaker.instance.Shake (1, 1);
 		}
 	}
 

@@ -52,7 +52,8 @@ public class GameController : MonoBehaviour {
 				spawnPoints.Add(o);
 				//Debug.Log ("Found spawn point: "+o.transform.position);
 			}
-            SpawnPlayers();
+
+			SpawnPlayers();
 		}
 	}
 	
@@ -67,14 +68,17 @@ public class GameController : MonoBehaviour {
 
     public void SpawnPlayers()
     {
-        if (players.Count == 0)
+		if (players.Count == 0)
         {
-            foreach (PlayerInfo player in Connections.GetInstance().players.Values)
+			foreach (PlayerInfo player in Connections.GetInstance().players.Values)
             {
-                Debug.Log("Spawning player " + player.name);
-                players.Add(SpawnPlayer(player.id));
-            }
-        }
+				Debug.Log ("Spawning player " + player.name);
+				GameObject playerObject = SpawnPlayer(player.id);
+				players.Add (playerObject);
+				
+				Camera.main.GetComponent<CameraController>().player = playerObject.GetComponent<PlayerController>();
+			}
+		}
         else
         {
             foreach (GameObject player in players)

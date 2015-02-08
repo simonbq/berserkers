@@ -11,12 +11,18 @@ public class OptionsState : MenuState {
 
 	public OptionsState() {
 		Button b;
-		b = new Button (100, 100, Button.BUTTON_NORM);
-		b.setText ("Back");
+		b = new Button (960 - 128, 400, Button.BUTTON_NORM);
+		b.setText ("OK");
 		b.setOnClick (ButtonActions.back);
 		buttons.Add (b);
-		volumeSlider = new Slider (100, 400, 256, 128, 0, 1, "Volume");
-		graphicsSlider = new Slider(100, 500, 256, 128, 0, 1, "Graphics");
+
+		b = new Button (960 - 128, 300, (int)Button.BUTTON_NORM.x, 64);
+		b.setText ("Fullscreen");
+		b.setOnClick (ButtonActions.toggleFullscreen);
+		buttons.Add (b);
+
+		volumeSlider = new Slider (960 - 160, 100, 256, 128, 0, 1, "Volume");
+		graphicsSlider = new Slider(960 - 160, 200, 256, 128, 0, 1, "Graphics");
 		data = new ActionData ();
 	}
 
