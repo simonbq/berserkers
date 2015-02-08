@@ -55,6 +55,7 @@ public class GameController : MonoBehaviour {
 
 			SpawnPlayers();
 		}
+		SoundStore.instance.Play (SoundStore.instance.MatchStart);
 	}
 	
 	// Update is called once per frame

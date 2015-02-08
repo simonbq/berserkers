@@ -16,7 +16,7 @@ public class SoundStore : MonoBehaviour {
 	public AudioClip[] PowerUpPickUpSound;
 	public AudioClip[] PowerUpPickUpShout;
 	public AudioClip PowerUpSpawn;
-	public AudioClip AnnouncerStart;
+	public AudioClip AnnouncerStart;//When players can start to move in the beginning of the round
 	public AudioClip AnnouncerFirstBlood;
 	public AudioClip AnnouncerDoubleKill;
 	public AudioClip AnnouncerMultiKill;
@@ -27,7 +27,8 @@ public class SoundStore : MonoBehaviour {
 	public AudioClip SonicBoom;
 	public AudioClip WinSound;
 
-
+	public AudioClip SplashScreenSound;
+	public AudioClip MatchStart;
 
 
 	// Use this for initialization
