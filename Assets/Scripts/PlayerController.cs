@@ -139,7 +139,7 @@ public class PlayerController : MonoBehaviour {
                 if (hitPlayer.movementSpeed == this.movementSpeed &&
 				    state != PlayerState.STUNNED)
                 {
-                    Stunned(stunDuration);
+                    Stunned(stunDuration, collision.contacts[0].normal);
                 }
 
 				_input = 0;
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour {
             if (collision.gameObject.tag == "Wall" &&
 			    state != PlayerState.STUNNED)
             {
-                Stunned(stunDuration);
+				Stunned(stunDuration, collision.contacts[0].normal);
             }
         }
     }
@@ -205,12 +205,13 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 	
-	void Stunned(float duration)
+	void Stunned(float duration, Vector3 normal)
 	{
 		//stun stuff here
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
-        transform.Rotate(new Vector3(0, 180, 0));
+		transform.rotation = Quaternion.Euler (Vector3.Reflect (transform.forward, normal));
+
 
 		rigidbody.AddExplosionForce(500, transform.position - transform.forward * 2, 0, 0);
 		networkView.RPC ("PlayStunnedFX", RPCMode.All);
