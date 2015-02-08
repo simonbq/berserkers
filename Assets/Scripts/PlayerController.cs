@@ -109,6 +109,7 @@ public class PlayerController : MonoBehaviour {
             Debug.Log(gameObject.name + "Did not find nearby player, setting enemyclose false");
             animator.SetBool("enemyclose", false);
         }
+
     }
 	
 	// Update is called once per frame
@@ -124,6 +125,9 @@ public class PlayerController : MonoBehaviour {
             {
                 Debug.Log("Actual: " + Input.GetAxis("Horizontal") + " Server: " + _input);
             }
+
+			HUDSingleton.instance.speed = currentSpeed;
+			HUDSingleton.instance.onFire = true;
 		}
 
         if (Network.isServer)

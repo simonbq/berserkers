@@ -35,7 +35,7 @@ public class ScoreBoard : MonoBehaviour {
 		if(skin != null) {
 			GUI.skin = skin;
 		}
-		GUI.DrawTexture (BACKGROUND_AREA, statics);
+		//GUI.DrawTexture (BACKGROUND_AREA, statics);
 		if(Input.GetKey(KeyCode.Tab))
 		{
 			GUILayout.BeginArea (area, GUI.skin.box);
@@ -69,8 +69,7 @@ public class ScoreBoard : MonoBehaviour {
 		GUIUtility.ScaleAroundPivot (Vector2.one * f, nosmoke_rect.center);
 		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
 		GUIUtility.ScaleAroundPivot (-Vector2.one * f, nosmoke_rect.center);
-		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / 5.0f);
+		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / 0.5f);
 		Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
-		
 	}
 }
