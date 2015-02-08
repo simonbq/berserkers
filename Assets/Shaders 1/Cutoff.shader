@@ -37,7 +37,7 @@
 			}
 			
 			
-			o.Albedo = bg.rgb;
+			o.Emission = bg.rgb;
 			o.Alpha = bg.a;
 		}
 		ENDCG
