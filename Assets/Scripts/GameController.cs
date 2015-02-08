@@ -84,8 +84,15 @@ public class GameController : MonoBehaviour {
 				if(playerObject != null)
 				{
 					players.Add (playerObject);
-					
-					Camera.main.GetComponent<CameraController>().player = playerObject.GetComponent<PlayerController>();
+
+					PlayerController pc = playerObject.GetComponent<PlayerController>();
+					CameraController cc = Camera.main.GetComponent<CameraController>();
+
+					if(pc != null &&
+					   cc != null)
+					{
+						cc.player = pc;
+					}
 				}
 			}
 		}
