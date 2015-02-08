@@ -69,14 +69,17 @@ public class PlayerController : MonoBehaviour {
         //GameObject ninja = GameObject.Find(transform.name + "/ninja");
 
 
-        foreach (Transform t in model)
-        {
-            if (t.renderer != null)
-			{
-                t.renderer.material = materials[playerInfo.id];
-				Debug.Log ("Changed material to " + materials[playerInfo.id].name);
-			}
-        }
+		if(model != null)
+		{
+	        foreach (Transform t in model.transform)
+	        {
+	            if (t.renderer != null)
+				{
+	                t.renderer.material = materials[playerInfo.id];
+					Debug.Log ("Changed material to " + materials[playerInfo.id].name);
+				}
+	        }
+		}
         movementSpeed = startSpeed;
         currentSpeed = 0;
 	}
