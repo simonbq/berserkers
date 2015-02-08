@@ -67,6 +67,8 @@ public class PlayerController : MonoBehaviour {
         animator.SetBool("idle", true);
         Invoke("MakeAlive", 2.0f);
 
+		Invoke ("AnnouncerStart", 2.0f);
+
 		renderer.material.color = playerColor;
 		movementSpeed = startSpeed;
 		currentSpeed = 0;
@@ -297,6 +299,11 @@ public class PlayerController : MonoBehaviour {
         state = PlayerState.ALIVE;
         animator.SetBool("idle", false);
     }
+
+	void AnnouncerStart()
+	{
+		SoundStore.instance.Play (SoundStore.instance.AnnouncerStart);
+	}
 
 	void Firstblood()
 	{
