@@ -66,7 +66,7 @@ public class ScoreBoard : MonoBehaviour {
 			foreach(PlayerInfo p in playas)
 			{
 				GUILayout.BeginHorizontal ();
-				GUILayout.Box(playerIcons[p.id]);
+				GUILayout.Box(playerIcons[p.id], skin.customStyles[0]);
 				GUILayout.Label (p.name); // Player name
 				GUILayout.Label (p.kills.ToString()); // Player score
 				GUILayout.Label (p.deaths.ToString()); // Player deaths
