@@ -119,7 +119,6 @@ public class PlayerController : MonoBehaviour {
 
 	public void Reset () {
 		state = PlayerState.STUNNED;
-        animator.SetBool("idle", true);
         Invoke("MakeAlive", 2.0f);
 
 		Invoke ("AnnouncerStart", 2.0f);
@@ -199,7 +198,19 @@ public class PlayerController : MonoBehaviour {
 			renderer.material.color = Color.black;
 			//die
 		}
+
+        switch (state)
+        {
+            case PlayerState.ALIVE:
+                animator.SetBool("idle", false);
+                animator.SetBool("stunned", false);
+                break;
+            case PlayerState.STUNNED:
+                animator.SetBool("stunned", true);
+                break;
+        }
 	}
+               
 
     public void AddSpeed(float mSpeed)
     {
@@ -373,8 +384,6 @@ public class PlayerController : MonoBehaviour {
     void MakeAlive()
     {
         state = PlayerState.ALIVE;
-        animator.SetBool("idle", false);
-        animator.SetBool("stunned", false);
         //ActivateEffects(true);
     }
 
@@ -406,6 +415,8 @@ public class PlayerController : MonoBehaviour {
 		transform.position = pos;
 		HideModel (false);
 		ShowRagdoll (false);
+
+        animator.SetBool("idle", true);
 	}
 
 	[RPC]
