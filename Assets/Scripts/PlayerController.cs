@@ -39,6 +39,8 @@ public class PlayerController : MonoBehaviour {
     public Animator animator;
     public Material playerMaterial;
 	public GameObject model;
+	public GameObject ragdoll;
+	public GameObject splat;
 
 	private float _input = 0;
 	private float startSpeed;
@@ -46,6 +48,7 @@ public class PlayerController : MonoBehaviour {
 
 	private bool firstblood = false;
 	private Vector3 netPosition = Vector3.zero;
+	private GameObject currentRagdoll;
 
 	private float input
 	{
@@ -55,6 +58,35 @@ public class PlayerController : MonoBehaviour {
 			{
 				networkView.RPC ("UpdateInput", RPCMode.All, Network.player, value);
 			}
+		}
+	}
+
+	void HideModel(bool hidden)
+	{
+		if(model != null)
+		{
+			foreach (Transform t in model.transform)
+			{
+				if(t.renderer != null)
+				{
+					t.renderer.enabled = !hidden;
+				}
+			}
+		}
+	}
+
+	void ShowRagdoll(bool show)
+	{
+		if(show && currentRagdoll == null)
+		{
+			currentRagdoll = Instantiate (ragdoll, transform.position + transform.up, transform.rotation) as GameObject;
+			currentRagdoll.GetComponent<RagdollMaterial> ().SetMaterial (materials [playerInfo.id]);
+			currentRagdoll.GetComponent<RagdollMaterial> ().pelvis.rigidbody.AddExplosionForce (25000, transform.position - transform.forward * 2 - transform.up, 30);
+		}
+
+		else if(!show)
+		{
+			Destroy(currentRagdoll);
 		}
 	}
 
@@ -190,7 +222,7 @@ public class PlayerController : MonoBehaviour {
 					networkView.RPC ("PlayDeathShout", RPCMode.All);
 
 
-                    rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
+                    //rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
 
                     networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 					Debug.Log ("Killed by " + hitPlayer.playerInfo.id);
@@ -350,6 +382,8 @@ public class PlayerController : MonoBehaviour {
 	void ForcePosition(Vector3 pos)
 	{
 		transform.position = pos;
+		HideModel (false);
+		ShowRagdoll (false);
 	}
 
 	[RPC]
@@ -395,6 +429,9 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void Kill(int killerId)
 	{
+		HideModel (true);
+		ShowRagdoll (true);
+		splat.particleSystem.Play ();
 		Debug.Log (playerInfo.id + " got killed by " + killerId);
 
 		//You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
