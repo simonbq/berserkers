@@ -91,6 +91,7 @@ public class PlayerController : MonoBehaviour {
 
 			stream.Serialize(ref playerState);
 			//stream.Serialize(ref velocity);
+
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 		}
