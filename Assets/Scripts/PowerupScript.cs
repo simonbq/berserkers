@@ -13,6 +13,12 @@ public class PowerupScript : MonoBehaviour {
 	void Update () {
 	}
 
+	void OnCollisionEnter(Collision collision){
+		if(collision.gameObject.tag == "Player"){
+			PickUp();
+		}
+	}
+
 	public void PickUp () {
 		Explode ();
 		Destroy (gameObject);
