@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour {
 
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
-            if (r.transform.name != "Blood Particle System")
+            if (r.transform.name != "Blood Particle System" && r.transform.parent.name != "SpeedSphere" && r.transform.parent.name != "FireEffect")
                 r.material = materials[playerInfo.id];
         }
         movementSpeed = startSpeed;
@@ -283,6 +283,7 @@ public class PlayerController : MonoBehaviour {
 		movementSpeed = startSpeed;
 		currentSpeed = 0;
 
+        ActivateEffects(false);
 	}
 
     /* Check for players within a radius */
@@ -307,6 +308,15 @@ public class PlayerController : MonoBehaviour {
     {
         state = PlayerState.ALIVE;
         animator.SetBool("idle", false);
+        ActivateEffects(true);
+    }
+
+    void ActivateEffects(bool mActivated) {
+        Debug.Log("set activated");
+        foreach (AlphaMaterial am in GetComponentsInChildren<AlphaMaterial>())
+        {
+            am.SetActivated(true);
+        }
     }
 
 	void Firstblood()
