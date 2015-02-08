@@ -65,14 +65,12 @@ public class ScoreBoard : MonoBehaviour {
 		if(HUDSingleton.instance.onFire) {
 			f = Random.Range (0.9f, 1.1f);
 		}
-		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / 5.0f);
+		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / 0.5f);
 		if(Event.current.rawType == EventType.repaint)
 			Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
 		GUIUtility.ScaleAroundPivot (Vector2.one * f, nosmoke_rect.center);
 		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
 		Debug.Log (nosmoke_rect.center);
 		GUIUtility.ScaleAroundPivot (-Vector2.one * f, nosmoke_rect.center);
-
-		
 	}
 }
