@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour {
 	private float currentSpeed = 0;
 
 	private bool firstblood = false;
+	private Vector3 netPosition = Vector3.zero;
 
 	private float input
 	{
@@ -117,11 +118,18 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
-        else if(state != PlayerState.STUNNED &&
-		        state != PlayerState.DEAD)
+        else
         {
 			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles + Vector3.up * turnSpeed * _input), turnSpeed);
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward * currentSpeed, currentSpeed);
+
+			Vector3 targetPos = Vector3.Lerp (transform.position, netPosition, 0.5f);
+
+			if(state != PlayerState.ALIVE)
+			{
+				targetPos = transform.position;
+			}
+
+            transform.position = Vector3.MoveTowards(targetPos, targetPos + transform.forward * currentSpeed, currentSpeed);
 			currentSpeed = Mathf.Lerp (currentSpeed, movementSpeed, Time.fixedDeltaTime);
         }
 
@@ -243,7 +251,7 @@ public class PlayerController : MonoBehaviour {
 			}
 			movementSpeed = mSpeed;
 			currentSpeed = cSpeed;
-			transform.position = position;
+			netPosition = position;
 			transform.rotation = rotation;
 		}
 	}
