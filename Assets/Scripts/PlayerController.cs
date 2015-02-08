@@ -65,12 +65,10 @@ public class PlayerController : MonoBehaviour {
 
 		Reset ();
 
-        //GameObject ninja = GameObject.Find(transform.name + "/ninja");
-
 
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
-            if (r.transform.name != "Blood Particle System" && r.transform.parent.name != "SpeedSphere" && r.transform.parent.name != "FireEffect")
+            if (r.transform.name != "Blood Particle System" && r.transform.name != "SpeedSphere" && r.transform.parent.name != "FireEffect")
                 r.material = materials[playerInfo.id];
         }
         movementSpeed = startSpeed;
@@ -101,19 +99,17 @@ public class PlayerController : MonoBehaviour {
         
         if (CheckNearbyPlayers(4.0f))
         {
-            Debug.Log(gameObject.name + "Found nearby player, setting enemyclose true");
             animator.SetBool("enemyclose", true);
         }
         else
         {
-            Debug.Log(gameObject.name + "Did not find nearby player, setting enemyclose false");
             animator.SetBool("enemyclose", false);
         }
     }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		Debug.Log ("ID: " + playerInfo.id + " State: " + state);
+		//Debug.Log ("ID: " + playerInfo.id + " State: " + state);
 		if(playerInfo.id == Connections.GetInstance().playerId)
 		{
 			input = Input.GetAxis("Horizontal");
