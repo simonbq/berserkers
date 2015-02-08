@@ -31,6 +31,8 @@ public class Button {
 	// Renders and returns true if pressed
 	public bool update(ActionData data) {
 		if (GUI.Button (area, content)) {
+			SoundStore.instance.Play(SoundStore.instance.buttonPress);
+
 			if(onClick != null) {
 				onClick.Invoke(data);
 			}
