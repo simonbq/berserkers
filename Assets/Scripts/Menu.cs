@@ -5,12 +5,14 @@ using System.Deployment;
 
 public class Menu : MonoBehaviour {
 	public static readonly Vector2 SCREEN_SIZE = new Vector2 (1920, 1080);
-
+	public Texture background;
 	private MenuState current;
 	private Stack<MenuState> history = new Stack<MenuState>();
 	public GUISkin skin;
 	private Matrix4x4 matrix;
 	private Vector3 scale = new Vector3();
+
+	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
 	// Use this for initialization
 	void Awake () {
 		current = MenuStates.MAIN;
@@ -30,6 +32,7 @@ public class Menu : MonoBehaviour {
 		if(skin != null) {
 			GUI.skin = skin;
 		}
+		GUI.DrawTexture (BACKGROUND_AREA, background);
 		current.update (this);
 	}
 
