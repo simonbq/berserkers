@@ -105,6 +105,7 @@ public class PlayerController : MonoBehaviour {
         {
             animator.SetBool("enemyclose", false);
         }
+
     }
 	
 	// Update is called once per frame
@@ -120,6 +121,9 @@ public class PlayerController : MonoBehaviour {
             {
                 Debug.Log("Actual: " + Input.GetAxis("Horizontal") + " Server: " + _input);
             }
+
+			HUDSingleton.instance.speed = currentSpeed;
+			HUDSingleton.instance.onFire = true;
 		}
 
         if (Network.isServer)
@@ -345,7 +349,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//ScreenShaker.instance.Shake (1, 1);
+			ScreenShaker.instance.Shake (1, 0.5f);
 		}
 		if (Connections.GetInstance ().playerId == playerInfo.id)
 		{
@@ -422,7 +426,7 @@ public class PlayerController : MonoBehaviour {
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
-			//ScreenShaker.instance.Shake (1, 1);
+			ScreenShaker.instance.Shake (1, 1);
 		}
 	}
 
