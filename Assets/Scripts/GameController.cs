@@ -68,6 +68,41 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	public IEnumerator CreatePlayers()
+	{
+		foreach (PlayerInfo player in Connections.GetInstance().players.Values)
+		{
+			Debug.Log ("Spawning player " + player.name);
+			GameObject playerObject = SpawnPlayer(player.id);
+			
+			if(playerObject != null)
+			{
+				players.Add (playerObject);
+			}
+
+			yield return null;
+		}
+	}
+
+	public IEnumerator RespawnPlayers()
+	{
+		foreach (GameObject player in players)
+		{
+			GameObject selectSpawnPoint = GetSpawn();
+			
+			if(selectSpawnPoint != null)
+			{
+				player.transform.position =  selectSpawnPoint.transform.position + new Vector3(0, 2, 0);
+				player.transform.rotation = selectSpawnPoint.transform.rotation;
+				
+				PlayerController pc = player.GetComponent<PlayerController>();
+				pc.Reset();
+			}
+
+			yield return null;
+		}
+	}
+
     public void SpawnPlayers()
     {
 		GameObject[] powerups = GameObject.FindGameObjectsWithTag ("Powerup");
@@ -78,32 +113,11 @@ public class GameController : MonoBehaviour {
 
 		if (players.Count == 0)
         {
-			foreach (PlayerInfo player in Connections.GetInstance().players.Values)
-            {
-				Debug.Log ("Spawning player " + player.name);
-				GameObject playerObject = SpawnPlayer(player.id);
-
-				if(playerObject != null)
-				{
-					players.Add (playerObject);
-				}
-			}
+			StartCoroutine("CreatePlayers");
 		}
         else
         {
-            foreach (GameObject player in players)
-            {
-				GameObject selectSpawnPoint = GetSpawn();
-
-				if(selectSpawnPoint != null)
-				{
-	                player.transform.position =  selectSpawnPoint.transform.position + new Vector3(0, 2, 0);
-	                player.transform.rotation = selectSpawnPoint.transform.rotation;
-
-	                PlayerController pc = player.GetComponent<PlayerController>();
-	                pc.Reset();
-				}
-            }
+			StartCoroutine("RespawnPlayers");
         }
         
     }
@@ -128,7 +142,7 @@ public class GameController : MonoBehaviour {
 
 		if(selectSpawnPoint != null)
 		{
-			Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.5f, 0), selectSpawnPoint.transform.rotation, 0);
+			Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0);
 
 			powerupSpawned = true;
 		}
@@ -143,7 +157,7 @@ public class GameController : MonoBehaviour {
 			List<GameObject> remaining = spawnPoints.Except(visited).ToList();
 			GameObject selected = remaining[Random.Range (0, remaining.Count)];
 
-			if(!Physics.CheckSphere(selected.transform.position + Vector3.up, 1.5f, 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Powerup")))
+			if(!Physics.CheckSphere(selected.transform.position + Vector3.up, 1.5f, (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Powerup"))))
 			{
 				//Debug.Log ("Found spawnpoint!");
 				return selected;

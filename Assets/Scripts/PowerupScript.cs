@@ -21,7 +21,9 @@ public class PowerupScript : MonoBehaviour {
 		if(Network.isServer &&
 		   c.gameObject.tag == "Player"){
 			PlayerController player = c.gameObject.GetComponent<PlayerController>();
-			player.movementSpeed += speedIncrease;
+            
+            player.AddSpeed(speedIncrease);
+
 			PickUp (player.playerInfo.id);
 		}
 	}
@@ -35,11 +37,11 @@ public class PowerupScript : MonoBehaviour {
 	void Explode(int id) {
 		Instantiate (explosion, transform.position, transform.rotation);
 
+		SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpSound);
+		SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpShout);
+
 		if(Connections.GetInstance().playerId == id)
 		{
-			SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpSound);
-			SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpShout);
-
 			ScreenShaker.instance.Shake (1, 0.2f);
 		}
 	}
