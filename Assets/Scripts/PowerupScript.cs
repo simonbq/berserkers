@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class PowerupScript : MonoBehaviour {
-
+	public float speedIncrease = 0.05f;
 	public GameObject explosion;
 
 	// Use this for initialization
@@ -13,11 +13,20 @@ public class PowerupScript : MonoBehaviour {
 	void Update () {
 	}
 
-	public void PickUp () {
-		Explode ();
-		Destroy (gameObject);
+	void OnTriggerEnter(Collider c){
+		if(Network.isServer &&
+		   c.gameObject.tag == "Player"){
+			c.gameObject.GetComponent<PlayerController>().movementSpeed += speedIncrease;
+			PickUp ();
+		}
+	}
+	
+	void PickUp () {
+		networkView.RPC ("Explode", RPCMode.All);
+		Network.Destroy (gameObject);
 	}
 
+	[RPC]
 	void Explode() {
 		Instantiate (explosion, transform.position, transform.rotation);
 	}
