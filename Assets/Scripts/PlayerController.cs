@@ -167,6 +167,7 @@ public class PlayerController : MonoBehaviour {
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
         transform.Rotate(new Vector3(0, 180, 0));
+		networkView.RPC ("PlayStunnedFX", RPCMode.All);
 	}
     void MakeAlive()
     {
@@ -174,11 +175,22 @@ public class PlayerController : MonoBehaviour {
     }
 
 	[RPC]
+	void PlayStunnedFX()
+	{
+		//stunfx
+	}
+
+	[RPC]
 	void Kill(int killerId)
 	{
 		//You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
 		Connections.GetInstance ().players [killerId].kills++;
 		playerInfo.deaths++;
+
+		if (Connections.GetInstance ().playerId == playerInfo.id) 
+		{
+			//playerspecific sound
+		}
 	}
 
 	[RPC]
