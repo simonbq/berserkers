@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class PowerupScript : MonoBehaviour {
-
+	public float speedIncrease = 0.05f;
 	public GameObject explosion;
 
 	// Use this for initialization
@@ -14,14 +14,16 @@ public class PowerupScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision){
-		if(collision.gameObject.tag == "Player"){
-			PickUp();
+		if(Network.isServer &&
+		   collision.gameObject.tag == "Player"){
+			collision.gameObject.GetComponent<PlayerController>().movementSpeed++;
+			PickUp ();
 		}
 	}
-
-	public void PickUp () {
+	
+	void PickUp () {
 		Explode ();
-		Destroy (gameObject);
+		Network.Destroy (gameObject);
 	}
 
 	void Explode() {

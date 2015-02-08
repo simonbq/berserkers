@@ -74,10 +74,6 @@ public class PlayerController : MonoBehaviour {
         }
 	}
 
-	public void Update(){
-
-	}
-
 	public void SetPlayer(int id)
 	{
 		networkView.RPC ("Spawned", RPCMode.All, id);

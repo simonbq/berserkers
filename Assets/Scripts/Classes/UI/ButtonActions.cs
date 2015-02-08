@@ -68,6 +68,6 @@ public class ButtonActions {
 	public static System.Action<ActionData> start { get { return _start; } }
 	private static void _start(ActionData data) {
 		if(Connections.GetInstance().playersReady)
-			Connections.GetInstance ().StartGame (data.gameName);
+			Connections.GetInstance ().StartGame ("Level");
 	}
 }
