@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
-public class PlayerInfo {
+public class PlayerInfo : IComparable<PlayerInfo> {
 	public PlayerInfo(NetworkPlayer player, int pId, string nickname, bool isReady)
 	{
 		_name = nickname;
@@ -45,6 +46,16 @@ public class PlayerInfo {
 		{
 			return _id;
 		}
+	}
+
+	public int CompareTo(PlayerInfo comparePart)
+	{
+		// A null value means that this object is greater. 
+		if (comparePart == null)
+			return 1;
+		
+		else 
+			return this.id.CompareTo(comparePart.id);
 	}
 }
 

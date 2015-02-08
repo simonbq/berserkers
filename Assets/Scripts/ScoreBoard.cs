@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class ScoreBoard : MonoBehaviour {
 	public static readonly Vector2 SCREEN_SIZE = new Vector2 (1920, 1080);
 	
@@ -10,12 +10,16 @@ public class ScoreBoard : MonoBehaviour {
 	private Vector3 scale = new Vector3();
 	public Texture statics;
 	public Texture speedometer_bg;
+	public Texture[] playerIcons = new Texture[8];
 	public Material speedometer_mat;
 	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
-	private Rect speedometer_rect;
+	public Rect speedometer_rect = new Rect(0, 0, 512, 512);
+
+	public Texture nosmoke_tex;
+	public Rect nosmoke_rect = new Rect(0, 0, 0, 0);
 	// Use this for initialization
 	void Awake () {
-		speedometer_rect = new Rect (0, 0, 512, 512);
+		//speedometer_rect = new Rect (SCREEN_SIZE.x-600, 0, 600, 400);
 	}
 	
 	// Update is called once per frame
@@ -41,20 +45,32 @@ public class ScoreBoard : MonoBehaviour {
 			GUILayout.Label ("Deaths");
 			GUILayout.EndHorizontal ();
 
-			foreach(PlayerInfo p in Connections.GetInstance().players.Values)
+			PlayerInfo[] players = new PlayerInfo[Connections.GetInstance().players.Values.Count];
+			Connections.GetInstance().players.Values.CopyTo(players, 0);
+			List<PlayerInfo> playas = new List<PlayerInfo>(players);
+			playas.Sort();
+			foreach(PlayerInfo p in playas)
 			{
 				GUILayout.BeginHorizontal ();
+				GUILayout.Box(playerIcons[p.id]);
 				GUILayout.Label (p.name); // Player name
 				GUILayout.Label (p.kills.ToString()); // Player score
 				GUILayout.Label (p.deaths.ToString()); // Player deaths
 				GUILayout.EndHorizontal ();
 			}
 			// }
-			GUILayout.EndArea ();	
+			GUILayout.EndArea ();
 		}
-		speedometer_mat.SetFloat ("cutoff", Random.Range(0.0f, 1.0f));
+		float f = 1.0f;
+		if(HUDSingleton.instance.onFire) {
+			f = Random.Range (0.9f, 1.1f);
+		}
 
-		//GUI.DrawTexture (speedometer_rect, speedometer_bg);
+		GUIUtility.ScaleAroundPivot (Vector2.one * f, nosmoke_rect.center);
+		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
+		GUIUtility.ScaleAroundPivot (-Vector2.one * f, nosmoke_rect.center);
+		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / 5.0f);
 		Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
+		
 	}
 }
