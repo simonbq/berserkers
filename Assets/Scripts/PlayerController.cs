@@ -323,9 +323,10 @@ public class PlayerController : MonoBehaviour {
 			if (wall)
 				SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundWall);
 			else 
+			{
 				SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundPlayer);
-
-			SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
+				SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
+			}
 		}
 	}
 
