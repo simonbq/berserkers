@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour {
     public float movementSpeed;
 	public float turnSpeed;
 
+    public float OVERKILLSPEED = 0.45f;
+
     public Material[] materials;
     public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
 
@@ -90,7 +92,7 @@ public class PlayerController : MonoBehaviour {
 		Debug.Log ("Should play sound for round start soon");
 
 		//renderer.material.color = playerColor;
-		movementSpeed = startSpeed;
+        movementSpeed = startSpeed;
 		currentSpeed = 0;
 
 		networkView.RPC ("ForcePosition", RPCMode.All, transform.position);
@@ -165,6 +167,25 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+    public void AddSpeed(float mSpeed)
+    {
+        movementSpeed += mSpeed;
+
+        //ENTER SUPERSONIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIC
+        if (movementSpeed >= OVERKILLSPEED)
+        {
+            SoundStore.instance.Play(SoundStore.instance.SonicBoom);
+            ActivateEffects(true);
+        }
+    }
+    public void SetSpeed(float mSpeed)
+    {
+        movementSpeed = mSpeed;
+        if (mSpeed < OVERKILLSPEED)
+        {
+            ActivateEffects(false);
+        }
+    }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -271,7 +292,7 @@ public class PlayerController : MonoBehaviour {
 				rigidbody.velocity = velocity;
 			}
 
-			movementSpeed = mSpeed;
+            SetSpeed(mSpeed);
 			currentSpeed = cSpeed;
 			netPosition = position;
 			transform.rotation = rotation;
@@ -291,10 +312,10 @@ public class PlayerController : MonoBehaviour {
 
 		rigidbody.AddExplosionForce(750, transform.position - transform.forward * 2, 0, 0);
 		networkView.RPC ("PlayStunnedFX", RPCMode.All, wall);
-		movementSpeed = startSpeed;
+        SetSpeed(startSpeed);
 		currentSpeed = 0;
 
-        ActivateEffects(false);
+        //ActivateEffects(false);
 	}
 
     /* Check for players within a radius */
@@ -320,14 +341,15 @@ public class PlayerController : MonoBehaviour {
         state = PlayerState.ALIVE;
         animator.SetBool("idle", false);
         animator.SetBool("stunned", false);
-        ActivateEffects(true);
+        //ActivateEffects(true);
     }
 
     void ActivateEffects(bool mActivated) {
+        
         Debug.Log("set activated");
         foreach (AlphaMaterial am in GetComponentsInChildren<AlphaMaterial>())
         {
-            am.SetActivated(true);
+            am.SetActivated(mActivated);
         }
     }
 

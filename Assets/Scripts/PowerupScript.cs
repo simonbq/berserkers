@@ -21,7 +21,9 @@ public class PowerupScript : MonoBehaviour {
 		if(Network.isServer &&
 		   c.gameObject.tag == "Player"){
 			PlayerController player = c.gameObject.GetComponent<PlayerController>();
-			player.movementSpeed += speedIncrease;
+            
+            player.AddSpeed(speedIncrease);
+
 			PickUp (player.playerInfo.id);
 		}
 	}

@@ -11,9 +11,12 @@ public class AlphaMaterial : MonoBehaviour
     private Color startColor;
     private Color endColor;
 
+    private ParticleSystem ps;
+
     private bool activated = false;
 	void Start()
 	{
+        //ps = GetComponentInChildren
 		changedMaterial = renderer.material;
 		colorTint = Color.black; //Setting the default value
 		//renderer.sharedMaterial = new Material (renderer.sharedMaterial);
@@ -45,7 +48,7 @@ public class AlphaMaterial : MonoBehaviour
             lerpT = 0;
             activated = true;
         }
-        else
+        if(!mActivated && activated == true)
         {
             startColor = Color.gray;
             endColor = Color.black;
