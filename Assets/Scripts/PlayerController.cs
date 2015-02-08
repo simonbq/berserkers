@@ -76,12 +76,14 @@ public class PlayerController : MonoBehaviour {
             Destroy(this.gameObject);
         }
         
-        if (CheckNearbyPlayers(2.0f))
+        if (CheckNearbyPlayers(4.0f))
         {
+            Debug.Log(gameObject.name + "Found nearby player, setting enemyclose true");
             animator.SetBool("enemyclose", true);
         }
         else
         {
+            Debug.Log(gameObject.name + "Did not find nearby player, setting enemyclose false");
             animator.SetBool("enemyclose", false);
         }
     }
@@ -263,12 +265,16 @@ public class PlayerController : MonoBehaviour {
     {
         bool returnValue = false;
 
-
-        foreach(RaycastHit hit in Physics.SphereCastAll(transform.position, mRadius, Vector3.forward, 0, (1 << LayerMask.NameToLayer("Player"))))
-        {
-            if(hit.transform != this.transform)
+        Collider[] colliders = Physics.OverlapSphere(transform.position, mRadius);
+        foreach (Collider c in colliders) {
+            if (c.gameObject.tag == "Player" && c.gameObject != gameObject)
+            {
                 returnValue = true;
+            }
+
         }
+
+
         return returnValue;
     }
 
