@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
-	public enum PlayerState { ALIVE, DEAD };
+	public enum PlayerState { ALIVE, DEAD, STUNNED };
 	public PlayerState state;
 	public PlayerInfo playerInfo;
 
@@ -21,12 +21,11 @@ public class PlayerController : MonoBehaviour {
 		{
 			if(_input != value)
 			{
-				networkView.RPC ("UpdateInput", RPCMode.All, value);
+				networkView.RPC ("UpdateInput", RPCMode.All, Network.player, value);
 			}
 		}
 	}
 
-	public int playerIDD;
 	// Use this for initialization
 	void Start () {
 		state = PlayerState.ALIVE;
@@ -34,29 +33,45 @@ public class PlayerController : MonoBehaviour {
 		renderer.material.color = playerColor;
 		//Invoke ("Kill", 2);
 	}
+
+    void Update()
+    {
+        if (!playerInfo.connected)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 		if(playerInfo.id == Connections.GetInstance().playerId)
 		{
 			input = Input.GetAxis("Horizontal");
+
+            //check for inputdelay
+            if (Input.GetAxis("Horizontal") == 0 &&
+                Input.GetAxis("Horizontal") != _input)
+            {
+                Debug.Log("Actual: " + Input.GetAxis("Horizontal") + " Server: " + _input);
+            }
 		}
 
-		if(Network.isServer)
-		{
-			if(state == PlayerState.ALIVE){
-				//Debug.Log ("Input is for player " + playerInfo.name + " is " + _input);
-				rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
+        if (Network.isServer)
+        {
+            if (state == PlayerState.ALIVE &&
+			    state != PlayerState.STUNNED)
+            {
+                rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
 
-				transform.Rotate (Vector3.up, _input * turnSpeed);
-			}
-		}
+                transform.Rotate(Vector3.up, _input * turnSpeed);
+            }
+        }
 
-		else
-		{
-
-			//do interpolation here Kappa DansGame
-		}
+        else
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles + Vector3.up * turnSpeed * _input), turnSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward * movementSpeed, movementSpeed);
+        }
 	}
 
 	public void Update(){
@@ -68,29 +83,22 @@ public class PlayerController : MonoBehaviour {
 		networkView.RPC ("Spawned", RPCMode.All, id);
 	}
 
-	public void Kill(){
-		Debug.Log ("Kill player");
-		state = PlayerState.DEAD;
-		renderer.material.color = Color.black;
-		rigidbody.AddExplosionForce(2000, transform.position + transform.forward*2, 0, 0);
-	}
-	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
 		int playerState = 0;
-		//Vector3 velocity = new Vector3();
+		float mSpeed = 0;
 		Vector3 position = new Vector3();
 		Quaternion rotation = Quaternion.identity; 
 
 		if(stream.isWriting)
 		{
-			playerState = (int)playerState; 
-			//velocity = rigidbody.velocity;
+			playerState = (int)state;
+			mSpeed = movementSpeed;
 			position = transform.position;
 			rotation = transform.rotation;
 
 			stream.Serialize(ref playerState);
-			//stream.Serialize(ref velocity);
+			stream.Serialize(ref mSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 		}
@@ -98,22 +106,42 @@ public class PlayerController : MonoBehaviour {
 		else
 		{
 			stream.Serialize(ref playerState);
-			//stream.Serialize(ref velocity);
+			stream.Serialize(ref mSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref rotation);
 
-			state = (PlayerState)state;
-			//rigidbody.velocity = velocity;
+			state = (PlayerState)playerState;
+			movementSpeed = mSpeed;
 			transform.position = position;
 			transform.rotation = rotation;
 		}
 	}
 
 	[RPC]
-	void UpdateInput(float val)
+	void Stunned(float duration)
+	{
+		//stun stuff here
+		state = PlayerState.STUNNED;
+	}
+
+
+	[RPC]
+	void Kill(int killerId)
+	{
+		//You can get killerId by killerGameObject.GetInstance<PlayerController>().playerInfo.id
+		Connections.GetInstance ().players [killerId].kills++;
+		playerInfo.deaths++;
+
+		Debug.Log ("Kill player");
+		state = PlayerState.DEAD;
+		renderer.material.color = Color.black;
+		rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
+	}
+
+	[RPC]
+	void UpdateInput(NetworkPlayer sender, float val)
 	{
 		_input = val;
-		//Debug.Log ("Got update " + val);
 	}
 
 	[RPC]
