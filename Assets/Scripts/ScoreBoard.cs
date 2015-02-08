@@ -28,19 +28,25 @@ public class ScoreBoard : MonoBehaviour {
 			GUI.skin = skin;
 		}
 
-		GUILayout.BeginArea (area, GUI.skin.box);
-		GUILayout.BeginHorizontal ();
-		GUILayout.Label ("Name"); 
-		GUILayout.Label ("Kills");
-		GUILayout.Label ("Deaths");
-		GUILayout.EndHorizontal ();
-		// foreach player in players {
-		GUILayout.BeginHorizontal ();
-		GUILayout.Label ("tmp"); // Player name
-		GUILayout.Label ("0"); // Player score
-		GUILayout.Label ("0"); // Player deaths
-		GUILayout.EndHorizontal ();
-		// }
-		GUILayout.EndArea ();	
+		if(Input.GetKey(KeyCode.Tab))
+		{
+			GUILayout.BeginArea (area, GUI.skin.box);
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Name"); 
+			GUILayout.Label ("Kills");
+			GUILayout.Label ("Deaths");
+			GUILayout.EndHorizontal ();
+
+			foreach(PlayerInfo p in Connections.GetInstance().players.Values)
+			{
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label (p.name); // Player name
+				GUILayout.Label (p.kills.ToString()); // Player score
+				GUILayout.Label (p.deaths.ToString()); // Player deaths
+				GUILayout.EndHorizontal ();
+			}
+			// }
+			GUILayout.EndArea ();	
+		}
 	}
 }
