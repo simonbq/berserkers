@@ -108,7 +108,7 @@ public class GameController : MonoBehaviour {
 	                player.transform.rotation = selectSpawnPoint.transform.rotation;
 
 	                PlayerController pc = player.GetComponent<PlayerController>();
-	                pc.Start();
+	                pc.Reset();
 				}
             }
         }

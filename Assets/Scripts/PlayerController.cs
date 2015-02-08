@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour {
     public Animator animator;
 
 	private float _input = 0;
+	private float startSpeed;
+	private float currentSpeed = 0;
 
 	private float input
 	{
@@ -30,13 +32,18 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	public void Start () {
+	void Start()
+	{
+		startSpeed = movementSpeed;
+	}
+
+	public void Reset () {
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", 2.0f);
 
 		renderer.material.color = playerColor;
-		
-
+		movementSpeed = startSpeed;
+		currentSpeed = 0;
 	}
 
     void Update()
@@ -75,7 +82,8 @@ public class PlayerController : MonoBehaviour {
             if (state == PlayerState.ALIVE &&
 			    state != PlayerState.STUNNED)
             {
-                rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
+                rigidbody.MovePosition(transform.position + transform.forward * currentSpeed);
+				currentSpeed = Mathf.Lerp (currentSpeed, movementSpeed, Time.fixedDeltaTime);
 
                 transform.Rotate(Vector3.up, _input * turnSpeed);
             }
@@ -103,6 +111,7 @@ public class PlayerController : MonoBehaviour {
             if (collision.gameObject.tag == "Player")
             {
                 animator.SetTrigger("attack");
+                Debug.Log("Set trigger attack");
 
                 PlayerController hitPlayer = collision.gameObject.GetComponent<PlayerController>();
                 if (hitPlayer.movementSpeed > this.movementSpeed)
@@ -196,7 +205,11 @@ public class PlayerController : MonoBehaviour {
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
         transform.Rotate(new Vector3(0, 180, 0));
+
+		rigidbody.AddExplosionForce(500, transform.position - transform.forward * 2, 0, 0);
 		networkView.RPC ("PlayStunnedFX", RPCMode.All);
+		movementSpeed = startSpeed;
+		currentSpeed = 0;
 	}
 
     /* Check for players within a radius */
