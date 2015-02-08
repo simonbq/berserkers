@@ -241,9 +241,12 @@ public class PlayerController : MonoBehaviour {
     public bool CheckNearbyPlayers(float mRadius)
     {
         bool returnValue = false;
-        if (Physics.CheckSphere(transform.position, mRadius, (1 << LayerMask.NameToLayer("Player"))))
+
+
+        foreach(RaycastHit hit in Physics.SphereCastAll(transform.position, mRadius, Vector3.forward, 0, (1 << LayerMask.NameToLayer("Player"))))
         {
-            returnValue = true;
+            if(hit.transform != this.transform)
+                returnValue = true;
         }
         return returnValue;
     }
