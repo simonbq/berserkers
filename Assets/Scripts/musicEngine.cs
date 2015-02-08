@@ -37,6 +37,9 @@ public class musicEngine : MonoBehaviour {
 
 	void Update ()
 	{
+		musicSetLevel (Application.loadedLevel);
+		Debug.Log (Application.loadedLevel);
+
 		if (levelCurrent == 0)
 		{
 			if (stopwatch.ElapsedMilliseconds >= music_0_Clips[0].length*1000 || progression == 0)

@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour {
     public Animator animator;
 
 	private float _input = 0;
+	private float startSpeed;
+	private float currentSpeed = 0;
 
 	private float input
 	{
@@ -30,14 +32,19 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	public void Start () {
+	void Start()
+	{
+		startSpeed = movementSpeed;
+	}
+
+	public void Reset () {
 		state = PlayerState.STUNNED;
         animator.SetBool("idle", true);
         Invoke("MakeAlive", 2.0f);
 
 		renderer.material.color = playerColor;
-		
-
+		movementSpeed = startSpeed;
+		currentSpeed = 0;
 	}
 
     void Update()
@@ -76,7 +83,8 @@ public class PlayerController : MonoBehaviour {
             if (state == PlayerState.ALIVE &&
 			    state != PlayerState.STUNNED)
             {
-                rigidbody.MovePosition(transform.position + transform.forward * movementSpeed);
+                rigidbody.MovePosition(transform.position + transform.forward * currentSpeed);
+				currentSpeed = Mathf.Lerp (currentSpeed, movementSpeed, Time.fixedDeltaTime);
 
                 transform.Rotate(Vector3.up, _input * turnSpeed);
             }
@@ -86,7 +94,8 @@ public class PlayerController : MonoBehaviour {
 		        state != PlayerState.DEAD)
         {
 			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles + Vector3.up * turnSpeed * _input), turnSpeed);
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward * movementSpeed, movementSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward * currentSpeed, currentSpeed);
+			currentSpeed = Mathf.Lerp (currentSpeed, movementSpeed, Time.fixedDeltaTime);
         }
 
 		if(state == PlayerState.DEAD)
@@ -131,14 +140,16 @@ public class PlayerController : MonoBehaviour {
                 if (hitPlayer.movementSpeed == this.movementSpeed &&
 				    state != PlayerState.STUNNED)
                 {
-                    Stunned(stunDuration);
+                    Stunned(stunDuration, collision.contacts[0].normal);
                 }
+
+				_input = 0;
             }
 
             if (collision.gameObject.tag == "Wall" &&
 			    state != PlayerState.STUNNED)
             {
-                Stunned(stunDuration);
+				Stunned(stunDuration, collision.contacts[0].normal);
             }
         }
     }
@@ -152,6 +163,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		int playerState = 0;
 		float mSpeed = 0;
+		float cSpeed = 0;
 		Vector3 position = new Vector3();
 		Vector3 velocity = new Vector3();
 		Quaternion rotation = Quaternion.identity; 
@@ -160,12 +172,14 @@ public class PlayerController : MonoBehaviour {
 		{
 			playerState = (int)state;
 			mSpeed = movementSpeed;
+			cSpeed = currentSpeed;
 			position = transform.position;
 			velocity = rigidbody.velocity;
 			rotation = transform.rotation;
 
 			stream.Serialize(ref playerState);
 			stream.Serialize(ref mSpeed);
+			stream.Serialize(ref cSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref velocity);
 			stream.Serialize(ref rotation);
@@ -175,6 +189,7 @@ public class PlayerController : MonoBehaviour {
 		{
 			stream.Serialize(ref playerState);
 			stream.Serialize(ref mSpeed);
+			stream.Serialize(ref cSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref velocity);
 			stream.Serialize(ref rotation);
@@ -185,20 +200,26 @@ public class PlayerController : MonoBehaviour {
 				rigidbody.velocity = velocity;
 			}
 			movementSpeed = mSpeed;
+			currentSpeed = cSpeed;
 			transform.position = position;
 			transform.rotation = rotation;
 		}
 	}
 	
-	void Stunned(float duration)
+	void Stunned(float duration, Vector3 normal)
 	{
 		//stun stuff here
 
         animator.SetBool("idle", true);
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
-        transform.Rotate(new Vector3(0, 180, 0));
+		transform.rotation = Quaternion.Euler (Vector3.Reflect (transform.forward, normal));
+
+
+		rigidbody.AddExplosionForce(500, transform.position - transform.forward * 2, 0, 0);
 		networkView.RPC ("PlayStunnedFX", RPCMode.All);
+		movementSpeed = startSpeed;
+		currentSpeed = 0;
 	}
 
     /* Check for players within a radius */
