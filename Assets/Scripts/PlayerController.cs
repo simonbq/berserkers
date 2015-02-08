@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour {
 	public Color playerColor;
     public float stunDuration;
 
-	public AudioClip[] audioClips;
 
 	private float _input = 0;
 
@@ -84,6 +83,7 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+
     void OnCollisionEnter(Collision collision)
     {
         if (Network.isServer &&
@@ -97,6 +97,9 @@ public class PlayerController : MonoBehaviour {
 					
 					Debug.Log ("Kill player");
 					state = PlayerState.DEAD;
+					SoundStore.instance.PlayRandom (SoundStore.instance.DeathShout);
+					
+
 					rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
 
                     networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
@@ -115,6 +118,8 @@ public class PlayerController : MonoBehaviour {
 
                 if (hitPlayer.movementSpeed == this.movementSpeed &&
 				    state != PlayerState.STUNNED)
+					SoundStore.instance.PlayRandom (SoundStore.instance.StunSound);
+					SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
                 {
                     Stunned(stunDuration);
                 }
@@ -122,6 +127,7 @@ public class PlayerController : MonoBehaviour {
 
             if (collision.gameObject.tag == "Wall" &&
 			    state != PlayerState.STUNNED)
+				SoundStore.instance.PlayRandom (SoundStore.instance.StunSound);
             {
                 Stunned(stunDuration);
             }
@@ -204,6 +210,8 @@ public class PlayerController : MonoBehaviour {
 		//You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
 		Connections.GetInstance ().players [killerId].kills++;
 		playerInfo.deaths++;
+		SoundStore.instance.PlayRandom (SoundStore.instance.KillSound);
+		SoundStore.instance.PlayRandom (SoundStore.instance.KillShout);
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
