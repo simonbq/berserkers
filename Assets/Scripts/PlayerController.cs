@@ -93,7 +93,8 @@ public class PlayerController : MonoBehaviour {
 		        state != PlayerState.DEAD)
         {
 			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.eulerAngles + Vector3.up * turnSpeed * _input), turnSpeed);
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward * movementSpeed, movementSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward * currentSpeed, currentSpeed);
+			currentSpeed = Mathf.Lerp (currentSpeed, movementSpeed, Time.fixedDeltaTime);
         }
 
 		if(state == PlayerState.DEAD)
@@ -161,6 +162,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		int playerState = 0;
 		float mSpeed = 0;
+		float cSpeed = 0;
 		Vector3 position = new Vector3();
 		Vector3 velocity = new Vector3();
 		Quaternion rotation = Quaternion.identity; 
@@ -169,12 +171,14 @@ public class PlayerController : MonoBehaviour {
 		{
 			playerState = (int)state;
 			mSpeed = movementSpeed;
+			cSpeed = currentSpeed;
 			position = transform.position;
 			velocity = rigidbody.velocity;
 			rotation = transform.rotation;
 
 			stream.Serialize(ref playerState);
 			stream.Serialize(ref mSpeed);
+			stream.Serialize(ref cSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref velocity);
 			stream.Serialize(ref rotation);
@@ -184,6 +188,7 @@ public class PlayerController : MonoBehaviour {
 		{
 			stream.Serialize(ref playerState);
 			stream.Serialize(ref mSpeed);
+			stream.Serialize(ref cSpeed);
 			stream.Serialize(ref position);
 			stream.Serialize(ref velocity);
 			stream.Serialize(ref rotation);
@@ -194,6 +199,7 @@ public class PlayerController : MonoBehaviour {
 				rigidbody.velocity = velocity;
 			}
 			movementSpeed = mSpeed;
+			currentSpeed = cSpeed;
 			transform.position = position;
 			transform.rotation = rotation;
 		}
