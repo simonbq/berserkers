@@ -120,7 +120,6 @@ public class PlayerController : MonoBehaviour {
                 PlayerController hitPlayer = collision.gameObject.GetComponent<PlayerController>();
                 if (hitPlayer.movementSpeed > this.movementSpeed)
                 {
-
                     Debug.Log("Kill player");
                     state = PlayerState.DEAD;
                     SoundStore.instance.PlayRandom(SoundStore.instance.DeathShout);
@@ -130,48 +129,39 @@ public class PlayerController : MonoBehaviour {
 
                     networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 
-
-                    if (hitPlayer.movementSpeed == this.movementSpeed &&
-                        state != PlayerState.STUNNED)
+                    if (this.playerInfo.killstreaks.GetKills() == 0)
                     {
-                        Stunned(stunDuration, collision.contacts[0].normal);
-
-                        if (this.playerInfo.killstreaks.GetKills() == 0)
-                        {
-                            networkView.RPC("PlayNoKill", RPCMode.All);
-                        }
-                        this.playerInfo.killstreaks.Died();
-
-                        int playersAlive = 0;
-                        foreach (GameObject player in GameController.instance.players)
-                        {
-                            if (player.GetComponent<PlayerController>().state == PlayerState.ALIVE)
-                                playersAlive++;
-                        }
-                        if (playersAlive < 2)
-                        {
-                            GameController.instance.Invoke("SpawnPlayers", 3);
-                        }
-                        if (playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
-                        {
-                            Firstblood();
-                        }
+                        networkView.RPC("PlayNoKill", RPCMode.All);
                     }
-                    else if (hitPlayer.movementSpeed == this.movementSpeed &&
-                             state != PlayerState.STUNNED)
+                    this.playerInfo.killstreaks.Died();
+
+                    int playersAlive = 0;
+                    foreach (GameObject player in GameController.instance.players)
                     {
-                        Stunned(stunDuration, collision.contacts[0].normal);
-
+                        if (player.GetComponent<PlayerController>().state == PlayerState.ALIVE)
+                            playersAlive++;
                     }
-
-                    _input = 0;
+                    if (playersAlive < 2)
+                    {
+                        GameController.instance.Invoke("SpawnPlayers", 3);
+                    }
+                    if (playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
+                    {
+                        Firstblood();
+                    }
                 }
+                else if (hitPlayer.movementSpeed == this.movementSpeed &&
+                         state != PlayerState.STUNNED)
+                {
+                    Stunned(stunDuration, false, collision.contacts[0].normal);
+                }
+
 
                 if (collision.gameObject.tag == "Wall" &&
                     state != PlayerState.STUNNED)
                     SoundStore.instance.PlayRandom(SoundStore.instance.StunSoundWall);
                 {
-                    Stunned(stunDuration, collision.contacts[0].normal);
+                    Stunned(stunDuration, true, collision.contacts[0].normal);
                 }
             }
         }
@@ -229,7 +219,8 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 	
-	void Stunned(float duration, Vector3 normal)
+
+	void Stunned(float duration, bool wall, Vector3 normal)
 	{
 		//stun stuff here
 
@@ -240,9 +231,10 @@ public class PlayerController : MonoBehaviour {
 
 
 		rigidbody.AddExplosionForce(500, transform.position - transform.forward * 2, 0, 0);
-		networkView.RPC ("PlayStunnedFX", RPCMode.All);
+		networkView.RPC ("PlayStunnedFX", RPCMode.All, wall);
 		movementSpeed = startSpeed;
 		currentSpeed = 0;
+
 	}
 
     /* Check for players within a radius */
@@ -269,13 +261,18 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	[RPC]
-	void PlayStunnedFX()
+	void PlayStunnedFX(bool wall)
 	{
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
 			//ScreenShaker.instance.Shake (1, 1);
 		}
-		//SoundStore.instance.PlayRandom (SoundStore.instance.stun);
+
+		if (wall)
+			SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundWall);
+		else 
+			SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundPlayer);
+
 		SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
 	}
 
