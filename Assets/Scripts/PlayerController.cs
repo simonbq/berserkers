@@ -231,7 +231,7 @@ public class PlayerController : MonoBehaviour {
 		//stun stuff here
 		state = PlayerState.STUNNED;
         Invoke("MakeAlive", duration);
-		transform.rotation = Quaternion.Euler (Vector3.Reflect (transform.forward, normal));
+		transform.rotation = Quaternion.Euler (Vector3.Reflect (transform.forward, -normal));
 
 
 		rigidbody.AddExplosionForce(500, transform.position - transform.forward * 2, 0, 0);
