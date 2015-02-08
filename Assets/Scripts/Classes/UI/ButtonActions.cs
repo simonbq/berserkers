@@ -70,4 +70,9 @@ public class ButtonActions {
 		if(Connections.GetInstance().playersReady)
 			Connections.GetInstance ().StartGame (data.gameName);
 	}
+
+	public static System.Action<ActionData> toggleFullscreen { get { return _toggleFullscreen; } }
+	private static void _toggleFullscreen(ActionData data) {
+		Screen.fullScreen = !Screen.fullScreen;
+	}
 }

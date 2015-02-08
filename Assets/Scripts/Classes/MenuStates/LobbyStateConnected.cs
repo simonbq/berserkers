@@ -12,32 +12,34 @@ public class LobbyStateConnected : MenuState {
 	List<Button> buttons = new List<Button>();
 	Button host;
 	Button ready;
+	Rect usersArea = new Rect(960 - 512, 32, 512, 512);
 	public LobbyStateConnected() {
 		data = new ActionData ();
 		data.gameName = "null";
 		Button b;
-
-		b = new Button (500, 300, Button.BUTTON_NORM);
+		
+		b = new Button (960 + 64, 256 + 128, Button.BUTTON_NORM);
 		b.setText ("Disconnect");
 		b.setOnClick (ButtonActions.disconnect);
 		buttons.Add (b);
 
-		ready = new Button (300, 300, Button.BUTTON_NORM);
+		ready = new Button (960 + 64, 192, Button.BUTTON_NORM);
 		ready.setText ("Ready");
 		ready.setOnClick (ButtonActions.ready);
 
-		host = new Button (300, 300, Button.BUTTON_NORM);
+		host = new Button (960 + 64, 192, Button.BUTTON_NORM);
 		host.setText ("Start");
 		host.setOnClick (ButtonActions.start);
 	}
 
 	public override void update(Menu m) {
 		data.menu = m;
-
+		GUILayout.BeginArea (usersArea);
 		foreach(PlayerInfo p in Connections.GetInstance().players.Values)
 		{
 			GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
 		}
+		GUILayout.EndArea ();
 
 		foreach(Button b in buttons) {
 			b.update(data);

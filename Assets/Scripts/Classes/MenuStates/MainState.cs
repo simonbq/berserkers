@@ -8,17 +8,17 @@ public class MainState : MenuState {
 	private ActionData data;
 	public MainState() {
 		Button b;
-		b = new Button (100, 100, Button.BUTTON_NORM);
+		b = new Button (0 + 960 - 128, 400, Button.BUTTON_NORM);
 		b.setText ("Options");
 		b.setOnClick (ButtonActions.toOptionsState);
 		buttons.Add (b);
 
-		b = new Button (300, 100, Button.BUTTON_NORM);
+		b = new Button (-256 + 960 - 128, 400, Button.BUTTON_NORM);
 		b.setText ("Play");
 		b.setOnClick (ButtonActions.toLobbyStateMenu);
 		buttons.Add (b);
 
-		b = new Button (400, 400, Button.BUTTON_NORM);
+		b = new Button (256 + 960 - 128, 400, Button.BUTTON_NORM);
 		b.setText ("Exit");
 		b.setOnClick (ButtonActions.exit);
 		buttons.Add (b);
