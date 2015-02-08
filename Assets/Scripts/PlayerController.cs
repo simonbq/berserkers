@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour {
 
                 if (hitPlayer.movementSpeed == this.movementSpeed &&
 				    state != PlayerState.STUNNED)
-					SoundStore.instance.PlayRandom (SoundStore.instance.StunSound);
+					SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundPlayer);
 					SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
                 {
                     Stunned(stunDuration);
@@ -127,7 +127,7 @@ public class PlayerController : MonoBehaviour {
 
             if (collision.gameObject.tag == "Wall" &&
 			    state != PlayerState.STUNNED)
-				SoundStore.instance.PlayRandom (SoundStore.instance.StunSound);
+				SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundWall);
             {
                 Stunned(stunDuration);
             }
