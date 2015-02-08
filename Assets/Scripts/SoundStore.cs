@@ -5,10 +5,13 @@ public class SoundStore : MonoBehaviour {
 	public static SoundStore instance { get; private set; } 
 
 	public AudioClip buttonPress;
+	public AudioClip[] PositiveCheer;
+	public AudioClip[] NegativeCheer; 
 	public AudioClip[] KillSound;
 	public AudioClip[] KillShout;
 	public AudioClip[] DeathShout;
-	public AudioClip[] StunSound;
+	public AudioClip[] StunSoundWall;
+	public AudioClip[] StunSoundPlayer;
 	public AudioClip[] StunShout;
 	public AudioClip[] PowerUpPickUpSound;
 	public AudioClip[] PowerUpPickUpShout;
@@ -34,7 +37,7 @@ public class SoundStore : MonoBehaviour {
 
 	public void Play(AudioClip clip) {
 		if(clip != null)
-			audio.PlayOneShot (clip);
+			 audio.PlayOneShot (clip);
 	}
 
 	public void PlayRandom(AudioClip[] clip) {
