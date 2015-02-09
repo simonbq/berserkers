@@ -29,11 +29,13 @@ public class MainState : MenuState {
 	public override void update(Menu m) {
 		data.menu = m;
 		foreach(Button b in buttons) {
-			b.update(data);
+			b.calculate(data);
 		}
 	}
 	
 	public override void render() {
-		
+		foreach(Button b in buttons) {
+			b.update(data);
+		}
 	}
 }

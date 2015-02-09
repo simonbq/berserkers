@@ -23,9 +23,12 @@ public class ScoreBoard : MonoBehaviour {
 	public Material speedometer_mat;
 	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
 	public Rect speedometer_rect = new Rect(0, 0, 512, 512);
+	public Rect speedometer_textrect = new Rect (0, 0, 512, 512);
 	public Rect announcerRect = new Rect (800, 300, 256, 512);
 	public Texture nosmoke_tex;
 	public Rect nosmoke_rect = new Rect(0, 0, 0, 0);
+	public float quote_maxSpeed_endquote = 9000.0f;
+	private float est_maxSpeed = 0.6f;
 
 	private List<PlayerInfo> playas;
 	// Use this for initialization
@@ -36,6 +39,7 @@ public class ScoreBoard : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//ScreenShaker.instance.SetConstantShakyness (Mathf.Pow(HUDSingleton.instance.speed, 4) );
 		float width = Screen.width / SCREEN_SIZE.x;
 		float height = Screen.height / SCREEN_SIZE.y;
 		scale = new Vector3(width, height, 0);
@@ -45,6 +49,7 @@ public class ScoreBoard : MonoBehaviour {
 		Connections.GetInstance().players.Values.CopyTo(players, 0);
 		playas = new List<PlayerInfo>(players);
 		playas.Sort();
+		est_maxSpeed = Mathf.Max (est_maxSpeed, HUDSingleton.instance.speed);
 	}
 	
 	void OnGUI() {
@@ -79,9 +84,10 @@ public class ScoreBoard : MonoBehaviour {
 		if(HUDSingleton.instance.onFire) {
 			f = Random.Range (0.9f, 1.1f);
 		}
-		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / 0.5f);
+		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / est_maxSpeed);
 		if(Event.current.rawType == EventType.repaint)
 			Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
+		GUI.Label (speedometer_textrect, (int)(HUDSingleton.instance.speed/est_maxSpeed * (quote_maxSpeed_endquote + (float)Random.Range(0, 2))) + "\nkm/h", GUI.skin.customStyles [1]); //
 		if(currentAnnouncement != null) {
 			GUI.DrawTexture(announcerRect, currentAnnouncement);
 		}
@@ -89,7 +95,7 @@ public class ScoreBoard : MonoBehaviour {
 		GUIUtility.ScaleAroundPivot (Vector2.one * f, nosmoke_rect.center);
 		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
 		Debug.Log (nosmoke_rect.center);
-		GUIUtility.ScaleAroundPivot (-Vector2.one * f, nosmoke_rect.center);
+		GUIUtility.ScaleAroundPivot (Vector2.one * (1/f), nosmoke_rect.center);
 	}
 
 	private IEnumerator tempdisplay (int id, float duration) {

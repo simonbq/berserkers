@@ -29,14 +29,17 @@ public class OptionsState : MenuState {
 	public override void update(Menu m) {
 		data.menu = m;
 		foreach(Button b in buttons) {
+			b.calculate(data);
+		}
+
+	}
+	
+	public override void render() {
+		foreach(Button b in buttons) {
 			b.update(data);
 		}
 		AudioListener.volume = volumeSlider.update (AudioListener.volume);
 		float v = (float)QualitySettings.GetQualityLevel () / (QualitySettings.names.Length-1);
 		QualitySettings.SetQualityLevel ((int)(graphicsSlider.update (v) * (int)QualitySettings.names.Length));
-	}
-	
-	public override void render() {
-
 	}
 }
