@@ -64,7 +64,7 @@ public class Menu : MonoBehaviour {
 	public GUISkin skin;
 	private Matrix4x4 matrix;
 	private Vector3 scale = new Vector3();
-
+	public Vector2 screen_scale { get { return screenScale; } }
 	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
 	private Rect spinThingArea = new Rect(0, 0, 4000, 4000);
 	private Rect titleArea = new Rect (0, 0, 1596, 453);
@@ -102,6 +102,7 @@ public class Menu : MonoBehaviour {
 		scale = new Vector3(width, height, 0);
 		screenScale = new Vector2 (width, height);
 		matrix = Matrix4x4.TRS (scale, Quaternion.identity, new Vector3(scale.x, scale.y, 1));
+		current.update (this);
 	}
 
 	void OnGUI() {
@@ -118,11 +119,11 @@ public class Menu : MonoBehaviour {
 		GUIUtility.RotateAroundPivot (rotate, new Vector2(spinThingArea.center.x * scale.x, spinThingArea.center.y * scale.y));
 		GUI.DrawTexture (spinThingArea, spinThing);
 		GUIUtility.RotateAroundPivot (-rotate, new Vector2(spinThingArea.center.x * scale.x, spinThingArea.center.y * scale.y));
-		current.update (this);
+		current.render ();
 
 		GUIUtility.ScaleAroundPivot (Vector2.one * scalify, titleArea.center);//new Vector2(titleArea.center.x * scale.x, titleArea.center.y * scale.y));
 		GUI.DrawTexture (titleArea, TitleText);
-		GUIUtility.ScaleAroundPivot (-Vector2.one * scalify, titleArea.center);
+		GUIUtility.ScaleAroundPivot (Vector2.one * (1.0f/scalify), titleArea.center);
 		//GUIUtility.ScaleAroundPivot (-(Vector2.one * scalify), new Vector2(titleArea.center.x * scale.x, titleArea.center.y * scale.y));
 
 	}

@@ -15,7 +15,7 @@ public class LobbyStateBrowser : MenuState
     List<Button> buttons = new List<Button>();
     ActionData data;
     string ipNumber = "127.0.0.1";
-    private Rect connArea = new Rect(960 - 256, 64, 512 + 64, 384);
+    private Rect connArea = new Rect(960 - 256, 64, 512 + 64, 320);
     private Vector3 lobbyScroll = new Vector2();
     public LobbyStateBrowser()
     {
@@ -47,6 +47,20 @@ public class LobbyStateBrowser : MenuState
     public override void update(Menu m)
     {
         data.menu = m;
+        data.tarIP = ipNumber;
+
+        foreach (Button b in buttons)
+        {
+            b.calculate(data);
+        }
+        if (Connections.GetInstance().isConnected)
+        {
+            m.setCurrent(MenuStates.LOBBY_CONNECTED);
+        }
+    }
+
+    public override void render()
+    {
         GUILayout.BeginArea(connArea);
         GUILayout.Label("Open lobbies");
         lobbyScroll = GUILayout.BeginScrollView(lobbyScroll);
@@ -60,25 +74,17 @@ public class LobbyStateBrowser : MenuState
         }
 
         GUILayout.EndScrollView();
+
         GUILayout.BeginHorizontal();
         GUILayout.Label("Nickname", GUILayout.Width(200));
         Connections.GetInstance().localNickname = GUILayout.TextField(Connections.GetInstance().localNickname, GUILayout.Width(300));
         GUILayout.EndHorizontal();
+
         GUILayout.EndArea();
-        data.tarIP = ipNumber;
+
         foreach (Button b in buttons)
         {
             b.update(data);
         }
-
-        if (Connections.GetInstance().isConnected)
-        {
-            m.setCurrent(MenuStates.LOBBY_CONNECTED);
-        }
-    }
-
-    public override void render()
-    {
-
     }
 }

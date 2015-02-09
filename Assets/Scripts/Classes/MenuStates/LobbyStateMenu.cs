@@ -38,6 +38,16 @@ public class LobbyStateMenu : MenuState {
 
 	public override void update(Menu m) {
 		data.menu = m;
+		data.tarIP = ipNumber;
+		foreach (Button b in buttons) {
+			b.calculate(data);
+		}
+		if(Connections.GetInstance().isConnected) {
+			m.setCurrent(MenuStates.LOBBY_CONNECTED);
+		}
+	}
+
+	public override void render() {
 		GUILayout.BeginArea (connArea);
 		GUILayout.BeginHorizontal ();
 		GUILayout.Label ("Nickname", GUILayout.Width(200));
@@ -48,17 +58,9 @@ public class LobbyStateMenu : MenuState {
 		ipNumber = GUILayout.TextField (ipNumber, GUILayout.Width (300));
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea ();
-		data.tarIP = ipNumber;
+
 		foreach (Button b in buttons) {
 			b.update(data);
 		}
-
-		if(Connections.GetInstance().isConnected) {
-			m.setCurrent(MenuStates.LOBBY_CONNECTED);
-		}
-	}
-
-	public override void render() {
-
 	}
 }

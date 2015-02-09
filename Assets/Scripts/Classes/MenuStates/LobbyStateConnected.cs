@@ -34,29 +34,37 @@ public class LobbyStateConnected : MenuState {
 
 	public override void update(Menu m) {
 		data.menu = m;
+		foreach(Button b in buttons) {
+			b.calculate(data);
+		}
+		
+		if(Network.isServer) {
+			host.calculate(data);
+		} else {
+			ready.calculate(data);
+		}
+
+		if(!Connections.GetInstance().isConnected) {
+			m.goBack();
+		}
+	}
+
+	public override void render() {
 		GUILayout.BeginArea (usersArea);
 		foreach(PlayerInfo p in Connections.GetInstance().players.Values)
 		{
 			GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
 		}
 		GUILayout.EndArea ();
-
+		
 		foreach(Button b in buttons) {
 			b.update(data);
 		}
-
+		
 		if(Network.isServer) {
 			host.update(data);
 		} else {
 			ready.update(data);
 		}
-
-		if(!Connections.GetInstance().isConnected) {
-            m.goBack();
-		}
-	}
-
-	public override void render() {
-
 	}
 }
