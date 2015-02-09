@@ -28,8 +28,15 @@ public class GameController : MonoBehaviour {
 	public GameObject playerPrefab;
 	public GameObject powerupPrefab;
 	public float powerupSpawnTime = 5f;
+    public float powerupRoundStart = 5f;
 
 	private bool powerupSpawned = true;
+    private bool spawnPowerups = false;
+
+    void StartSpawningPowerups()
+    {
+        spawnPowerups = true;
+    }
 
 	void Awake()
 	{
@@ -63,7 +70,7 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(powerupSpawned)
+		if(powerupSpawned && spawnPowerups)
 		{
 			Invoke ("SpawnPowerUp", powerupSpawnTime);
 			powerupSpawned = false;
@@ -72,7 +79,10 @@ public class GameController : MonoBehaviour {
 
     public void SpawnPlayers()
     {
-		GameObject[] powerups = GameObject.FindGameObjectsWithTag ("Powerup");
+        spawnPowerups = false;
+        Invoke("StartSpawningPowerups", powerupRoundStart);
+
+        GameObject[] powerups = GameObject.FindGameObjectsWithTag ("Powerup");
 		foreach(GameObject powerup in powerups)
 		{
 			Network.Destroy(powerup);
@@ -128,19 +138,22 @@ public class GameController : MonoBehaviour {
 	}
 
 	void SpawnPowerUp(){
-        GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
-
-        if (selectSpawnPoint != null)
+        if (spawnPowerups)
         {
-            GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
+            GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
 
-            if (Network.isServer)
+            if (selectSpawnPoint != null)
             {
-                spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
-            }
-        }
+                GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
 
-		powerupSpawned = true;
+                if (Network.isServer)
+                {
+                    spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
+                }
+            }
+
+            powerupSpawned = true;
+        }
 	}
 
 	GameObject GetSpawn(ref List<GameObject> occupied)
