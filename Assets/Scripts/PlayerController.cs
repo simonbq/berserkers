@@ -306,6 +306,7 @@ public class PlayerController : MonoBehaviour {
                              state != PlayerState.STUNNED)
                     {
                         Stunned(stunDuration, false, collision.contacts[0].normal);
+                        hitPlayer.Stunned(stunDuration, false, collision.contacts[0].normal);
                     }
                 }
             }
@@ -376,7 +377,7 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 
-	void Stunned(float duration, bool wall, Vector3 normal)
+	public void Stunned(float duration, bool wall, Vector3 normal)
 	{
 		//stun stuff here
 
