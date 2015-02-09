@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject model;
 	public GameObject ragdoll;
 	public GameObject splat;
+    public GameObject nameText;
 
 	private float _input = 0;
 	private float startSpeed;
@@ -445,6 +446,7 @@ public class PlayerController : MonoBehaviour {
 		ShowRagdoll (false);
 
         animator.SetBool("idle", true);
+        nameText.GetComponent<PlayerNameScript>().Reset();
 	}
 
 	[RPC]
@@ -538,5 +540,6 @@ public class PlayerController : MonoBehaviour {
 	void Spawned(int id)
 	{
 		playerInfo = Connections.GetInstance ().players [id];
+        nameText.GetComponent<PlayerNameScript>().SetName(playerInfo.name);
 	}
 }
