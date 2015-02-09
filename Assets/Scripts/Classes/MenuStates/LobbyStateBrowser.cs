@@ -47,26 +47,12 @@ public class LobbyStateBrowser : MenuState
     public override void update(Menu m)
     {
         data.menu = m;
-        GUILayout.BeginArea(connArea);
-        GUILayout.Label("Open lobbies");
-        lobbyScroll = GUILayout.BeginScrollView(lobbyScroll);
-
-        foreach (HostData lobby in Connections.GetInstance().serverList)
-        {
-            if (GUILayout.Button(lobby.gameName + " (" + lobby.connectedPlayers + " / " + lobby.playerLimit + ")"))
-            {
-                Network.Connect(lobby);
-            }
-        }
-
-        GUILayout.EndScrollView();
-        GUILayout.EndArea();
         data.tarIP = ipNumber;
+
         foreach (Button b in buttons)
         {
-            b.update(data);
+            b.calculate(data);
         }
-
         if (Connections.GetInstance().isConnected)
         {
             m.setCurrent(MenuStates.LOBBY_CONNECTED);
@@ -75,6 +61,24 @@ public class LobbyStateBrowser : MenuState
 
     public override void render()
     {
+        GUILayout.BeginArea(connArea);
+        GUILayout.Label("Open lobbies");
+        lobbyScroll = GUILayout.BeginScrollView(lobbyScroll);
 
+        foreach (HostData lobby in Connections.GetInstance().serverList)
+        {
+            /*if (GUILayout.Button(lobby.gameName + " (" + lobby.connectedPlayers + " / " + lobby.playerLimit + ")"))
+            {
+                Network.Connect(lobby);
+            }*/
+        }
+
+        GUILayout.EndScrollView();
+        GUILayout.EndArea();
+
+        foreach (Button b in buttons)
+        {
+            b.update(data);
+        }
     }
 }
