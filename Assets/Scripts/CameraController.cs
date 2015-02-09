@@ -18,6 +18,12 @@ public class CameraController : MonoBehaviour {
 		{
 			Vector3 targetPos = player.transform.position + cameraOffset;
 			targetPos = Vector3.Lerp (Vector3.zero, targetPos, lookOffset);
+
+            if (player.state == PlayerController.PlayerState.DEAD)
+            {
+                targetPos = Vector3.zero + Vector3.up * 3f + cameraOffset;
+            }
+
 			transform.position = Vector3.Lerp (transform.position, targetPos, ease * Time.fixedDeltaTime);
 		}
 	}
