@@ -52,7 +52,7 @@ public class LobbyStateConnected : MenuState {
 		}
 
 		if(!Connections.GetInstance().isConnected) {
-			m.goBack();
+            m.goBack();
 		}
 	}
 

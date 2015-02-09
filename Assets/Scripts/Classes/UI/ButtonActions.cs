@@ -26,7 +26,7 @@ public class ButtonActions {
 
 	public static System.Action<ActionData> toLobbyStateMenu { get { return _toLobbyStateMenu; } }
 	private static void _toLobbyStateMenu (ActionData data) {
-		data.menu.setCurrent (MenuStates.LOBBY_MENU);
+		data.menu.setCurrent (MenuStates.LOBBY_BROWSER);
 	}
 
 	public static System.Action<ActionData> exit { get { return _exit; } }
@@ -43,6 +43,13 @@ public class ButtonActions {
 	private static void _connect(ActionData data) {
 		Network.Connect (data.tarIP, 61337);
 	}
+
+
+    public static System.Action<ActionData> toDirectconnect { get { return _toDirectconnect; } }
+    private static void _toDirectconnect(ActionData data)
+    {
+        data.menu.setCurrent(MenuStates.LOBBY_MENU);
+    }
 
 	public static System.Action<ActionData> disconnect { get { return _disconnect; } }
 	private static void _disconnect(ActionData data) {
@@ -75,4 +82,10 @@ public class ButtonActions {
 	private static void _toggleFullscreen(ActionData data) {
 		Screen.fullScreen = !Screen.fullScreen;
 	}
+
+    public static System.Action<ActionData> refreshHostlist { get { return _refreshHostlist; } }
+    private static void _refreshHostlist(ActionData data)
+    {
+        Connections.GetInstance().RefreshHostList();
+    }
 }

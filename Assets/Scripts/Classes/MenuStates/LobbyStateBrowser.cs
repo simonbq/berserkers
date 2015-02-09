@@ -1,0 +1,80 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+/*
+ * TODO
+ * - Host button
+ * - Set nickname label
+ * - Refresh servers button
+ * - Set IP Label
+ * - Connect Button
+ */
+public class LobbyStateBrowser : MenuState
+{
+
+    List<Button> buttons = new List<Button>();
+    ActionData data;
+    string ipNumber = "127.0.0.1";
+    private Rect connArea = new Rect(960 - 256, 64, 512 + 64, 384);
+    private Vector3 lobbyScroll = new Vector2();
+    public LobbyStateBrowser()
+    {
+        data = new ActionData();
+
+        Button b;
+
+        b = new Button(960 + 320, 128, Button.BUTTON_NORM);
+        b.setOnClick(ButtonActions.refreshHostlist);
+        b.setText("Refresh");
+        buttons.Add(b);
+
+        b = new Button(0 + 960 - 128, 400, Button.BUTTON_NORM);
+        b.setOnClick(ButtonActions.toDirectconnect);
+        b.setText("IP connect");
+        buttons.Add(b);
+
+        b = new Button(-256 + 960 - 128, 400, Button.BUTTON_NORM);
+        b.setOnClick(ButtonActions.host);
+        b.setText("Host");
+        buttons.Add(b);
+
+        b = new Button(256 + 960 - 128, 400, Button.BUTTON_NORM);
+        b.setOnClick(ButtonActions.back);
+        b.setText("Back");
+        buttons.Add(b);
+    }
+
+    public override void update(Menu m)
+    {
+        data.menu = m;
+        GUILayout.BeginArea(connArea);
+        GUILayout.Label("Open lobbies");
+        lobbyScroll = GUILayout.BeginScrollView(lobbyScroll);
+
+        foreach (HostData lobby in Connections.GetInstance().serverList)
+        {
+            if (GUILayout.Button(lobby.gameName + " (" + lobby.connectedPlayers + " / " + lobby.playerLimit + ")"))
+            {
+                Network.Connect(lobby);
+            }
+        }
+
+        GUILayout.EndScrollView();
+        GUILayout.EndArea();
+        data.tarIP = ipNumber;
+        foreach (Button b in buttons)
+        {
+            b.update(data);
+        }
+
+        if (Connections.GetInstance().isConnected)
+        {
+            m.setCurrent(MenuStates.LOBBY_CONNECTED);
+        }
+    }
+
+    public override void render()
+    {
+
+    }
+}

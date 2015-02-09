@@ -120,6 +120,15 @@ public class Connections : MonoBehaviour {
 		}
 	}
 
+    public HostData[] serverList
+    {
+        get
+        {
+            return _servers;
+        }
+    }
+
+    private HostData[] _servers;
 	private int _playerId = 0;
 	private PlayerInfo _playerInfo;
 	private bool _connected = false;
@@ -163,16 +172,50 @@ public class Connections : MonoBehaviour {
 		}
 	}
 
+    public void RefreshHostList()
+    {
+        MasterServer.RequestHostList("BerzerkasBananas");
+    }
+
 	void Start()
 	{
 		GameObject.DontDestroyOnLoad (this.gameObject);
+
+        if (instance != null)
+        {
+            Destroy(instance.gameObject);
+        }
+
 		instance = this;
+
+        MasterServer.ClearHostList();
+        RefreshHostList();
 	}
+
+    void OnMasterServerEvent(MasterServerEvent msEvent)
+    {
+        if (msEvent == MasterServerEvent.HostListReceived)
+        {
+            _servers = MasterServer.PollHostList();
+        }
+    }
 
 	void OnDisconnectedFromServer()
 	{
-		Application.LoadLevel (lobbyScene);
-		Destroy (this.gameObject);
+        if (Application.loadedLevelName != lobbyScene)
+        {
+            Application.LoadLevel(lobbyScene);
+            Destroy(this.gameObject);
+        }
+
+        else
+        {
+            _started = false;
+            _connected = false;
+            players.Clear();
+            _playerId = 0;
+            _playerInfo = null;
+        }
 	}
 
     void OnPlayerConnected(NetworkPlayer player)
