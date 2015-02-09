@@ -4,6 +4,7 @@ using System.Collections;
 public class PowerupScript : MonoBehaviour {
 	public float speedIncrease = 0.05f;
 	public GameObject explosion;
+    public GameObject spawnPoint;
 
 	// Use this for initialization
 	void Start () {
@@ -30,6 +31,7 @@ public class PowerupScript : MonoBehaviour {
 	
 	void PickUp (int id) {
 		networkView.RPC ("Explode", RPCMode.All, id);
+        GameController.instance.ReleaseRuneSpawn(spawnPoint);
 		Network.Destroy (gameObject);
 	}
 

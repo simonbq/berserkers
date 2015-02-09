@@ -18,14 +18,17 @@ public class AlphaMaterial : MonoBehaviour
     private bool activated = false;
 	void Start()
 	{
-        if (affectedObject.particleSystem == null)
+        if (affectedObject != null)
         {
-            myMaterial = affectedObject.GetComponent<Renderer>().material;
-        }
+            if (affectedObject.particleSystem == null)
+            {
+                myMaterial = affectedObject.GetComponent<Renderer>().material;
+            }
 
-        else
-        {
-            myMaterial = affectedObject.particleSystem.renderer.material;
+            else
+            {
+                myMaterial = affectedObject.particleSystem.renderer.material;
+            }
         }
 
         //ps = GetComponentInChildren
@@ -48,7 +51,10 @@ public class AlphaMaterial : MonoBehaviour
 			colorTint = Color.grey;
 				}*/
 		//renderer.material.SetColor("_TintColor", colorTint);
-        myMaterial.SetColor("_TintColor", colorTint);
+            if (myMaterial != null)
+            {
+                myMaterial.SetColor("_TintColor", colorTint);
+            }
     }//Setting the value to the _TintColor 
 
     public void SetActivated(bool mActivated)

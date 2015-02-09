@@ -19,6 +19,8 @@ public class GameController : MonoBehaviour {
 	public static GameState state;
 
 	public List<GameObject> spawnPoints;
+    private List<GameObject> occupiedSpawns = new List<GameObject>();
+    private List<GameObject> powerupSpawns = new List<GameObject>();
 
 	public List<GameObject> players;
 
@@ -68,41 +70,6 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	public IEnumerator CreatePlayers()
-	{
-		foreach (PlayerInfo player in Connections.GetInstance().players.Values)
-		{
-			Debug.Log ("Spawning player " + player.name);
-			GameObject playerObject = SpawnPlayer(player.id);
-			
-			if(playerObject != null)
-			{
-				players.Add (playerObject);
-			}
-
-			yield return null;
-		}
-	}
-
-	public IEnumerator RespawnPlayers()
-	{
-		foreach (GameObject player in players)
-		{
-			GameObject selectSpawnPoint = GetSpawn();
-			
-			if(selectSpawnPoint != null)
-			{
-				player.transform.position =  selectSpawnPoint.transform.position + new Vector3(0, 2, 0);
-				player.transform.rotation = selectSpawnPoint.transform.rotation;
-				
-				PlayerController pc = player.GetComponent<PlayerController>();
-				pc.Reset();
-			}
-
-			yield return null;
-		}
-	}
-
     public void SpawnPlayers()
     {
 		GameObject[] powerups = GameObject.FindGameObjectsWithTag ("Powerup");
@@ -111,19 +78,42 @@ public class GameController : MonoBehaviour {
 			Network.Destroy(powerup);
 		}
 
+        occupiedSpawns.Clear();
+
 		if (players.Count == 0)
         {
-			StartCoroutine("CreatePlayers");
+            foreach (PlayerInfo player in Connections.GetInstance().players.Values)
+            {
+                Debug.Log("Spawning player " + player.name);
+                GameObject playerObject = SpawnPlayer(player.id);
+
+                if (playerObject != null)
+                {
+                    players.Add(playerObject);
+                }
+            }
 		}
         else
         {
-			StartCoroutine("RespawnPlayers");
+            foreach (GameObject player in players)
+            {
+                GameObject selectSpawnPoint = GetSpawn(ref occupiedSpawns);
+
+                if (selectSpawnPoint != null)
+                {
+                    player.transform.position = selectSpawnPoint.transform.position + new Vector3(0, 2, 0);
+                    player.transform.rotation = selectSpawnPoint.transform.rotation;
+
+                    PlayerController pc = player.GetComponent<PlayerController>();
+                    pc.Reset();
+                }
+            }
         }
         
     }
 
 	GameObject SpawnPlayer(int id){
-		GameObject selectSpawnPoint = GetSpawn();
+		GameObject selectSpawnPoint = GetSpawn(ref occupiedSpawns);
 		if(selectSpawnPoint != null)
 		{
 			//Debug.Log ("Spawned player at "+selectSpawnPoint.transform.position);
@@ -138,40 +128,42 @@ public class GameController : MonoBehaviour {
 	}
 
 	void SpawnPowerUp(){
-		GameObject selectSpawnPoint = GetSpawn();
+        GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
 
-		if(selectSpawnPoint != null)
-		{
-			Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0);
+        if (selectSpawnPoint != null)
+        {
+            GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
 
-			powerupSpawned = true;
-		}
+            if (Network.isServer)
+            {
+                spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
+            }
+        }
+
+		powerupSpawned = true;
 	}
 
-	GameObject GetSpawn()
+	GameObject GetSpawn(ref List<GameObject> occupied)
 	{
-		List<GameObject> visited = new List<GameObject> ();
+		List<GameObject> remaining = spawnPoints.Except(occupied).ToList();
 
-		do
-		{
-			List<GameObject> remaining = spawnPoints.Except(visited).ToList();
-			GameObject selected = remaining[Random.Range (0, remaining.Count)];
+        if (remaining.Count > 0)
+        {
+            GameObject selected = remaining[Random.Range(0, remaining.Count)];
+            occupied.Add(selected);
 
-			if(!Physics.CheckSphere(selected.transform.position + Vector3.up, 1.5f, (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Powerup"))))
-			{
-				//Debug.Log ("Found spawnpoint!");
-				return selected;
-			}
+            return selected;
+        }
 
-			if(!visited.Exists(x => x == selected))
-			{
-				visited.Add (selected);
-			}
-
-		}
-		while(visited.Count != spawnPoints.Count);
-
-		Debug.Log ("Failed to find suitable spawnpoint");
-		return null;
+        Debug.Log("Failed to find a suitable spawn");
+        return null;
 	}
+
+    public void ReleaseRuneSpawn(GameObject point)
+    {
+        if (powerupSpawns.Contains(point))
+        {
+            powerupSpawns.Remove(point);
+        }
+    }
 }
