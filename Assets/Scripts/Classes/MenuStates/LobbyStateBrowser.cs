@@ -28,17 +28,17 @@ public class LobbyStateBrowser : MenuState
         b.setText("Refresh");
         buttons.Add(b);
 
-        b = new Button(0 + 960 - 128, 400, Button.BUTTON_NORM);
+        b = new Button(0 + 960 - 128, 500, Button.BUTTON_NORM);
         b.setOnClick(ButtonActions.toDirectconnect);
         b.setText("IP connect");
         buttons.Add(b);
 
-        b = new Button(-256 + 960 - 128, 400, Button.BUTTON_NORM);
+        b = new Button(-256 + 960 - 128, 500, Button.BUTTON_NORM);
         b.setOnClick(ButtonActions.host);
         b.setText("Host");
         buttons.Add(b);
 
-        b = new Button(256 + 960 - 128, 400, Button.BUTTON_NORM);
+        b = new Button(256 + 960 - 128, 500, Button.BUTTON_NORM);
         b.setOnClick(ButtonActions.back);
         b.setText("Back");
         buttons.Add(b);
@@ -60,6 +60,10 @@ public class LobbyStateBrowser : MenuState
         }
 
         GUILayout.EndScrollView();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Nickname", GUILayout.Width(200));
+        Connections.GetInstance().localNickname = GUILayout.TextField(Connections.GetInstance().localNickname, GUILayout.Width(300));
+        GUILayout.EndHorizontal();
         GUILayout.EndArea();
         data.tarIP = ipNumber;
         foreach (Button b in buttons)
