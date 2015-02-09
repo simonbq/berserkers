@@ -240,12 +240,20 @@ public class PlayerController : MonoBehaviour {
     {
         movementSpeed += mSpeed;
         CheckOverkill();
+        if (movementSpeed >= OVERKILLSPEED)
+        {
+            SoundStore.instance.Play(SoundStore.instance.SonicBoom);
+        }
     }
     public void SetSpeed(float mSpeed)
     {
         movementSpeed = mSpeed;
         
         CheckOverkill();
+        if (movementSpeed >= OVERKILLSPEED)
+        {
+            SoundStore.instance.Play(SoundStore.instance.SonicBoom);
+        }
     }
 
     void OnCollisionEnter(Collision collision)
