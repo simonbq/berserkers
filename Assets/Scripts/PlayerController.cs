@@ -239,21 +239,12 @@ public class PlayerController : MonoBehaviour {
     public void AddSpeed(float mSpeed)
     {
         movementSpeed += mSpeed;
-        if (movementSpeed >= OVERKILLSPEED)
-        {
-            SoundStore.instance.Play(SoundStore.instance.SonicBoom);
-        }
-
         CheckOverkill();
     }
     public void SetSpeed(float mSpeed)
     {
         movementSpeed = mSpeed;
         
-        if (mSpeed >= OVERKILLSPEED)
-        {
-            SoundStore.instance.Play(SoundStore.instance.SonicBoom);
-        }
         CheckOverkill();
     }
 

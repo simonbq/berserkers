@@ -26,6 +26,11 @@ public class PowerupScript : MonoBehaviour {
             player.AddSpeed(speedIncrease);
 
 			PickUp (player.playerInfo.id);
+
+            if (player.movementSpeed >= player.OVERKILLSPEED)
+            {
+                SoundStore.instance.Play(SoundStore.instance.SonicBoom);
+            }
 		}
 	}
 	
