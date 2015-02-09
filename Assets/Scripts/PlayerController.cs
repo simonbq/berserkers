@@ -197,7 +197,7 @@ public class PlayerController : MonoBehaviour {
 
 		if(state == PlayerState.DEAD)
 		{
-			renderer.material.color = Color.black;
+			//renderer.material.color = Color.black;
 			//die
 		}
 
