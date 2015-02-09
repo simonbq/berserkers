@@ -364,7 +364,11 @@ public class PlayerController : MonoBehaviour {
 				rigidbody.velocity = velocity;
 			}
 
-            SetSpeed(mSpeed);
+            if (mSpeed != movementSpeed)
+            {
+                SetSpeed(mSpeed);
+            }
+
 			currentSpeed = cSpeed;
 			netPosition = position;
 			transform.rotation = rotation;
