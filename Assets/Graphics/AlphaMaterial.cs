@@ -18,7 +18,7 @@ public class AlphaMaterial : MonoBehaviour
     private bool activated = false;
 	void Start()
 	{
-        if (myMaterial != null)
+        if (affectedObject != null)
         {
             if (affectedObject.particleSystem == null)
             {
