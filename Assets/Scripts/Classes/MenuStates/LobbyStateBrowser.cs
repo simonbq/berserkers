@@ -15,7 +15,7 @@ public class LobbyStateBrowser : MenuState
     List<Button> buttons = new List<Button>();
     ActionData data;
     string ipNumber = "127.0.0.1";
-    private Rect connArea = new Rect(960 - 256, 64, 512 + 64, 384);
+    private Rect connArea = new Rect(960 - 256, 64, 512 + 64, 320);
     private Vector3 lobbyScroll = new Vector2();
     public LobbyStateBrowser()
     {
@@ -67,13 +67,19 @@ public class LobbyStateBrowser : MenuState
 
         foreach (HostData lobby in Connections.GetInstance().serverList)
         {
-            /*if (GUILayout.Button(lobby.gameName + " (" + lobby.connectedPlayers + " / " + lobby.playerLimit + ")"))
+            if (GUILayout.Button(lobby.gameName + " (" + lobby.connectedPlayers + " / " + lobby.playerLimit + ")"))
             {
                 Network.Connect(lobby);
-            }*/
+            }
         }
 
         GUILayout.EndScrollView();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Nickname", GUILayout.Width(200));
+        Connections.GetInstance().localNickname = GUILayout.TextField(Connections.GetInstance().localNickname, GUILayout.Width(300));
+        GUILayout.EndHorizontal();
+
         GUILayout.EndArea();
 
         foreach (Button b in buttons)
