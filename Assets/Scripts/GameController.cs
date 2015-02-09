@@ -151,9 +151,9 @@ public class GameController : MonoBehaviour {
                     spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
                 }
             }
-
-            powerupSpawned = true;
         }
+
+        powerupSpawned = true;
 	}
 
 	GameObject GetSpawn(ref List<GameObject> occupied)
