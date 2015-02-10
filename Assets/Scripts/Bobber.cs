@@ -8,9 +8,9 @@ public class Bobber : MonoBehaviour {
 	private bool[] occupied;
 	public float bobTimer = 0.1f;
 	private float lastBob = 0.0f;
-	public int bobsPerTick = 5;
+	public float bobsPerTick = 5;
 
-	public int cheerFactor { get; set; }
+	public float cheerFactor { get; set; }
 
 	// Use this for initialization
 	void Awake () {
