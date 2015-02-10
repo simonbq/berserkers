@@ -127,7 +127,7 @@ public class PlayerController : MonoBehaviour {
 		Invoke ("AnnouncerStart", 2.0f);
 		Debug.Log ("Should play sound for round start soon");
 
-		//renderer.material.color = playerColor;
+        rigidbody.velocity = Vector3.zero;
         SetSpeed(startSpeed);
 		currentSpeed = 0;
 
@@ -151,6 +151,11 @@ public class PlayerController : MonoBehaviour {
             animator.SetBool("enemyclose", false);
         }
         CheckOverkill();
+
+        if (GameController.instance.state == GameController.GameState.ROUNDEND)
+        {
+            CancelInvoke();
+        }
     }
 
 	// Update is called once per frame
@@ -275,7 +280,6 @@ public class PlayerController : MonoBehaviour {
                     if (hitPlayer.currentSpeed > this.movementSpeed)
                     {
                         Debug.Log("Kill player");
-                        state = PlayerState.DEAD;
                         networkView.RPC("PlayDeathShout", RPCMode.All);
 
 
@@ -285,21 +289,14 @@ public class PlayerController : MonoBehaviour {
 
                         this.playerInfo.killstreaks.Died();
 
-                        int playersAlive = 0;
-                        foreach (GameObject player in GameController.instance.players)
-                        {
-                            if (player.GetComponent<PlayerController>().state == PlayerState.ALIVE)
-                                playersAlive++;
-                        }
-                        if (playersAlive < 2)
-                        {
-                            //firstblood = false;
-                            networkView.RPC("PlayWinSound", RPCMode.All);
-                            GameController.instance.Invoke("SpawnPlayers", 3);
-                        }
-                        if (playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
+                        
+                        if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
                         {
                             Firstblood();
+                        }
+                        if (GameController.instance.playersAlive < 2)
+                        {
+                            networkView.RPC("PlayWinSound", RPCMode.All);
                         }
                     }
                     else if (hitPlayer.movementSpeed == this.movementSpeed &&
@@ -380,18 +377,19 @@ public class PlayerController : MonoBehaviour {
 	public void Stunned(float duration, bool wall, Vector3 normal)
 	{
 		//stun stuff here
+        if (GameController.instance.state != GameController.GameState.ROUNDEND)
+        {
+            animator.SetBool("stunned", true);
+            state = PlayerState.STUNNED;
+            Invoke("MakeAlive", duration);
+            transform.forward = Vector3.Reflect(transform.forward, normal);
 
-        animator.SetBool("stunned", true);
-		state = PlayerState.STUNNED;
-        Invoke("MakeAlive", duration);
-		transform.forward = Vector3.Reflect (transform.forward, normal);
 
-
-		rigidbody.AddExplosionForce(750, transform.position - transform.forward * 2, 0, 0);
-		networkView.RPC ("PlayStunnedFX", RPCMode.All, wall);
-        SetSpeed(startSpeed);
-		currentSpeed = 0;
-
+            rigidbody.AddExplosionForce(750, transform.position - transform.forward * 2, 0, 0);
+            networkView.RPC("PlayStunnedFX", RPCMode.All, wall);
+            SetSpeed(startSpeed);
+            currentSpeed = 0;
+        }
         //ActivateEffects(false);
 	}
 
@@ -493,6 +491,9 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void Kill(int killerId)
 	{
+        CancelInvoke();
+        state = PlayerState.DEAD;
+
 		HideModel (true);
 		ShowRagdoll (true);
 		splat.particleSystem.Play ();

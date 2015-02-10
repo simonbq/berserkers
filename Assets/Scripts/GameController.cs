@@ -15,14 +15,16 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	public enum GameState { INGAME };
-	public static GameState state;
+	public enum GameState { INGAME, ROUNDEND };
+	public GameState state;
 
 	public List<GameObject> spawnPoints;
     private List<GameObject> occupiedSpawns = new List<GameObject>();
     private List<GameObject> powerupSpawns = new List<GameObject>();
 
 	public List<GameObject> players;
+
+    public int playersAlive = 0;
 
 	//Prefabs
 	public GameObject playerPrefab;
@@ -75,10 +77,27 @@ public class GameController : MonoBehaviour {
 			Invoke ("SpawnPowerUp", powerupSpawnTime);
 			powerupSpawned = false;
 		}
+
+        if (GameController.instance.state != GameController.GameState.ROUNDEND)
+        {
+            foreach (GameObject player in GameController.instance.players)
+            {
+                if (player.GetComponent<PlayerController>().state == PlayerController.PlayerState.ALIVE)
+                    playersAlive++;
+            }
+            if (playersAlive < 2)
+            {
+                GameController.instance.state = GameController.GameState.ROUNDEND;
+
+                networkView.RPC("PlayWinSound", RPCMode.All);
+                GameController.instance.Invoke("SpawnPlayers", 3);
+            }
+        }
 	}
 
     public void SpawnPlayers()
     {
+        state = GameState.INGAME;
         spawnPowerups = false;
         Invoke("StartSpawningPowerups", powerupRoundStart);
 
