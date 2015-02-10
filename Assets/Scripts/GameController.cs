@@ -15,8 +15,8 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	public enum GameState { INGAME };
-	public static GameState state;
+	public enum GameState { INGAME, ROUNDEND };
+	public GameState state;
 
 	public List<GameObject> spawnPoints;
     private List<GameObject> occupiedSpawns = new List<GameObject>();
@@ -24,12 +24,21 @@ public class GameController : MonoBehaviour {
 
 	public List<GameObject> players;
 
+    public int playersAlive = 0;
+
 	//Prefabs
 	public GameObject playerPrefab;
 	public GameObject powerupPrefab;
 	public float powerupSpawnTime = 5f;
+    public float powerupRoundStart = 5f;
 
 	private bool powerupSpawned = true;
+    private bool spawnPowerups = false;
+
+    void StartSpawningPowerups()
+    {
+        spawnPowerups = true;
+    }
 
 	void Awake()
 	{
@@ -63,16 +72,40 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(powerupSpawned)
+		if(powerupSpawned && spawnPowerups)
 		{
 			Invoke ("SpawnPowerUp", powerupSpawnTime);
 			powerupSpawned = false;
 		}
+
+        if (GameController.instance.state != GameController.GameState.ROUNDEND)
+        {
+            int countAlive = 0;
+            foreach (GameObject player in GameController.instance.players)
+            {
+                if (player.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD)
+                    countAlive++;
+            }
+
+            playersAlive = countAlive;
+
+            if (playersAlive < 2 && players.Count > 1)
+            {
+                GameController.instance.state = GameController.GameState.ROUNDEND;
+
+                GameController.instance.Invoke("SpawnPlayers", 3);
+                
+            }
+        }
 	}
 
     public void SpawnPlayers()
     {
-		GameObject[] powerups = GameObject.FindGameObjectsWithTag ("Powerup");
+        state = GameState.INGAME;
+        spawnPowerups = false;
+        Invoke("StartSpawningPowerups", powerupRoundStart);
+
+        GameObject[] powerups = GameObject.FindGameObjectsWithTag ("Powerup");
 		foreach(GameObject powerup in powerups)
 		{
 			Network.Destroy(powerup);
@@ -128,19 +161,22 @@ public class GameController : MonoBehaviour {
 	}
 
 	void SpawnPowerUp(){
-        GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
-
-        if (selectSpawnPoint != null)
+        if (spawnPowerups)
         {
-            GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
+            GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
 
-            if (Network.isServer)
+            if (selectSpawnPoint != null)
             {
-                spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
+                GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
+
+                if (Network.isServer)
+                {
+                    spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
+                }
             }
         }
 
-		powerupSpawned = true;
+        powerupSpawned = true;
 	}
 
 	GameObject GetSpawn(ref List<GameObject> occupied)
