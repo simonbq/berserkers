@@ -36,7 +36,7 @@ public class LobbyStateMenu : MenuState {
 		buttons.Add (b);
 	}
 
-	public override void update(Menu m) {
+	public override void update(MenuBase m) {
 		data.menu = m;
 		data.tarIP = ipNumber;
 		foreach (Button b in buttons) {

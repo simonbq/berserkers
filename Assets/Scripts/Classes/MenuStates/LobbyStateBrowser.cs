@@ -44,7 +44,7 @@ public class LobbyStateBrowser : MenuState
         buttons.Add(b);
     }
 
-    public override void update(Menu m)
+    public override void update(MenuBase m)
     {
         data.menu = m;
         data.tarIP = ipNumber;

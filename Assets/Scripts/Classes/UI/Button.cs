@@ -9,16 +9,20 @@ public class Button {
 	private GUIContent content;
 	private System.Action<ActionData> onClick;
 	private float angle = 0.0f;
-	public Button(int x, int y, Vector2 size) : this(new Rect(x, y, size.x, size.y)) {
+	private float rotationSpeed;
+	private float rotationAngle;
+	public Button(int x, int y, Vector2 size, float rotationSpeed = 1.0f, float rotationAngle = 15.0f) : this(new Rect(x, y, size.x, size.y), rotationSpeed, rotationAngle) {
 
 	}
 
-	public Button(int x, int y, int width, int height) : this(new Rect (x, y, width, height)) {
+	public Button(int x, int y, int width, int height, float rotationSpeed = 1.0f, float rotationAngle = 15.0f) : this(new Rect (x, y, width, height), rotationSpeed, rotationAngle) {
 	}
 
-	public Button(Rect area) {
+	public Button(Rect area, float rotationSpeed = 1.0f, float rotationAngle = 15.0f) {
 		this.area = area;
 		content = new GUIContent ();
+		this.rotationSpeed = rotationSpeed;
+		this.rotationAngle = rotationAngle;
 	}
 
 	public void setText(string text) {
@@ -32,7 +36,7 @@ public class Button {
 	public void calculate(ActionData data) {
 		scaledCenter.x = (area.center.x * data.menu.screen_scale.x);
 		scaledCenter.y = (area.center.y * data.menu.screen_scale.y);
-		angle = Mathf.Cos (Time.time) * 15.0f;
+		angle = Mathf.Cos (Time.time * rotationSpeed) * rotationAngle;
 	}
 
 	// Renders and returns true if pressed

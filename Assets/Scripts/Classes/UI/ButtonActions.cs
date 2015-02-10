@@ -2,7 +2,7 @@
 using System.Collections;
 
 public struct ActionData {
-	public Menu menu { get; set; }
+	public MenuBase menu { get; set; }
 	public string tarIP { get; set; }
 	public string gameName { get; set; }
 }
@@ -54,7 +54,8 @@ public class ButtonActions {
 	public static System.Action<ActionData> disconnect { get { return _disconnect; } }
 	private static void _disconnect(ActionData data) {
 		Network.Disconnect ();
-		data.menu.goBack ();
+		if(data.menu != null)
+			data.menu.goBack ();
 	}
 
 	public static System.Action<ActionData> host { get { return _host; } }
