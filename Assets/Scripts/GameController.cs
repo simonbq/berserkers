@@ -166,15 +166,18 @@ public class GameController : MonoBehaviour {
 	void SpawnPowerUp(){
         if (spawnPowerups)
         {
-            GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
-
-            if (selectSpawnPoint != null)
+            for (int i = 0; i < Random.Range(1, Mathf.Min(spawnPoints.Count - powerupSpawns.Count, Connections.GetInstance().players.Count + 1)); i++)
             {
-                GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
+                GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
 
-                if (Network.isServer)
+                if (selectSpawnPoint != null)
                 {
-                    spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
+                    GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
+
+                    if (Network.isServer)
+                    {
+                        spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
+                    }
                 }
             }
         }
