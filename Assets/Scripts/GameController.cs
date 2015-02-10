@@ -166,7 +166,11 @@ public class GameController : MonoBehaviour {
 	void SpawnPowerUp(){
         if (spawnPowerups)
         {
-            for (int i = 0; i < Random.Range(1, Mathf.Min(spawnPoints.Count - powerupSpawns.Count, Connections.GetInstance().players.Count + 1)); i++)
+            int spawnsLeft = spawnPoints.Count - powerupSpawns.Count;
+            int playersAlive = players.FindAll(x => x.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD).Count;
+            playersAlive = Mathf.CeilToInt((float)playersAlive / 2);
+            
+            for (int i = 0; i < Random.Range(1, Mathf.Min(spawnsLeft, playersAlive)); i++)
             {
                 GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
 
