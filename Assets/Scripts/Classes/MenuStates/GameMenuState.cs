@@ -9,16 +9,24 @@ public class GameMenuState : MenuState {
 		data = new ActionData ();
 		Button b;
 
-		b = new Button ((int)Menu.SCREEN_SIZE.x / 2, 300, 256, 128, 0.0f, 0.0f);
+		b = new Button ((int)Menu.SCREEN_SIZE.x / 2 - 128, 300, 256, 128, 30.0f, 5.0f);
 		b.setText("Disconnect");
 		b.setOnClick (ButtonActions.disconnect);
+		buttons.Add (b);
+
 	}
 
-	public override void update(Menu m) {
+	public override void update(MenuBase m) {
 		data.menu = m;
+		foreach(Button b in buttons) {
+			b.calculate(data);
+		}
 	}
 
 	public override void render() {
+		foreach(Button b in buttons) {
+			b.update(data);
+		}
 
 	}
 }

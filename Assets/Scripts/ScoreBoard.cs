@@ -7,9 +7,9 @@ public enum Announcments {
 	LOTS_OF_KILL_LITTLE_TIME, MANY_KILL, READY, SET, SOON
 }
 
-public class ScoreBoard : MonoBehaviour {
+public class ScoreBoard : MenuBase {
 	public static ScoreBoard instance { get; set; }
-	public static readonly Vector2 SCREEN_SIZE = new Vector2 (1920, 1080);
+	public Vector2 screen_scale { get { return screenScale; } }
 	
 	public Rect area;
 	public GUISkin skin;
@@ -30,10 +30,13 @@ public class ScoreBoard : MonoBehaviour {
 	public float quote_maxSpeed_endquote = 9000.0f;
 	private float est_maxSpeed = 0.6f;
 
+	private bool menuActive = false;
+
 	private List<PlayerInfo> playas;
 	// Use this for initialization
 	void Awake () {
 		instance = this;
+		setCurrent (new GameMenuState ());
 		//speedometer_rect = new Rect (SCREEN_SIZE.x-600, 0, 600, 400);
 	}
 	
@@ -43,6 +46,7 @@ public class ScoreBoard : MonoBehaviour {
 		float width = Screen.width / SCREEN_SIZE.x;
 		float height = Screen.height / SCREEN_SIZE.y;
 		scale = new Vector3(width, height, 0);
+		screenScale = new Vector2 (width, height);
 		matrix = Matrix4x4.TRS (scale, Quaternion.identity, new Vector3(scale.x, scale.y, 1));
 
 		PlayerInfo[] players = new PlayerInfo[Connections.GetInstance().players.Values.Count];
@@ -50,6 +54,10 @@ public class ScoreBoard : MonoBehaviour {
 		playas = new List<PlayerInfo>(players);
 		playas.Sort();
 		est_maxSpeed = Mathf.Max (est_maxSpeed, HUDSingleton.instance.speed);
+		if(Input.GetButtonUp("toggleMenu")) {
+			menuActive = !menuActive;
+		}
+		current.update (this);
 	}
 	
 	void OnGUI() {
@@ -96,6 +104,10 @@ public class ScoreBoard : MonoBehaviour {
 		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
 		Debug.Log (nosmoke_rect.center);
 		GUIUtility.ScaleAroundPivot (Vector2.one * (1/f), nosmoke_rect.center);
+
+		if(menuActive) {
+			current.render();
+		}
 	}
 
 	private IEnumerator tempdisplay (int id, float duration) {

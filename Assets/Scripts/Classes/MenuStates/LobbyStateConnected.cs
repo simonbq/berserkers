@@ -32,7 +32,7 @@ public class LobbyStateConnected : MenuState {
 		host.setOnClick (ButtonActions.start);
 	}
 
-	public override void update(Menu m) {
+	public override void update(MenuBase m) {
 		data.menu = m;
 		foreach(Button b in buttons) {
 			b.calculate(data);

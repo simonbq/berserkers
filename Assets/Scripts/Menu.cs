@@ -51,20 +51,16 @@ public class StarAnchor {
 	}
 }
 
-public class Menu : MonoBehaviour {
-	public static readonly Vector2 SCREEN_SIZE = new Vector2 (1920, 1080);
-	private Vector2 screenScale;
+public class Menu : MenuBase {
 	public Texture background;
 	public Texture spinThing;
 	public Texture TitleText;
 	public Texture[] stars;
 	public float starSpeed = 5000.0f;
-	private MenuState current;
-	private Stack<MenuState> history = new Stack<MenuState>();
+
 	public GUISkin skin;
 	private Matrix4x4 matrix;
 	private Vector3 scale = new Vector3();
-	public Vector2 screen_scale { get { return screenScale; } }
 	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
 	private Rect spinThingArea = new Rect(0, 0, 4000, 4000);
 	private Rect titleArea = new Rect (0, 0, 1596, 453);
@@ -82,8 +78,7 @@ public class Menu : MonoBehaviour {
 
 		titleArea.center = SCREEN_SIZE / 2;
 		titleArea.y += 300;
-
-		current = MenuStates.MAIN;
+		setCurrent (MenuStates.MAIN);
 		float width = Screen.width / SCREEN_SIZE.x;
 		float height = Screen.height / SCREEN_SIZE.y;
 		scale = new Vector3(width, height, 0);
@@ -138,14 +133,5 @@ public class Menu : MonoBehaviour {
 		}
 		s.die();
 		yield return null;
-	}
-
-	public void setCurrent(MenuState state) {
-		history.Push (current);
-		current = state;
-	}
-
-	public void goBack() {
-		current = history.Pop ();
 	}
 }
