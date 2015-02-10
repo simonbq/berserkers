@@ -103,7 +103,10 @@ public class GameController : MonoBehaviour {
     {
         state = GameState.INGAME;
         spawnPowerups = false;
+        CancelInvoke("SpawnPowerUp");
+        powerupSpawned = true;
         Invoke("StartSpawningPowerups", powerupRoundStart);
+        powerupSpawns.Clear();
 
         GameObject[] powerups = GameObject.FindGameObjectsWithTag ("Powerup");
 		foreach(GameObject powerup in powerups)

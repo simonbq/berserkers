@@ -31,7 +31,6 @@ public class PowerupScript : MonoBehaviour {
 	
 	void PickUp (int id) {
 		networkView.RPC ("Explode", RPCMode.All, id);
-        GameController.instance.ReleaseRuneSpawn(spawnPoint);
 		Network.Destroy (gameObject);
 	}
 
@@ -47,4 +46,9 @@ public class PowerupScript : MonoBehaviour {
 			ScreenShaker.instance.Shake (1, 0.2f);
 		}
 	}
+
+    void OnDestroy()
+    {
+        GameController.instance.ReleaseRuneSpawn(spawnPoint);
+    }
 }

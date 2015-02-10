@@ -10,6 +10,7 @@ using System.Collections.Generic;
 public class LobbyStateConnected : MenuState {
 	ActionData data;
 	List<Button> buttons = new List<Button>();
+    Vector2 lobbyScroll = new Vector2();
 	Button host;
 	Button ready;
 	Rect usersArea = new Rect(960 - 512, 32, 512, 512);
@@ -47,14 +48,36 @@ public class LobbyStateConnected : MenuState {
 		if(!Connections.GetInstance().isConnected) {
 			m.goBack();
 		}
+
+        if (Connections.GetInstance().playerInfo.ready)
+        {
+            ready.setText("Ready");
+        }
+
+        else
+        {
+            ready.setText("Not ready");
+        }
+
+        if (Connections.GetInstance().playersReady)
+        {
+            host.setText("Start");
+        }
+
+        else
+        {
+            host.setText("Waiting");
+        }
 	}
 
 	public override void render() {
 		GUILayout.BeginArea (usersArea);
+        lobbyScroll = GUILayout.BeginScrollView(lobbyScroll);
 		foreach(PlayerInfo p in Connections.GetInstance().players.Values)
 		{
 			GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
 		}
+        GUILayout.EndScrollView();
 		GUILayout.EndArea ();
 		
 		foreach(Button b in buttons) {
