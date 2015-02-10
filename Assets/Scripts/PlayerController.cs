@@ -287,7 +287,7 @@ public class PlayerController : MonoBehaviour {
 
                         networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 
-                        this.playerInfo.killstreaks.Died();
+                        Connections.GetInstance().players[hitPlayer.playerInfo.id].killstreaks.Died();
 
                         
                         if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
@@ -457,16 +457,18 @@ public class PlayerController : MonoBehaviour {
 		{
 			ScreenShaker.instance.Shake (1, 0.5f);
 		}
+        
 		if (Connections.GetInstance ().playerId == playerInfo.id)
 		{
-			if (wall)
-				SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundWall);
-			else 
-			{
-				SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundPlayer);
-				SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
-			}
-		}
+            if (!wall)
+            {
+                SoundStore.instance.PlayRandom(SoundStore.instance.StunSoundPlayer);
+                SoundStore.instance.PlayRandom(SoundStore.instance.StunShout);
+            }
+        }
+        if (wall)
+            SoundStore.instance.PlayRandom(SoundStore.instance.StunSoundWall);
+        
 	}
 
 	[RPC]
