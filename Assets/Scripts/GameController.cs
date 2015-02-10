@@ -80,17 +80,21 @@ public class GameController : MonoBehaviour {
 
         if (GameController.instance.state != GameController.GameState.ROUNDEND)
         {
+            int countAlive = 0;
             foreach (GameObject player in GameController.instance.players)
             {
-                if (player.GetComponent<PlayerController>().state == PlayerController.PlayerState.ALIVE)
-                    playersAlive++;
+                if (player.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD)
+                    countAlive++;
             }
-            if (playersAlive < 2)
+
+            playersAlive = countAlive;
+
+            if (playersAlive < 2 && players.Count > 1)
             {
                 GameController.instance.state = GameController.GameState.ROUNDEND;
 
-                networkView.RPC("PlayWinSound", RPCMode.All);
                 GameController.instance.Invoke("SpawnPlayers", 3);
+                
             }
         }
 	}

@@ -415,7 +415,6 @@ public class PlayerController : MonoBehaviour {
     void MakeAlive()
     {
         state = PlayerState.ALIVE;
-        //ActivateEffects(true);
     }
 
     void ActivateEffects(bool mActivated) {
