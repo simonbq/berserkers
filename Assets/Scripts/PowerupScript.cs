@@ -8,6 +8,8 @@ public class PowerupScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("DeadPlayer"), LayerMask.NameToLayer("Ragdoll"));
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("DeadPlayer"), LayerMask.NameToLayer("DeadPlayer"));
 	}
 
 	// Update is called once per frame

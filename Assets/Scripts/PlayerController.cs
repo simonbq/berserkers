@@ -100,6 +100,8 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start()
 	{
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Ragdoll"));
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("DeadPlayer"));
         mAudioSource = GetComponent<AudioSource>();
         startSpeed = movementSpeed;
 		state = PlayerState.IDLE;
@@ -132,7 +134,7 @@ public class PlayerController : MonoBehaviour {
 		currentSpeed = 0;
 
 		networkView.RPC ("ForcePosition", RPCMode.All, transform.position);
-
+        gameObject.layer = LayerMask.NameToLayer("Player");
 	}
 
     void Update()
@@ -284,7 +286,7 @@ public class PlayerController : MonoBehaviour {
 
 
                         //rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
-
+                        gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
                         networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 
                         this.playerInfo.killstreaks.Died();
