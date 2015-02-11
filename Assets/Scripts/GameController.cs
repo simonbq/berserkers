@@ -89,7 +89,7 @@ public class GameController : MonoBehaviour {
 
             playersAlive = countAlive;
 
-            if ((playersAlive < 2 && players.Count > 1) || (playersAlive < 1 && players.Count == 1))
+            if (playersAlive < 2 && players.Count > 1)
             {
                 GameController.instance.state = GameController.GameState.ROUNDEND;
 
@@ -166,22 +166,15 @@ public class GameController : MonoBehaviour {
 	void SpawnPowerUp(){
         if (spawnPowerups)
         {
-            int spawnsLeft = spawnPoints.Count - powerupSpawns.Count;
-            int playersAlive = players.FindAll(x => x.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD).Count;
-            playersAlive = Mathf.CeilToInt((float)playersAlive / 2);
-            
-            for (int i = 0; i < Random.Range(1, Mathf.Min(spawnsLeft, playersAlive)); i++)
+            GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
+
+            if (selectSpawnPoint != null)
             {
-                GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
+                GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
 
-                if (selectSpawnPoint != null)
+                if (Network.isServer)
                 {
-                    GameObject spawned = Network.Instantiate(powerupPrefab, selectSpawnPoint.transform.position + new Vector3(0, 0.01f, 0), selectSpawnPoint.transform.rotation, 0) as GameObject;
-
-                    if (Network.isServer)
-                    {
-                        spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
-                    }
+                    spawned.GetComponent<PowerupScript>().spawnPoint = selectSpawnPoint;
                 }
             }
         }

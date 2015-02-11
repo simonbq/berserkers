@@ -3,8 +3,8 @@ using System.Collections;
 
 public class IntroScreen : MonoBehaviour {
 	public float timeToAllowTransition = 1.5f;
-	public GameObject menu;
 	public Texture[] movie;
+	public string targetLevel;
 	private int current = 0;
 	public float loopTime = 2.0f;
 	private float timeStamp = 0.0f;
@@ -39,7 +39,8 @@ public class IntroScreen : MonoBehaviour {
 			col.g -= Time.deltaTime;
 			yield return null;
 		}
-		menu.SetActive(true);
-		gameObject.SetActive(false);
+		// menu.SetActive(true);
+		// gameObject.SetActive(false);
+		Application.LoadLevel (targetLevel);
 	}
 }
