@@ -296,6 +296,7 @@ public class PlayerController : MonoBehaviour {
                             networkView.RPC("PlayDeathShout", RPCMode.All);
 
                             networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+                            hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id);
                         }
                         else
                         {
@@ -493,6 +494,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		SoundStore.instance.Play (SoundStore.instance.WinSound);
 	}
+
 
 	[RPC]
 	void Kill(int killerId)
