@@ -311,7 +311,7 @@ public class PlayerController : MonoBehaviour {
 			{
                 if (inOverKill)
                 {
-                    Kill(playerInfo.id);
+                    networkView.RPC("Kill", RPCMode.All, playerInfo.id);
                 }
                 else
                 {
