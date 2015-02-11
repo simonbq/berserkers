@@ -284,28 +284,24 @@ public class PlayerController : MonoBehaviour {
                         Debug.Log("Kill player");
                         networkView.RPC("PlayDeathShout", RPCMode.All);
 
-
-                        //rigidbody.AddExplosionForce(2000, transform.position + transform.forward * 2, 0, 0);
-                        gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
                         networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
 
-                        Connections.GetInstance().players[hitPlayer.playerInfo.id].killstreaks.Died();
-
                         
-                        if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
-                        {
-                            Firstblood();
-                        }
-                        if (GameController.instance.playersAlive < 2)
-                        {
-                            networkView.RPC("PlayWinSound", RPCMode.All);
-                        }
                     }
                     else if (hitPlayer.movementSpeed == this.movementSpeed &&
                              state != PlayerState.STUNNED)
                     {
-                        Stunned(stunDuration, false, collision.contacts[0].normal);
-                        hitPlayer.Stunned(stunDuration, false, collision.contacts[0].normal);
+                        if (hitPlayer.inOverKill && this.inOverKill)
+                        {
+                            networkView.RPC("PlayDeathShout", RPCMode.All);
+
+                            networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+                        }
+                        else
+                        {
+                            Stunned(stunDuration, false, collision.contacts[0].normal);
+                            hitPlayer.Stunned(stunDuration, false, collision.contacts[0].normal);
+                        }
                     }
                 }
             }
@@ -494,6 +490,7 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void Kill(int killerId)
 	{
+        inOverKill = false;
         CancelInvoke();
         state = PlayerState.DEAD;
 
@@ -502,6 +499,19 @@ public class PlayerController : MonoBehaviour {
 		splat.particleSystem.Play ();
 
 		Debug.Log (playerInfo.id + " got killed by " + killerId);
+
+        gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
+
+        Connections.GetInstance().players[killerId].killstreaks.Died();
+
+        if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
+        {
+            Firstblood();
+        }
+        if (GameController.instance.playersAlive < 2)
+        {
+            networkView.RPC("PlayWinSound", RPCMode.All);
+        }
 
 		//You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
 		Connections.GetInstance ().players [killerId].kills++;
