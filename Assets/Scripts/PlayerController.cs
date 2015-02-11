@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject model;
 	public GameObject ragdoll;
 	public GameObject splat;
+    public GameObject splatDecal;
     public GameObject nameText;
 
 	private float _input = 0;
@@ -284,7 +285,7 @@ public class PlayerController : MonoBehaviour {
                         Debug.Log("Kill player");
                         networkView.RPC("PlayDeathShout", RPCMode.All);
 
-                        networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
+                        networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up);
 
                         
                     }
@@ -295,8 +296,8 @@ public class PlayerController : MonoBehaviour {
                         {
                             networkView.RPC("PlayDeathShout", RPCMode.All);
 
-                            networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id);
-                            hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id);
+                            networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up);
+                            hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id, Vector3.up);
                         }
                         else
                         {
@@ -312,7 +313,7 @@ public class PlayerController : MonoBehaviour {
 			{
                 if (inOverKill)
                 {
-                    networkView.RPC("Kill", RPCMode.All, playerInfo.id);
+                    networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal);
                 }
                 else
                 {
@@ -418,6 +419,21 @@ public class PlayerController : MonoBehaviour {
         return returnValue;
     }
 
+    void SpawnSplatDecal(Vector3 dir)
+    {
+        GameObject decal = Instantiate(splatDecal, transform.position + (transform.up + transform.forward) * 0.5f, Quaternion.LookRotation(dir)) as GameObject;
+        if (dir != Vector3.up &&
+            dir != Vector3.down)
+        {
+            decal.transform.Rotate(45, 0, Random.RandomRange(0f, 360f));
+        }
+
+        else
+        {
+            decal.transform.Rotate(0, 0, Random.RandomRange(0f, 360f));
+        }
+    }
+
     void MakeAlive()
     {
         state = PlayerState.ALIVE;
@@ -497,9 +513,10 @@ public class PlayerController : MonoBehaviour {
 
 
 	[RPC]
-	void Kill(int killerId)
+	void Kill(int killerId, Vector3 dir)
 	{
         SetSpeed(startSpeed);
+        SpawnSplatDecal(-dir);
 
         CancelInvoke();
         state = PlayerState.DEAD;
