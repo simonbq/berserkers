@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour {
 
     private AudioSource mAudioSource;
 
-    public float OVERKILLSPEED = 0.30f;
+    public float OVERKILLSPEED = 0.35f;
 
     public Material[] materials;
     public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
@@ -309,7 +309,14 @@ public class PlayerController : MonoBehaviour {
 			if (collision.gameObject.tag == "Wall" &&
 			    state != PlayerState.STUNNED)
 			{
-				Stunned(stunDuration, true, collision.contacts[0].normal);
+                if (inOverKill)
+                {
+                    Kill(playerInfo.id);
+                }
+                else
+                {
+                    Stunned(stunDuration, true, collision.contacts[0].normal);
+                }
 			}
 		}
 	}
@@ -490,7 +497,8 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void Kill(int killerId)
 	{
-        inOverKill = false;
+        SetSpeed(startSpeed);
+
         CancelInvoke();
         state = PlayerState.DEAD;
 
@@ -502,45 +510,54 @@ public class PlayerController : MonoBehaviour {
 
         gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
 
-        Connections.GetInstance().players[killerId].killstreaks.Died();
 
-        if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
-        {
-            Firstblood();
-        }
+
+        playerInfo.deaths++;
+        SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
         if (GameController.instance.playersAlive < 2)
         {
             networkView.RPC("PlayWinSound", RPCMode.All);
         }
 
-		//You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
-		Connections.GetInstance ().players [killerId].kills++;
-		playerInfo.deaths++;
+        //If you killed yourself, none of this applies
+        if (playerInfo.id != killerId)
+        {
+            Connections.GetInstance().players[killerId].killstreaks.Died();
 
-		Killstreaks killerKillstreak = Connections.GetInstance ().players [killerId].killstreaks;
-		killerKillstreak.AddKill ();
-		SoundStore.instance.PlayRandom (SoundStore.instance.KillSound);
-		SoundStore.instance.PlayRandom (SoundStore.instance.KillShout);
-		if (killerKillstreak.GetFastKills() == 2) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
-		}
-		else if (killerKillstreak.GetFastKills() == 3) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
-		}
-		else if (killerKillstreak.GetKills() == 3) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
-		}
-		else if (killerKillstreak.GetKills() == 5) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
-		}
-		else if (killerKillstreak.GetKills() == 7) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
-		}
+            if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
+            {
+                Firstblood();
+            }
 
-		/*if (Connections.GetInstance ().playerId == playerInfo.id)
-		{
+            //You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
+            Connections.GetInstance().players[killerId].kills++;
 
-		}*/
+            Killstreaks killerKillstreak = Connections.GetInstance().players[killerId].killstreaks;
+            killerKillstreak.AddKill();
+            SoundStore.instance.PlayRandom(SoundStore.instance.KillShout);
+
+            if (killerKillstreak.GetFastKills() == 2)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
+            }
+            else if (killerKillstreak.GetFastKills() == 3)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
+            }
+            else if (killerKillstreak.GetKills() == 3)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
+            }
+            else if (killerKillstreak.GetKills() == 5)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
+            }
+            else if (killerKillstreak.GetKills() == 7)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
+            }
+
+        }
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{

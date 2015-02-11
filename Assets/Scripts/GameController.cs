@@ -89,7 +89,7 @@ public class GameController : MonoBehaviour {
 
             playersAlive = countAlive;
 
-            if (playersAlive < 2 && players.Count > 1)
+            if ((playersAlive < 2 && players.Count > 1) || (playersAlive < 1 && players.Count == 1))
             {
                 GameController.instance.state = GameController.GameState.ROUNDEND;
 
