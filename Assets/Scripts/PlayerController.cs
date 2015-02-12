@@ -591,6 +591,11 @@ public class PlayerController : MonoBehaviour {
 
         }
 
+        else
+        {
+            Bobber.instance.startClimax(0.5f, 0.5f);
+        }
+
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
 			ScreenShaker.instance.Shake (1, 1);
