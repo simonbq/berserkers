@@ -4,6 +4,7 @@
 		_BarTex ("Bar (RGB)", 2D) = "white" {}
 		_CutoffTex ("Cutoff Texture (RGB)", 2D) = "white" {}
 		_Cutoff ("Cutoff", Range(0, 1)) = 0.5
+		_Smooth ("Smooth", Range(0, 50)) = 10
 	}
 	SubShader {
 		Tags { "RenderType"="Transparent" }
@@ -16,6 +17,7 @@
 		sampler2D _BarTex;
 		sampler2D _CutoffTex;
 		float _Cutoff;
+		float _Smooth;
 
 		struct Input {
 			float2 uv_MainTex;
@@ -24,18 +26,13 @@
 		void surf (Input IN, inout SurfaceOutput o) {
 			half cutoff = tex2D (_CutoffTex, IN.uv_MainTex).r;
 			half4 bg = tex2D (_MainTex, IN.uv_MainTex);
-			half4 bar = half4(0, 0, 0, 0);
-			
-			if(cutoff < _Cutoff)
-			{
-				bar = tex2D (_BarTex, IN.uv_MainTex);
-			}
-			
-			if(bar.a > 0.05)
-			{
-				bg = bar;
-			}
-			
+			half4 bar = tex2D (_BarTex, IN.uv_MainTex);
+			half cut = lerp(1, 0, (cutoff - _Cutoff) * _Smooth);
+			cut = clamp(cut, 0, 1);
+			bar *= cut;
+			bg *= 1 - clamp(bar.a, 0, 1);
+			bar *= 1 - clamp(bg.a, 0, 1);
+			bg += bar;
 			
 			o.Emission = bg.rgb;
 			o.Alpha = bg.a;
