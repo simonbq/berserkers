@@ -102,7 +102,6 @@ public class ScoreBoard : MenuBase {
 
 		GUIUtility.ScaleAroundPivot (Vector2.one * f, nosmoke_rect.center);
 		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
-		Debug.Log (nosmoke_rect.center);
 		GUIUtility.ScaleAroundPivot (Vector2.one * (1/f), nosmoke_rect.center);
 
 		if(menuActive) {

@@ -47,15 +47,35 @@ public class Bobber : MonoBehaviour {
 	}
 
 
-	IEnumerator bob(Transform t, int i) {
+	IEnumerator bob(Transform t, int i, float height = 1.0f) {
 		float startTime = Time.time;
 		Vector3 start = t.position;
 		while(Time.time - startTime < Mathf.PI) {
-			t.position = start + Vector3.up * Mathf.Abs(Mathf.Sin((Time.time-startTime) * 2)) / 4;
+			t.position = start + (Vector3.up * Mathf.Abs(Mathf.Sin((Time.time-startTime) * 2)) / 4) * height;
 			yield return null;
 		}
 		t.position = start;
 		occupied [i] = false;
 		yield return null;
+	}
+
+	public void startClimax(float startIntensity, float duration) {
+		StartCoroutine (climax (startIntensity, duration));
+	}
+
+	private IEnumerator climax(float startIntensity, float duration) {
+		float intensity = startIntensity;
+		float start = Time.time;
+		while(Time.time < start + duration) {
+			intensity = Mathf.Lerp(startIntensity, 1.0f, (Time.time - start) / duration);
+			for(int i = 0; i < bobsPerTick * intensity; i++) {
+				int r = Random.Range(0, crowds.Count);
+				if(!occupied[r]) {
+					StartCoroutine(bob (crowds[r], r, intensity));
+					occupied[r] = true;
+				}
+			}
+			yield return new WaitForSeconds(bobTimer);
+		}
 	}
 }

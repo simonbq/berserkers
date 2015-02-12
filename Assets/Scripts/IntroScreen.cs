@@ -11,6 +11,7 @@ public class IntroScreen : MonoBehaviour {
 	private Color col = Color.white;
 	private float timePerFrame;
 	bool locked = false;
+	private bool activated = false;
 	// Use this for initialization
 	void Start () {
 	
@@ -19,7 +20,8 @@ public class IntroScreen : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		timePerFrame = loopTime / movie.Length;
-		if(!locked && Time.time > timeToAllowTransition && Input.anyKey) {
+		if(!locked && !activated && Time.time > timeToAllowTransition && Input.anyKey) {
+			activated = true;
 			StartCoroutine(transition());
 		}
 		current = (int)(Time.time / timePerFrame) % movie.Length;
