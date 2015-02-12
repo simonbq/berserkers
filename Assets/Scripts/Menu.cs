@@ -3,21 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Deployment;
 
-public class Star {
+public abstract class Starlike {
+	public Starlike next = null;
+	public Starlike previous = null;
+	public abstract void gui();
+}
+
+public class Star : Starlike {
 	public Rect rect;
-	public Star next = null;
-	public Star previous = null;
+
+
 	private Texture tex;
+	private bool dead = false;
 	public Star(Rect rect, Texture tex) {
 		this.rect = rect;
 		this.tex = tex;
 	}
 
-	public void gui() {
+	public override void gui() {
 		GUI.DrawTexture (rect, tex);
 	}
 
 	public void die() {
+		dead = true;
 		if(previous != null) {
 			previous.next = next;
 		}
@@ -27,23 +35,24 @@ public class Star {
 	}
 }
 
-public class StarAnchor {
-	public Star next;
+public class StarAnchor : Starlike {
 
 	public void Add(Star star) {
 		if(next == null) {
 			next = star;
+			next.previous = this;
 		} else {
-			Star s = next;
+			Starlike s = next;
 			while(s.next != null) {
 				s = s.next;
 			}
 			s.next = star;
+			star.previous = s;
 		}
 	}
 
-	public void gui() {
-		Star s = next;
+	public override void gui() {
+		Starlike s = next;
 		while(s != null) {
 			s.gui();
 			s = s.next;
@@ -62,11 +71,12 @@ public class Menu : MenuBase {
 	private Matrix4x4 matrix;
 	private Vector3 scale = new Vector3();
 	private static readonly Rect BACKGROUND_AREA = new Rect (0, 0, 1920, 1080);
-	private Rect spinThingArea = new Rect(0, 0, 4000, 4000);
+	private Rect spinThingArea = new Rect(0, 0, 5000, 5000);
 	private Rect titleArea = new Rect (0, 0, 1596, 453);
 	public AnimationCurve titleAwesomenessCurve;
 
 	public float avgStarSpawnTime = 0.7f;
+	public int starsPerSpawn = 2;
 	private float nextStar = 0.0f;
 
 	private StarAnchor starsAnchor = new StarAnchor();
@@ -90,7 +100,10 @@ public class Menu : MenuBase {
 	void Update () {
 		if(Time.time > nextStar) {
 			nextStar = Time.time + avgStarSpawnTime;
-			StartCoroutine(star());
+			for(int i = 0; i < starsPerSpawn; i++) {
+				StartCoroutine(star());
+			}
+
 		}
 		float width = Screen.width / SCREEN_SIZE.x;
 		float height = Screen.height / SCREEN_SIZE.y;
@@ -124,7 +137,7 @@ public class Menu : MenuBase {
 	}
 
 	private IEnumerator star() {
-		Star s = new Star (new Rect (Random.Range (100, 1820), 1200, Random.Range(32, 64), Random.Range(32, 64)), stars[Random.Range(0, stars.Length)]);
+		Star s = new Star (new Rect (Random.Range (-32, 1952), 1200, Random.Range(32, 64), Random.Range(32, 64)), stars[Random.Range(0, stars.Length)]);
 		starsAnchor.Add (s);
 		float v = Random.Range (0.8f, 1.0f);
 		while(s.rect.y+ 100 > 0) {
