@@ -27,6 +27,8 @@ public class PlayerNameScript : MonoBehaviour {
 
         textMesh.color = c;
         transform.forward = Camera.main.transform.forward;
+
+        transform.position = transform.parent.transform.position + Vector3.forward * 1.25f;
     }
 
     public void SetName(string name)

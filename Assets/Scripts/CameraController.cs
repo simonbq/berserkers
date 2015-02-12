@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour {
 
             if (player.state == PlayerController.PlayerState.DEAD)
             {
-                targetPos = Vector3.zero + Vector3.up * 3f + cameraOffset;
+                targetPos = Vector3.zero + Vector3.forward * cameraOffset.z * 1.5f + Vector3.up * 3f + cameraOffset;
             }
 
 			transform.position = Vector3.Lerp (transform.position, targetPos, ease * Time.fixedDeltaTime);
