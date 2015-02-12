@@ -9,7 +9,9 @@ public class Bobber : MonoBehaviour {
 	public float bobTimer = 0.1f;
 	private float lastBob = 0.0f;
 	public float bobsPerTick = 5;
+	public bool crowdAudioEnabled = true;
 
+	private AudioSource[] mood;
 	public float cheerFactor { get; set; }
 
 	// Use this for initialization
@@ -30,6 +32,7 @@ public class Bobber : MonoBehaviour {
 			}
 		}
 		occupied = new bool[crowds.Count];
+		mood = GetComponents<AudioSource> ();
 	}
 	
 	// Update is called once per frame
@@ -43,6 +46,14 @@ public class Bobber : MonoBehaviour {
 					occupied[r] = true;
 				}
 			}
+		}
+		if(crowdAudioEnabled) {
+			mood [0].volume = Mathf.InverseLerp (0, 10, bobsPerTick * cheerFactor);
+			mood [1].volume = Mathf.InverseLerp (20, 50, bobsPerTick * cheerFactor);
+		} else {
+			mood [0].volume = 0;
+			mood [1].volume = 0;
+
 		}
 	}
 
