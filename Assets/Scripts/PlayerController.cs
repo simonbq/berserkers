@@ -234,6 +234,12 @@ public class PlayerController : MonoBehaviour {
             mAudioSource.Play();
             ActivateEffects(true);
             inOverKill = true;
+
+            if (playerInfo.id == Connections.GetInstance().playerId)
+            {
+                HUDSingleton.instance.onFire = true;
+                Debug.Log("on fire");
+            }
         }
 
         if (movementSpeed < OVERKILLSPEED && inOverKill)
@@ -241,6 +247,11 @@ public class PlayerController : MonoBehaviour {
             mAudioSource.Stop();
             ActivateEffects(false);
             inOverKill = false;
+
+            if (playerInfo.id == Connections.GetInstance().playerId)
+            {
+                HUDSingleton.instance.onFire = false;
+            }
         }
     }       
 
@@ -575,6 +586,8 @@ public class PlayerController : MonoBehaviour {
             {
                 SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
             }
+
+            Bobber.instance.startClimax(1, 1);
 
         }
 

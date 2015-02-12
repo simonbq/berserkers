@@ -87,6 +87,11 @@ public class GameController : MonoBehaviour {
                     countAlive++;
             }
 
+            if (countAlive != 0)
+            {
+                Bobber.instance.cheerFactor = 1 - (1 / countAlive);
+            }
+
             playersAlive = countAlive;
 
             if ((playersAlive < 2 && players.Count > 1) || (playersAlive < 1 && players.Count == 1))

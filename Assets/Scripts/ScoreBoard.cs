@@ -95,7 +95,7 @@ public class ScoreBoard : MenuBase {
 		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / est_maxSpeed);
 		if(Event.current.rawType == EventType.repaint)
 			Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
-		GUI.Label (speedometer_textrect, (int)(HUDSingleton.instance.speed/est_maxSpeed * (quote_maxSpeed_endquote + (float)Random.Range(0, 2))) + "\nkm/h", GUI.skin.customStyles [1]); //
+		GUI.Label (speedometer_textrect, (int)(Mathf.Pow(HUDSingleton.instance.speed, 3)/Mathf.Pow(est_maxSpeed, 3) * (quote_maxSpeed_endquote + (float)Random.Range(0, 2))) + "\nkm/h", GUI.skin.customStyles [1]); //
 		if(currentAnnouncement != null) {
 			GUI.DrawTexture(announcerRect, currentAnnouncement);
 		}
