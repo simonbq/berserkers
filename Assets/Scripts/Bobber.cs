@@ -50,6 +50,10 @@ public class Bobber : MonoBehaviour {
 		if(crowdAudioEnabled) {
 			mood [0].volume = Mathf.InverseLerp (0, 10, bobsPerTick * cheerFactor);
 			mood [1].volume = Mathf.InverseLerp (20, 50, bobsPerTick * cheerFactor);
+		} else {
+			mood [0].volume = 0;
+			mood [1].volume = 0;
+
 		}
 	}
 
