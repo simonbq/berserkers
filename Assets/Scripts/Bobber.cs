@@ -39,7 +39,7 @@ public class Bobber : MonoBehaviour {
 			for(int i = 0; i < bobsPerTick * cheerFactor; i++) {
 				int r = Random.Range(0, crowds.Count);
 				if(!occupied[r]) {
-					StartCoroutine(bob (crowds[r], r));
+					StartCoroutine(bob (crowds[r], r, Random.Range(1, 3)));
 					occupied[r] = true;
 				}
 			}
@@ -47,10 +47,10 @@ public class Bobber : MonoBehaviour {
 	}
 
 
-	IEnumerator bob(Transform t, int i, float height = 1.0f) {
+	IEnumerator bob(Transform t, int i, int jumps = 2, float height = 1.0f) {
 		float startTime = Time.time;
 		Vector3 start = t.position;
-		while(Time.time - startTime < Mathf.PI) {
+		while(Time.time - startTime < Mathf.PI / 2 * jumps) {
 			t.position = start + (Vector3.up * Mathf.Abs(Mathf.Sin((Time.time-startTime) * 2)) / 4) * height;
 			yield return null;
 		}
@@ -71,7 +71,7 @@ public class Bobber : MonoBehaviour {
 			for(int i = 0; i < bobsPerTick * intensity; i++) {
 				int r = Random.Range(0, crowds.Count);
 				if(!occupied[r]) {
-					StartCoroutine(bob (crowds[r], r, intensity));
+					StartCoroutine(bob (crowds[r], r, Random.Range(1, 5), intensity));
 					occupied[r] = true;
 				}
 			}
