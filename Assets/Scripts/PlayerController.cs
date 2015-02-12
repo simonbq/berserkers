@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour {
 
     private AudioSource mAudioSource;
 
-    public float OVERKILLSPEED = 0.30f;
+    public float OVERKILLSPEED = 0.35f;
 
     public Material[] materials;
     public enum PlayerColor { BLACK, BLUE, BROWN, GREEN, ORANGE, PINK, PURPLE, RED };
@@ -101,6 +101,8 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start()
 	{
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Ragdoll"));
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("DeadPlayer"));
         mAudioSource = GetComponent<AudioSource>();
         startSpeed = movementSpeed;
 		state = PlayerState.IDLE;
@@ -133,7 +135,7 @@ public class PlayerController : MonoBehaviour {
 		currentSpeed = 0;
 
 		networkView.RPC ("ForcePosition", RPCMode.All, transform.position);
-
+        gameObject.layer = LayerMask.NameToLayer("Player");
 	}
 
     void Update()
@@ -285,26 +287,23 @@ public class PlayerController : MonoBehaviour {
 
                         networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up);
 
-                        this.playerInfo.killstreaks.Died();
-
                         
-                        if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
+                    }
+                    else if (hitPlayer.movementSpeed == this.movementSpeed &&
+                             state != PlayerState.STUNNED)
+                    {
+                        if (hitPlayer.inOverKill && this.inOverKill)
                         {
                             networkView.RPC("PlayDeathShout", RPCMode.All);
 
                             networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up);
                             hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id, Vector3.up);
                         }
-                        if (GameController.instance.playersAlive < 2)
+                        else
                         {
-                            networkView.RPC("PlayWinSound", RPCMode.All);
+                            Stunned(stunDuration, false, collision.contacts[0].normal);
+                            hitPlayer.Stunned(stunDuration, false, collision.contacts[0].normal);
                         }
-                    }
-                    else if (hitPlayer.movementSpeed == this.movementSpeed &&
-                             state != PlayerState.STUNNED)
-                    {
-                        Stunned(stunDuration, false, collision.contacts[0].normal);
-                        hitPlayer.Stunned(stunDuration, false, collision.contacts[0].normal);
                     }
                 }
             }
@@ -480,16 +479,18 @@ public class PlayerController : MonoBehaviour {
 		{
 			ScreenShaker.instance.Shake (1, 0.5f);
 		}
+        
 		if (Connections.GetInstance ().playerId == playerInfo.id)
 		{
-			if (wall)
-				SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundWall);
-			else 
-			{
-				SoundStore.instance.PlayRandom (SoundStore.instance.StunSoundPlayer);
-				SoundStore.instance.PlayRandom (SoundStore.instance.StunShout);
-			}
-		}
+            if (!wall)
+            {
+                SoundStore.instance.PlayRandom(SoundStore.instance.StunSoundPlayer);
+                SoundStore.instance.PlayRandom(SoundStore.instance.StunShout);
+            }
+        }
+        if (wall)
+            SoundStore.instance.PlayRandom(SoundStore.instance.StunSoundWall);
+        
 	}
 
 	[RPC]
@@ -510,6 +511,7 @@ public class PlayerController : MonoBehaviour {
 		SoundStore.instance.Play (SoundStore.instance.WinSound);
 	}
 
+
 	[RPC]
 	void Kill(int killerId, Vector3 dir)
 	{
@@ -525,34 +527,56 @@ public class PlayerController : MonoBehaviour {
 
 		Debug.Log (playerInfo.id + " got killed by " + killerId);
 
-		//You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
-		Connections.GetInstance ().players [killerId].kills++;
-		playerInfo.deaths++;
+        gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
 
-		Killstreaks killerKillstreak = Connections.GetInstance ().players [killerId].killstreaks;
-		killerKillstreak.AddKill ();
-		SoundStore.instance.PlayRandom (SoundStore.instance.KillSound);
-		SoundStore.instance.PlayRandom (SoundStore.instance.KillShout);
-		if (killerKillstreak.GetFastKills() == 2) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
-		}
-		else if (killerKillstreak.GetFastKills() == 3) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
-		}
-		else if (killerKillstreak.GetKills() == 3) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
-		}
-		else if (killerKillstreak.GetKills() == 5) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
-		}
-		else if (killerKillstreak.GetKills() == 7) {
-			SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
-		}
 
-		/*if (Connections.GetInstance ().playerId == playerInfo.id)
-		{
 
-		}*/
+        playerInfo.deaths++;
+        SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
+        if (GameController.instance.playersAlive < 2)
+        {
+            networkView.RPC("PlayWinSound", RPCMode.All);
+        }
+
+        //If you killed yourself, none of this applies
+        if (playerInfo.id != killerId)
+        {
+            Connections.GetInstance().players[killerId].killstreaks.Died();
+
+            if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
+            {
+                Firstblood();
+            }
+
+            //You can get killerId by killerGameObject.GetComponent<PlayerController>().playerInfo.id
+            Connections.GetInstance().players[killerId].kills++;
+
+            Killstreaks killerKillstreak = Connections.GetInstance().players[killerId].killstreaks;
+            killerKillstreak.AddKill();
+            SoundStore.instance.PlayRandom(SoundStore.instance.KillShout);
+
+            if (killerKillstreak.GetFastKills() == 2)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
+            }
+            else if (killerKillstreak.GetFastKills() == 3)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
+            }
+            else if (killerKillstreak.GetKills() == 3)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
+            }
+            else if (killerKillstreak.GetKills() == 5)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
+            }
+            else if (killerKillstreak.GetKills() == 7)
+            {
+                SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
+            }
+
+        }
 
 		if (Connections.GetInstance ().playerId == playerInfo.id) 
 		{
