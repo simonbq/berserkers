@@ -31,10 +31,11 @@ public class OptionsState : MenuState {
 		b.setOnClick (ButtonActions.toggleMovingMenu);
 		buttons.Add (b);
 
-		b = new Button (960 - 128 + 256, 100, (int)Button.BUTTON_NORM.x, 64);
+		//Ingen feedback så tog bort, använd ingame istället
+		/*b = new Button (960 - 128 + 256, 100, (int)Button.BUTTON_NORM.x, 64);
 		b.setText ("Dyn. HUD");
 		b.setOnClick (ButtonActions.toggleDynamicHUD);
-		buttons.Add (b);
+		buttons.Add (b);*/
 
 		volumeSlider = new Slider (960 - 160, 100, 256, 128, 0, 1, "Volume");
 		graphicsSlider = new Slider(960 - 160, 200, 256, 128, 0, 1, "Graphics");

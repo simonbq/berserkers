@@ -16,6 +16,9 @@ public class IntroScreen : MonoBehaviour {
 	void Start () {
 		AudioListener.volume = Prefs.GetVolume ();
 		audio.Play ();
+		Options.movingButtons = Prefs.GetButton();
+		Options.movingMenu = Prefs.GetBg();
+		Options.dynamicHud = Prefs.GetHud();
 	}
 	
 	// Update is called once per frame
