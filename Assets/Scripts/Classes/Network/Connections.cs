@@ -177,6 +177,19 @@ public class Connections : MonoBehaviour {
         MasterServer.RequestHostList("BerzerkasBananas");
     }
 
+    public void AddLocalPlayer()
+    {
+        if (!Network.isServer)
+        {
+            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname + "_local", true);
+        }
+
+        else
+        {
+            SendPlayerInfo(Network.player, localNickname + "_local", true);
+        }
+    }
+
 	void Start()
 	{
 		GameObject.DontDestroyOnLoad (this.gameObject);
@@ -245,7 +258,7 @@ public class Connections : MonoBehaviour {
 	void OnConnectedToServer()
 	{
 		Debug.Log ("Connected!");
-		networkView.RPC ("SendPlayerInfo", RPCMode.Server, Network.player, localNickname);
+		networkView.RPC ("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, false);
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)
@@ -299,7 +312,7 @@ public class Connections : MonoBehaviour {
 	}
 
 	[RPC]
-	void SendPlayerInfo(NetworkPlayer player, string nickname)
+	void SendPlayerInfo(NetworkPlayer player, string nickname, bool local)
 	{
 		if (Network.isServer) 
 		{
@@ -307,9 +320,17 @@ public class Connections : MonoBehaviour {
             int pId = players.Count;
             PlayerInfo connected = new PlayerInfo(player, pId, nickname, false);
 
-            foreach (PlayerInfo p in players.Values)
+            if (!local)
             {
-                networkView.RPC("PlayerConnected", player, p.networkPlayer, p.id, p.name, p.ready);
+                foreach (PlayerInfo p in players.Values)
+                {
+                    networkView.RPC("PlayerConnected", player, p.networkPlayer, p.id, p.name, p.ready);
+                }
+            }
+
+            else
+            {
+                connected.ready = true;
             }
 
 			networkView.RPC("PlayerConnected", RPCMode.All, connected.networkPlayer, connected.id, connected.name, connected.ready);

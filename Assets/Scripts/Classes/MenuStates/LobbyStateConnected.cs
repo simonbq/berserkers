@@ -78,6 +78,11 @@ public class LobbyStateConnected : MenuState {
 			GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
 		}
         GUILayout.EndScrollView();
+
+        if (GUILayout.Button("Add local player"))
+        {
+            Connections.GetInstance().AddLocalPlayer();
+        }
 		GUILayout.EndArea ();
 		
 		foreach(Button b in buttons) {
