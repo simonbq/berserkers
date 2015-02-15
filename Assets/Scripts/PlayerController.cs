@@ -306,9 +306,8 @@ public class PlayerController : MonoBehaviour {
                         Debug.Log("Kill player");
                         networkView.RPC("PlayDeathShout", RPCMode.All);
 
-                        networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, hitPlayer.inOverKill);
+						networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, hitPlayer.inOverKill, false);
 
-                        
                     }
                     else if (hitPlayer.movementSpeed == this.movementSpeed &&
                              state != PlayerState.STUNNED)
@@ -317,8 +316,8 @@ public class PlayerController : MonoBehaviour {
                         {
                             networkView.RPC("PlayDeathShout", RPCMode.All);
 
-                            networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, true);
-                            hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id, Vector3.up, true);
+							networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, true, false);
+							hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id, Vector3.up, true, false);
                         }
                         else
                         {
@@ -334,7 +333,9 @@ public class PlayerController : MonoBehaviour {
 			{
                 if (inOverKill)
                 {
-                    networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal, true);
+					if (GameController.instance.state != GameController.GameState.ROUNDEND) {
+						networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal, true, true);
+					}
                 }
                 else
                 {
@@ -534,7 +535,7 @@ public class PlayerController : MonoBehaviour {
 
 
 	[RPC]
-	void Kill(int killerId, Vector3 dir, bool gibbed)
+	void Kill(int killerId, Vector3 dir, bool overkill, bool wall)
 	{
         SetSpeed(startSpeed);
         SpawnSplatDecal(-dir);
@@ -543,7 +544,7 @@ public class PlayerController : MonoBehaviour {
         state = PlayerState.DEAD;
 
 		HideModel (true);
-		ShowRagdoll (true, gibbed);
+		ShowRagdoll (true, overkill);
 		splat.particleSystem.Play ();
 
 		Debug.Log (playerInfo.id + " got killed by " + killerId);
@@ -553,7 +554,15 @@ public class PlayerController : MonoBehaviour {
 
 
         playerInfo.deaths++;
-        SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
+		if (overkill) {
+			if (wall)
+				SoundStore.instance.PlayRandom(SoundStore.instance.KillWall);
+			else
+				SoundStore.instance.PlayRandom(SoundStore.instance.OverkillSound);
+		}
+		else {
+        	SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
+		}
         if (GameController.instance.playersAlive < 2)
         {
             networkView.RPC("PlayWinSound", RPCMode.All);

@@ -14,7 +14,7 @@ public class IntroScreen : MonoBehaviour {
 	private bool activated = false;
 	// Use this for initialization
 	void Start () {
-	
+		AudioListener.volume = Prefs.GetVolume ();
 	}
 	
 	// Update is called once per frame
