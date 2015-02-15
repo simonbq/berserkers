@@ -2,78 +2,89 @@
 using System.Collections;
 
 public class musicEngine : MonoBehaviour {
-
+	
 	public AudioClip[] music_0_Clips;
 	public AudioClip[] music_1_Clips;
 	
 	int progression = 0;
-
-	int randomCurrent = 0;
-	int randomPrevious = 0;
-
+	
+	int musicCurrent = 0;
+	int musicPrevious = 0;
+	
 	int levelCurrent = 0;
-	int previousLevel = 0;
-
+	int levelPrevious = 0;
+	
 	System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-
+	
 	public void musicSetVolume (float volume)
 	{
 		audio.volume = volume;
 	}
-
+	
 	void OnLevelWasLoaded()
 	{
-		if (Application.loadedLevel != previousLevel)
+		if (Application.loadedLevel != levelPrevious)
 		{
 			audio.Stop();
+			levelPrevious = Application.loadedLevel;
+			
 			progression = 0;
-			previousLevel = Application.loadedLevel;
+			musicPrevious = 0;
+			musicCurrent = 0;
 		}
 	}
-
+	
 	void Start ()
 	{
 		stopwatch.Start();
 	}
-
+	
 	void Update ()
 	{
 		if (Application.loadedLevelName == "Lobby")
 		{
-			if (stopwatch.ElapsedMilliseconds >= music_0_Clips[0].length*1000 || progression == 0)
-			{
-				audio.PlayOneShot(music_0_Clips[0]);
-
-				progression = 1;
-
-				stopwatch.Reset();
-				stopwatch.Start();
-			}
-		}
-
-		else if (Application.loadedLevelName == "Level")
-		{
-			if (stopwatch.ElapsedMilliseconds >= music_1_Clips[randomPrevious].length*1000-2000 || progression == 0)
+			if (stopwatch.ElapsedMilliseconds >= music_0_Clips[musicCurrent].length*1000-2000 || progression == 0)
 			{
 				if (progression == 0)
 				{
-					audio.PlayOneShot (music_1_Clips[0]);
-					
+					musicCurrent = 0;
+					audio.PlayOneShot (music_0_Clips[musicCurrent]);
 					progression = 1;
 				}
 				
 				else if (progression == 1)
 				{
-					while(randomCurrent == randomPrevious)
+					musicCurrent = 1;
+					audio.PlayOneShot (music_0_Clips[1]);
+				}
+				
+				stopwatch.Reset();
+				stopwatch.Start();
+			}
+		}
+		
+		else if (Application.loadedLevelName == "Level")
+		{
+			if (stopwatch.ElapsedMilliseconds >= music_1_Clips[musicCurrent].length*1000-2000 || progression == 0)
+			{
+				if (progression == 0)
+				{
+					audio.PlayOneShot (music_1_Clips[0]);
+					
+					musicCurrent = 0;
+					progression = 1;
+				}
+				
+				else if (progression == 1)
+				{
+					while(musicCurrent == musicPrevious)
 					{
-						randomCurrent = Random.Range (1,8);
+						musicCurrent = Random.Range (1,8);
 					}
 					
-					randomPrevious = randomCurrent;
+					musicPrevious = musicCurrent;
 					
-					audio.PlayOneShot (music_1_Clips[randomCurrent]);
-
-					Debug.Log (randomCurrent);
+					audio.PlayOneShot (music_1_Clips[musicCurrent]);
 				}
 				
 				stopwatch.Reset();
@@ -82,3 +93,4 @@ public class musicEngine : MonoBehaviour {
 		}
 	}
 }
+ 
