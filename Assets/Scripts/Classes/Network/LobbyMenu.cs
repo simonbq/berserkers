@@ -38,7 +38,7 @@ public class LobbyMenu : MonoBehaviour {
 
 		else
 		{
-			if(GUILayout.Button (Connections.GetInstance().playerInfo.ready ? "Not ready" : "Ready"))
+			if(GUILayout.Button (Connections.GetInstance().localPlayers.Exists(x => x.ready) ? "Not ready" : "Ready"))
 			{
 				Connections.GetInstance().ToggleReady();
 			}

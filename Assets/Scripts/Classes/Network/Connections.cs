@@ -64,7 +64,7 @@ public class Connections : MonoBehaviour {
 	public string localNickname = "Unnamed";
 	public string lobbyScene = "Lobby";
 
-	public int playerId
+	/*public int playerId
 	{
 		get
 		{
@@ -78,7 +78,7 @@ public class Connections : MonoBehaviour {
 		{
 			return _playerInfo;
 		}
-	}
+	}*/
 
 	public bool isConnected
 	{
@@ -93,6 +93,14 @@ public class Connections : MonoBehaviour {
 		get
 		{
 			return _players;
+		}
+	}
+
+	public List<PlayerInfo> localPlayers
+	{
+		get
+		{
+			return _localPlayers;
 		}
 	}
 
@@ -129,11 +137,12 @@ public class Connections : MonoBehaviour {
     }
 
     private HostData[] _servers;
-	private int _playerId = 0;
-	private PlayerInfo _playerInfo;
+	//private int _playerId = 0;
+	//private PlayerInfo _playerInfo;
 	private bool _connected = false;
 	private bool _started = false;
 	private Dictionary<int, PlayerInfo> _players = new Dictionary<int, PlayerInfo>();
+	private List<PlayerInfo> _localPlayers = new List<PlayerInfo>();
 	private static Connections instance;
 	public static int port = 61337;
 
@@ -144,8 +153,11 @@ public class Connections : MonoBehaviour {
 
 	public void ToggleReady()
 	{
-		playerInfo.ready = !playerInfo.ready;
-		networkView.RPC ("Ready", RPCMode.All, playerId, playerInfo.ready);
+		foreach(PlayerInfo player in _localPlayers)
+		{
+			player.ready = !player.ready;
+			networkView.RPC ("Ready", RPCMode.All, player.id, player.ready);
+		}
 	}
 
 	public void HostLobby(int maxPlayers)
@@ -226,8 +238,7 @@ public class Connections : MonoBehaviour {
             _started = false;
             _connected = false;
             players.Clear();
-            _playerId = 0;
-            _playerInfo = null;
+			_localPlayers.Clear();
         }
 	}
 
@@ -250,8 +261,9 @@ public class Connections : MonoBehaviour {
 
 	void OnServerInitialized()
 	{
-		_playerInfo = new PlayerInfo (Network.player, 0, localNickname, true);
-		_players.Add (0, _playerInfo);
+		 PlayerInfo playerInfo = new PlayerInfo (Network.player, 0, localNickname, true);
+		_players.Add (0, playerInfo);
+		_localPlayers.Add (playerInfo);
 		_connected = true;
 	}
 
@@ -305,8 +317,9 @@ public class Connections : MonoBehaviour {
 
         if (Network.player == player)
         {
-            _playerId = id;
-            _playerInfo = connected;
+            //_playerId = id;
+            //_playerInfo = connected;
+			_localPlayers.Add (connected);
             _connected = true;
         }
 	}

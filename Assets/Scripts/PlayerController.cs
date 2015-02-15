@@ -15,13 +15,13 @@ public class PlayerController : MonoBehaviour {
 		set
 		{
 			_playerInfo = value;
-			if(_playerInfo.id == Connections.GetInstance().playerId)
+			if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 			{
 				CameraController cc = Camera.main.GetComponent<CameraController>();
 				
 				if(cc != null)
 				{
-					cc.player = this;
+					cc.toFollow.Add (this);
 				}
 			}
 		}
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		//Debug.Log ("ID: " + playerInfo.id + " State: " + state);
-		if(playerInfo.id == Connections.GetInstance().playerId)
+		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 		{
 			input = Input.GetAxis("Horizontal");
 
@@ -235,7 +235,7 @@ public class PlayerController : MonoBehaviour {
             ActivateEffects(true);
             inOverKill = true;
 
-            if (playerInfo.id == Connections.GetInstance().playerId)
+			if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
             {
                 HUDSingleton.instance.onFire = true;
                 Debug.Log("on fire");
@@ -248,7 +248,7 @@ public class PlayerController : MonoBehaviour {
             ActivateEffects(false);
             inOverKill = false;
 
-            if (playerInfo.id == Connections.GetInstance().playerId)
+			if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
             {
                 HUDSingleton.instance.onFire = false;
             }
@@ -461,7 +461,7 @@ public class PlayerController : MonoBehaviour {
 
 	void AnnouncerStart()
 	{
-		if (Connections.GetInstance ().playerId == playerInfo.id) 
+		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo)) 
 			SoundStore.instance.Play (SoundStore.instance.AnnouncerStart);
 			Debug.Log ("Play round start sound now");
 	}
@@ -486,12 +486,12 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void PlayStunnedFX(bool wall)
 	{
-		if (Connections.GetInstance ().playerId == playerInfo.id) 
+		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 		{
 			ScreenShaker.instance.Shake (1, 0.5f);
 		}
         
-		if (Connections.GetInstance ().playerId == playerInfo.id)
+		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 		{
             if (!wall)
             {
@@ -596,7 +596,7 @@ public class PlayerController : MonoBehaviour {
             Bobber.instance.startClimax(0.5f, 0.5f);
         }
 
-		if (Connections.GetInstance ().playerId == playerInfo.id) 
+		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 		{
 			ScreenShaker.instance.Shake (1, 1);
 		}

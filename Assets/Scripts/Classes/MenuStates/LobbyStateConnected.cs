@@ -49,7 +49,7 @@ public class LobbyStateConnected : MenuState {
 			m.goBack();
 		}
 
-        if (!Connections.GetInstance().playerInfo.ready)
+        if (!Connections.GetInstance().localPlayers.Exists(x => x.ready))
         {
             ready.setText("Ready");
         }

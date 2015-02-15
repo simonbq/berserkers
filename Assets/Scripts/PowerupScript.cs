@@ -43,7 +43,7 @@ public class PowerupScript : MonoBehaviour {
 		SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpSound);
 		SoundStore.instance.PlayRandom (SoundStore.instance.PowerUpPickUpShout);
 
-		if(Connections.GetInstance().playerId == id)
+		if(Connections.GetInstance().localPlayers.Exists(x => x.id == id))
 		{
 			ScreenShaker.instance.Shake (1, 0.2f);
 		}

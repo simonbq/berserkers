@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CameraController : MonoBehaviour {
 	public float lookOffset;
 	public float ease;
 	public Vector3 cameraOffset;
-	public PlayerController player;
+	public List<PlayerController> toFollow = new List<PlayerController>();
 
 	// Use this for initialization
 	void Start () {
@@ -14,17 +15,31 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if(player != null)
+		Vector3 targetPos = Vector3.zero;
+		foreach(PlayerController player in toFollow)
 		{
-			Vector3 targetPos = player.transform.position + cameraOffset;
-			targetPos = Vector3.Lerp (Vector3.zero, targetPos, lookOffset);
-
-            if (player.state == PlayerController.PlayerState.DEAD)
-            {
-                targetPos = Vector3.zero + Vector3.forward * cameraOffset.z * 1.5f + Vector3.up * 3f + cameraOffset;
-            }
-
-			transform.position = Vector3.Lerp (transform.position, targetPos, ease * Time.fixedDeltaTime);
+			targetPos += player.transform.position;
 		}
+		targetPos /= toFollow.Count;
+
+		float dist = 0;
+		foreach(PlayerController player in toFollow)
+		{
+			dist += Vector3.Distance(player.transform.position, targetPos);
+		}
+
+		dist /= toFollow.Count;
+		targetPos += cameraOffset;
+		targetPos.y += dist * 0.5f;
+		targetPos.z -= dist * 0.5f;
+
+		targetPos = Vector3.Lerp (Vector3.zero, targetPos, lookOffset);
+
+	    if (!toFollow.Exists (x => x.state != PlayerController.PlayerState.DEAD))
+	    {
+	        targetPos = Vector3.zero + Vector3.forward * cameraOffset.z * 1.5f + Vector3.up * 3f + cameraOffset;
+	    }
+
+		transform.position = Vector3.Lerp (transform.position, targetPos, ease * Time.fixedDeltaTime);
 	}
 }
