@@ -75,7 +75,13 @@ public class LobbyStateConnected : MenuState {
         lobbyScroll = GUILayout.BeginScrollView(lobbyScroll);
 		foreach(PlayerInfo p in Connections.GetInstance().players.Values)
 		{
-			GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
+			GUI.color = Connections.GetInstance().playerColors[p.id];
+			GUILayout.BeginHorizontal();
+			string text = p.name;
+			GUIShadow.LayoutLabel(text);
+			GUI.color = Color.white;
+			GUIShadow.LayoutLabel (p.ready ? "Ready" : "Not ready");
+			GUILayout.EndHorizontal();
 		}
         GUILayout.EndScrollView();
 

@@ -622,6 +622,6 @@ public class PlayerController : MonoBehaviour {
 	void Spawned(int id)
 	{
 		playerInfo = Connections.GetInstance ().players [id];
-        nameText.GetComponent<PlayerNameScript>().SetName(playerInfo.name);
+		nameText.GetComponent<PlayerNameScript>().SetName(playerInfo.name, Connections.GetInstance().localPlayers.Exists(x => x.id == id));
 	}
 }

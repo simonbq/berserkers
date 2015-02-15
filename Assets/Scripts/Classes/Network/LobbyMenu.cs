@@ -42,9 +42,12 @@ public class LobbyMenu : MonoBehaviour {
 			{
 				Connections.GetInstance().ToggleReady();
 			}
+
 			foreach(PlayerInfo p in Connections.GetInstance().players.Values)
 			{
-				GUILayout.Box(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
+				GUI.color = Connections.GetInstance().playerColors[p.id];
+				GUILayout.Label(p.name + " | ID: " + p.id + " | Ready: " + p.ready);
+				GUI.color = Color.white;
 			}
 
 			if(Network.isServer &&
