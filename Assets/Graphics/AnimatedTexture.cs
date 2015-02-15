@@ -17,6 +17,8 @@ public class AnimatedTexture : MonoBehaviour
 		_myRenderer = renderer;
 		if(_myRenderer == null)
 			enabled = false;
+
+		transform.Rotate(10, 0, 0);
 	}
 	// Update is called once per frame
 	void Update()
