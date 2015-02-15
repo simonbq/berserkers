@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour {
     public Material playerMaterial;
 	public GameObject model;
 	public GameObject ragdoll;
+	public GameObject gibs;
 	public GameObject splat;
     public GameObject splatDecal;
     public GameObject nameText;
@@ -83,13 +84,22 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	void ShowRagdoll(bool show)
+	void ShowRagdoll(bool show, bool showGibs)
 	{
 		if(show && currentRagdoll == null)
 		{
-			currentRagdoll = Instantiate (ragdoll, transform.position + transform.up, transform.rotation) as GameObject;
-			currentRagdoll.GetComponent<RagdollMaterial> ().SetMaterial (materials [playerInfo.id]);
-			currentRagdoll.GetComponent<RagdollMaterial> ().pelvis.rigidbody.AddExplosionForce (25000, transform.position - transform.forward * 2 - transform.up, 30);
+			if(showGibs)
+			{
+				currentRagdoll = Instantiate(gibs, transform.position + transform.up, transform.rotation) as GameObject;
+				currentRagdoll.GetComponent<GibExploder>().Explode(materials[playerInfo.id]);
+			}
+
+			else
+			{
+				currentRagdoll = Instantiate (ragdoll, transform.position + transform.up, transform.rotation) as GameObject;
+				currentRagdoll.GetComponent<RagdollMaterial> ().SetMaterial (materials [playerInfo.id]);
+				currentRagdoll.GetComponent<RagdollMaterial> ().pelvis.rigidbody.AddExplosionForce (25000, transform.position - transform.forward * 2 - transform.up, 30);
+			}
 		}
 
 		else if(!show)
@@ -296,9 +306,8 @@ public class PlayerController : MonoBehaviour {
                         Debug.Log("Kill player");
                         networkView.RPC("PlayDeathShout", RPCMode.All);
 
-                        networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, inOverKill, false);
+						networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, hitPlayer.inOverKill, false);
 
-                        
                     }
                     else if (hitPlayer.movementSpeed == this.movementSpeed &&
                              state != PlayerState.STUNNED)
@@ -307,8 +316,8 @@ public class PlayerController : MonoBehaviour {
                         {
                             networkView.RPC("PlayDeathShout", RPCMode.All);
 
-							networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, inOverKill, false);
-							hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id, Vector3.up, inOverKill, false);
+							networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, true, false);
+							hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id, Vector3.up, true, false);
                         }
                         else
                         {
@@ -325,7 +334,7 @@ public class PlayerController : MonoBehaviour {
                 if (inOverKill)
                 {
 					if (GameController.instance.state != GameController.GameState.ROUNDEND) {
-						networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal, inOverKill, true);
+						networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal, true, true);
 					}
                 }
                 else
@@ -479,7 +488,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		transform.position = pos;
 		HideModel (false);
-		ShowRagdoll (false);
+		ShowRagdoll (false, false);
 
         animator.SetBool("idle", true);
         nameText.GetComponent<PlayerNameScript>().Reset();
@@ -535,7 +544,7 @@ public class PlayerController : MonoBehaviour {
         state = PlayerState.DEAD;
 
 		HideModel (true);
-		ShowRagdoll (true);
+		ShowRagdoll (true, overkill);
 		splat.particleSystem.Play ();
 
 		Debug.Log (playerInfo.id + " got killed by " + killerId);
