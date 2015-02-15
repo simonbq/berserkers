@@ -124,14 +124,22 @@ public class Menu : MenuBase {
 		GUI.color = new Color (1.0f, 1.0f, 1.0f, 0.5f);
 		starsAnchor.gui ();
 		GUI.color = new Color (1.0f, 1.0f, 1.0f, 1.0f);
-		GUIUtility.RotateAroundPivot (rotate, new Vector2(spinThingArea.center.x * scale.x, spinThingArea.center.y * scale.y));
+		if(Options.movingMenu) {
+			GUIUtility.RotateAroundPivot (rotate, new Vector2(spinThingArea.center.x * scale.x, spinThingArea.center.y * scale.y));
+		}
 		GUI.DrawTexture (spinThingArea, spinThing);
-		GUIUtility.RotateAroundPivot (-rotate, new Vector2(spinThingArea.center.x * scale.x, spinThingArea.center.y * scale.y));
+		if(Options.movingMenu) {
+			GUIUtility.RotateAroundPivot (-rotate, new Vector2(spinThingArea.center.x * scale.x, spinThingArea.center.y * scale.y));
+		}
 		current.render ();
 
-		GUIUtility.ScaleAroundPivot (Vector2.one * scalify, titleArea.center);//new Vector2(titleArea.center.x * scale.x, titleArea.center.y * scale.y));
+		if(Options.movingMenu) {
+			GUIUtility.ScaleAroundPivot (Vector2.one * scalify, titleArea.center);//new Vector2(titleArea.center.x * scale.x, titleArea.center.y * scale.y));
+		}
 		GUI.DrawTexture (titleArea, TitleText);
-		GUIUtility.ScaleAroundPivot (Vector2.one * (1.0f/scalify), titleArea.center);
+		if(Options.movingMenu) {
+			GUIUtility.ScaleAroundPivot (Vector2.one * (1.0f/scalify), titleArea.center);
+		}
 		//GUIUtility.ScaleAroundPivot (-(Vector2.one * scalify), new Vector2(titleArea.center.x * scale.x, titleArea.center.y * scale.y));
 
 	}

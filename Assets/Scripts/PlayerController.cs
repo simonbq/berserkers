@@ -188,7 +188,7 @@ public class PlayerController : MonoBehaviour {
             }
 
 			HUDSingleton.instance.speed = currentSpeed;
-			HUDSingleton.instance.onFire = true;
+			//HUDSingleton.instance.onFire = true;
 		}
 
         if (Network.isServer)
