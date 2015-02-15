@@ -41,10 +41,13 @@ public class Button {
 
 	// Renders and returns true if pressed
 	public bool update(ActionData data) {
-		
-		GUIUtility.RotateAroundPivot (angle, scaledCenter);
+		if(Options.movingButtons) {
+			GUIUtility.RotateAroundPivot (angle, scaledCenter);
+		}
 		bool b = GUI.Button (area, content);
-		GUIUtility.RotateAroundPivot (-angle, scaledCenter);
+		if(Options.movingButtons) {
+			GUIUtility.RotateAroundPivot (-angle, scaledCenter);
+		}
 		if (b) {
 			SoundStore.instance.Play(SoundStore.instance.buttonPress);
 

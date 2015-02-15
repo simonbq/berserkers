@@ -84,6 +84,21 @@ public class ButtonActions {
 		Screen.fullScreen = !Screen.fullScreen;
 	}
 
+	public static System.Action<ActionData> toggleMovingButtons { get { return _toggleMovingButtons; } }
+	private static void _toggleMovingButtons(ActionData data) {
+		Options.movingButtons = !Options.movingButtons;
+	}
+
+	public static System.Action<ActionData> toggleMovingMenu { get { return _toggleMovingMenu; } }
+	private static void _toggleMovingMenu(ActionData data) {
+		Options.movingMenu = !Options.movingMenu;
+	}
+
+	public static System.Action<ActionData> toggleDynamicHUD { get { return _toggleDynamicHUD; } }
+	private static void _toggleDynamicHUD(ActionData data) {
+		Options.dynamicHud = !Options.dynamicHud;
+	}
+
     public static System.Action<ActionData> refreshHostlist { get { return _refreshHostlist; } }
     private static void _refreshHostlist(ActionData data)
     {
