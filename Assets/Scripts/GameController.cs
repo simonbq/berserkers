@@ -87,13 +87,13 @@ public class GameController : MonoBehaviour {
                     countAlive++;
             }
 
-            if (countAlive != 0)
+            /*if (countAlive != 0)
             {
                 Bobber.instance.cheerFactor = 1 - (1 / countAlive);
-            }
+            }*/
 
             playersAlive = countAlive;
-
+			Debug.Log ("Players: " + players.Count);
             if ((playersAlive < 2 && players.Count > 1) || (playersAlive < 1 && players.Count == 1))
             {
                 GameController.instance.state = GameController.GameState.ROUNDEND;
