@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviour {
     public GameObject splatDecal;
     public GameObject nameText;
 
+	public Transform cam;
+
 	private float _input = 0;
 	private float startSpeed;
 	private float currentSpeed = 0;
@@ -563,7 +565,7 @@ public class PlayerController : MonoBehaviour {
 		else {
         	SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
 		}
-        if (GameController.instance.playersAlive < 2)
+        if (GameController.instance.playersAlive < 2 && !wall)
         {
             networkView.RPC("PlayWinSound", RPCMode.All);
         }
