@@ -72,6 +72,7 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
 		if(powerupSpawned && spawnPowerups)
 		{
 			Invoke ("SpawnPowerUp", powerupSpawnTime);
@@ -102,6 +103,16 @@ public class GameController : MonoBehaviour {
                 
             }
         }
+
+		var disconnected = players.FindAll(x => !x.GetComponent<PlayerController>().playerInfo.connected);
+
+		foreach(var d in disconnected)
+		{
+			players.Remove(d);
+			Destroy (d);
+		}
+
+
 	}
 
 	void AnnouncerStart()

@@ -358,6 +358,7 @@ public class Connections : MonoBehaviour {
 			}
 		}
 
+		_players[id].connected = false;
 		_players.Remove (id);
 	}
 
