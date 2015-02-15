@@ -23,6 +23,16 @@ public class MainState : MenuState {
 		b.setOnClick (ButtonActions.exit);
 		buttons.Add (b);
 
+		b = new Button (-128 + 960 - 72, 200, Button.BUTTON_SMALL);
+		b.setText ("Cred");
+		b.setOnClick (ButtonActions.toCred);
+		buttons.Add (b);
+
+		b = new Button (128 + 960 - 72, 200, Button.BUTTON_SMALL);
+		b.setText ("How");
+		b.setOnClick (ButtonActions.toHow);
+		buttons.Add (b);
+
 		data = new ActionData ();
 	}
 	

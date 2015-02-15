@@ -34,6 +34,16 @@ public class ButtonActions {
 		Application.Quit ();
 	}
 
+	public static System.Action<ActionData> toCred { get { return _cred; } }
+	private static void _cred(ActionData data) {
+		data.menu.setCurrent (MenuStates.CRED);
+	}
+
+	public static System.Action<ActionData> toHow { get { return _how; } }
+	private static void _how(ActionData data) {
+		data.menu.setCurrent (MenuStates.HOW);
+	}
+
 	public static System.Action<ActionData> doNothing { get { return _doNothing; } }
 	public static void _doNothing(ActionData data) {
 
