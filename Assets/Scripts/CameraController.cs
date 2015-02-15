@@ -7,8 +7,9 @@ public class CameraController : MonoBehaviour {
 	public float ease;
 	public Vector3 cameraOffset;
 	public List<PlayerController> toFollow = new List<PlayerController>();
-	private bool thirdPerson = false;
+	private bool thP = false;
 	private Quaternion originalRotaion;
+	private int ts = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -16,16 +17,35 @@ public class CameraController : MonoBehaviour {
 	}
 
 	void Update() {
-		if (Input.GetKeyDown(KeyCode.Minus)) {
-			if (thirdPerson)
+		if (!thP) {
+			if (ts == 0 && Input.GetKeyDown(KeyCode.S)) ts++;
+			else if (ts == 1 && Input.GetKeyDown(KeyCode.H)) ts++;
+			else if (ts == 2 && Input.GetKeyDown(KeyCode.U)) ts++;
+			else if (ts == 3 && Input.GetKeyDown(KeyCode.T)) ts++;
+			else if (ts == 4 && Input.GetKeyDown(KeyCode.U)) ts++;
+			else if (ts == 5 && Input.GetKeyDown(KeyCode.P)) ts++;
+			else if (ts == 6 && Input.GetKeyDown(KeyCode.U)) ts++;
+			else if (ts == 7 && Input.GetKeyDown(KeyCode.K)) ts++;
+			else if (ts == 8 && Input.GetKeyDown(KeyCode.N)) ts++;
+			else if (ts == 9 && Input.GetKeyDown(KeyCode.O)) ts++;
+			else if (ts == 10 && Input.GetKeyDown(KeyCode.W)) {
+				ts = 0;
+				thP = true;
+			}
+		}
+		else {
+			if (ts == 0 && Input.GetKeyDown(KeyCode.F)) ts++;
+			else if (ts == 1 && Input.GetKeyDown(KeyCode.U)) {
+				ts = 0;
+				thP = false;
 				transform.rotation = originalRotaion;
-			thirdPerson = !thirdPerson;
+			}
 		}
 	}
 
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (!thirdPerson) {
+		if (!thP) {
 			var follow = toFollow.FindAll (x => x.state != PlayerController.PlayerState.DEAD);
 
 			Vector3 targetPos = Vector3.zero;

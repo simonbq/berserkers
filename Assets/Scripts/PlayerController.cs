@@ -139,7 +139,6 @@ public class PlayerController : MonoBehaviour {
 		state = PlayerState.IDLE;
         Invoke("MakeAlive", 2.0f);
 
-		Invoke ("AnnouncerStart", 2.0f);
 		Debug.Log ("Should play sound for round start soon");
 
         rigidbody.velocity = Vector3.zero;
@@ -175,6 +174,7 @@ public class PlayerController : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
+		Debug.Log (firstblood);
 		//Debug.Log ("ID: " + playerInfo.id + " State: " + state);
 		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 		{
@@ -472,13 +472,6 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-	void AnnouncerStart()
-	{
-		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo)) 
-			SoundStore.instance.Play (SoundStore.instance.AnnouncerStart);
-			Debug.Log ("Play round start sound now");
-	}
-
 	void Firstblood()
 	{
 		firstblood = true;
@@ -565,7 +558,7 @@ public class PlayerController : MonoBehaviour {
 		else {
         	SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
 		}
-        if (GameController.instance.playersAlive < 2 && !wall)
+        if (GameController.instance.playersAlive == 2 && !wall)
         {
             networkView.RPC("PlayWinSound", RPCMode.All);
         }
@@ -573,9 +566,10 @@ public class PlayerController : MonoBehaviour {
         //If you killed yourself, none of this applies
         if (playerInfo.id != killerId)
         {
-            Connections.GetInstance().players[killerId].killstreaks.Died();
+            //Connections.GetInstance().players[killerId].killstreaks.Died();
+			playerInfo.killstreaks.Died ();
 
-            if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
+            if (GameController.instance.playersAlive == Connections.GetInstance().players.Count && !firstblood)
             {
                 Firstblood();
             }

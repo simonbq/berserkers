@@ -104,8 +104,15 @@ public class GameController : MonoBehaviour {
         }
 	}
 
+	void AnnouncerStart()
+	{
+		SoundStore.instance.Play (SoundStore.instance.AnnouncerStart);
+		Debug.Log ("Play round start sound now");
+	}
+
     public void SpawnPlayers()
     {
+		Invoke ("AnnouncerStart", 2.0f);
         state = GameState.INGAME;
         spawnPowerups = false;
         CancelInvoke("SpawnPowerUp");
