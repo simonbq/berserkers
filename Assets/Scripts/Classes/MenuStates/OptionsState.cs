@@ -21,6 +21,21 @@ public class OptionsState : MenuState {
 		b.setOnClick (ButtonActions.toggleFullscreen);
 		buttons.Add (b);
 
+		b = new Button (960 - 128 + 256, 300, (int)Button.BUTTON_NORM.x, 64);
+		b.setText ("Dyn. Buttons");
+		b.setOnClick (ButtonActions.toggleMovingButtons);
+		buttons.Add (b);
+
+		b = new Button (960 - 128 + 256, 200, (int)Button.BUTTON_NORM.x, 64);
+		b.setText ("Dyn. Menu");
+		b.setOnClick (ButtonActions.toggleMovingMenu);
+		buttons.Add (b);
+
+		b = new Button (960 - 128 + 256, 100, (int)Button.BUTTON_NORM.x, 64);
+		b.setText ("Dyn. HUD");
+		b.setOnClick (ButtonActions.toggleDynamicHUD);
+		buttons.Add (b);
+
 		volumeSlider = new Slider (960 - 160, 100, 256, 128, 0, 1, "Volume");
 		graphicsSlider = new Slider(960 - 160, 200, 256, 128, 0, 1, "Graphics");
 		data = new ActionData ();

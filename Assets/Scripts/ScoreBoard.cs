@@ -115,10 +115,13 @@ public class ScoreBoard : MenuBase {
 			GUI.DrawTexture(announcerRect, currentAnnouncement);
 		}
 
-		GUIUtility.ScaleAroundPivot (Vector2.one * f, nosmoke_rect.center);
+		if(HUDSingleton.instance.onFire && Options.dynamicHud) {
+			GUIUtility.ScaleAroundPivot (Vector2.one * f, nosmoke_rect.center);
+		}
 		GUI.DrawTexture (nosmoke_rect, nosmoke_tex);
-		GUIUtility.ScaleAroundPivot (Vector2.one * (1/f), nosmoke_rect.center);
-
+		if(HUDSingleton.instance.onFire && Options.dynamicHud) {
+			GUIUtility.ScaleAroundPivot (Vector2.one * (1/f), nosmoke_rect.center);
+		}
 		if(menuActive) {
 			current.render();
 		}
