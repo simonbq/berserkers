@@ -64,6 +64,7 @@ public class PlayerInfo : IComparable<PlayerInfo> {
 public class Connections : MonoBehaviour {
 	public string localNickname = "Unnamed";
 	public string lobbyScene = "Lobby";
+	public Color[] playerColors;
 
 	/*public int playerId
 	{
