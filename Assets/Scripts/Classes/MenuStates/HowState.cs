@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class HowState : MenuState {
-	private string text = "BERZERKURUUU\n\nSteer your berserker right and left\nAvoid walls and rocks\nPick up flaming spheres to increase your speed\nDefeat your opponents by being faster when colliding\n\nDefault controls:\nPlayer 1: A-D\nPlayer 2: Left-Right\nPlayer 3: K-L\nPlayer 4: G-H";
+	private string text = "BERZERKURUUU\n\nSteer your berserker right and left\nAvoid walls and rocks\nPick up flaming spheres to increase your speed\nDefeat your opponents by being faster when colliding\n\nDefault controls:\nPlayer 1: A-D\nPlayer 2: Left-Right\nPlayer 3: K-L\nPlayer 4: G-H\nIf hosting doesn't work, try opening port 61337";
 	private List<Button> buttons = new List<Button>();
 	private ActionData data;
 
