@@ -143,6 +143,7 @@ public class Connections : MonoBehaviour {
 	private bool _connected = false;
 	private bool _started = false;
 	private Dictionary<int, PlayerInfo> _players = new Dictionary<int, PlayerInfo>();
+	private Dictionary<NetworkPlayer, List<PlayerInfo>> _localPlayerCount = new Dictionary<NetworkPlayer, List<PlayerInfo>>();
 	private List<PlayerInfo> _localPlayers = new List<PlayerInfo>();
 	private static Connections instance;
 	public static int port = 61337;
@@ -154,9 +155,10 @@ public class Connections : MonoBehaviour {
 
 	public void ToggleReady()
 	{
+		bool ready = !_localPlayers [0].ready;
 		foreach(PlayerInfo player in _localPlayers)
 		{
-			player.ready = !player.ready;
+			player.ready = ready;
 			networkView.RPC ("Ready", RPCMode.All, player.id, player.ready);
 		}
 	}
@@ -192,15 +194,14 @@ public class Connections : MonoBehaviour {
 
     public void AddLocalPlayer()
     {
-		string nick = localNickname + "(" + (localPlayers.Count + 1) + ")";
 		if (!Network.isServer)
         {
-            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, nick, true);
+            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, true);
         }
 
         else
         {
-            SendPlayerInfo(Network.player, nick, true);
+            SendPlayerInfo(Network.player, localNickname, true);
         }
     }
 
@@ -254,11 +255,17 @@ public class Connections : MonoBehaviour {
 
 	void OnPlayerDisconnected(NetworkPlayer player)
 	{
-		int id = GetPlayerId(player);
-        players[id].connected = false;
-        _players.Remove(id);
-		Debug.Log ("ID: " + id);
-		networkView.RPC ("PlayerDisconnected", RPCMode.All, id);
+		if(_localPlayerCount.ContainsKey(player))
+		{
+			var disconnected = _localPlayerCount[player];
+
+			foreach(var d in disconnected)
+			{
+				players[d.id].connected = false;
+				_players.Remove(d.id);
+				networkView.RPC ("PlayerDisconnected", RPCMode.All, d.id);
+			}
+		}
 	}
 
 	void OnServerInitialized()
@@ -336,24 +343,50 @@ public class Connections : MonoBehaviour {
 	{
 		if (Network.isServer) 
 		{
-            int cId = GetPlayerId(player);
-            int pId = players.Count;
-            PlayerInfo connected = new PlayerInfo(player, pId, nickname, false);
+			if(_players.Count >= Network.maxConnections)
+			{
+				if(!_localPlayerCount.ContainsKey (player))
+				{
+					Network.CloseConnection (player, true);
+				}
+			}
 
-            if (!local)
-            {
-                foreach (PlayerInfo p in players.Values)
-                {
-                    networkView.RPC("PlayerConnected", player, p.networkPlayer, p.id, p.name, p.ready);
-                }
-            }
+			else
+			{
+				if(!_localPlayerCount.ContainsKey(player))
+				{
+					_localPlayerCount.Add(player, new List<PlayerInfo>());
+				}
 
-            else
-            {
-                connected.ready = true;
-            }
+				if(_localPlayerCount[player].Count < 3)
+				{
+					int cId = GetPlayerId(player);
+		            int pId = players.Count;
 
-			networkView.RPC("PlayerConnected", RPCMode.All, connected.networkPlayer, connected.id, connected.name, connected.ready);
+					if(local)
+					{
+						nickname = nickname + "(" + (_localPlayerCount[player].Count + 1) + ")";
+					}
+
+		            PlayerInfo connected = new PlayerInfo(player, pId, nickname, false);
+					_localPlayerCount[player].Add (connected);
+
+		            if (!local)
+		            {
+		                foreach (PlayerInfo p in players.Values)
+		                {
+		                    networkView.RPC("PlayerConnected", player, p.networkPlayer, p.id, p.name, p.ready);
+		                }
+		            }
+
+		            else
+		            {
+						connected.ready = true;
+		            }
+
+					networkView.RPC("PlayerConnected", RPCMode.All, connected.networkPlayer, connected.id, connected.name, connected.ready);
+				}
+			}
 		}
 
 		else
