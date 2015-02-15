@@ -7,13 +7,22 @@ public class CameraController : MonoBehaviour {
 	public float ease;
 	public Vector3 cameraOffset;
 	public List<PlayerController> toFollow = new List<PlayerController>();
-	private bool thirdPerson = true;
+	private bool thirdPerson = false;
+	private Quaternion originalRotaion;
 
 	// Use this for initialization
 	void Start () {
-		
+		originalRotaion = transform.rotation;
 	}
-	
+
+	void Update() {
+		if (Input.GetKeyDown(KeyCode.Minus)) {
+			if (thirdPerson)
+				transform.rotation = originalRotaion;
+			thirdPerson = !thirdPerson;
+		}
+	}
+
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (!thirdPerson) {
