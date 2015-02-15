@@ -17,6 +17,7 @@ public class PlayerInfo : IComparable<PlayerInfo> {
     public bool connected = true;
 	public int kills = 0;
 	public int deaths = 0;
+	public string input = "Horizontal";
 
 	public Killstreaks killstreaks = new Killstreaks ();
 
@@ -191,14 +192,15 @@ public class Connections : MonoBehaviour {
 
     public void AddLocalPlayer()
     {
-        if (!Network.isServer)
+		string nick = localNickname + "(" + (localPlayers.Count + 1) + ")";
+		if (!Network.isServer)
         {
-            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname + "_local", true);
+            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, nick, true);
         }
 
         else
         {
-            SendPlayerInfo(Network.player, localNickname + "_local", true);
+            SendPlayerInfo(Network.player, nick, true);
         }
     }
 
@@ -319,6 +321,11 @@ public class Connections : MonoBehaviour {
         {
             //_playerId = id;
             //_playerInfo = connected;
+			if(localPlayers.Count >= 1)
+			{
+				connected.input = "Horizontal P" + (localPlayers.Count + 1);
+			}
+
 			_localPlayers.Add (connected);
             _connected = true;
         }

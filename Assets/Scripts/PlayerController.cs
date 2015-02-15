@@ -176,7 +176,7 @@ public class PlayerController : MonoBehaviour {
 		//Debug.Log ("ID: " + playerInfo.id + " State: " + state);
 		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 		{
-			input = Input.GetAxis("Horizontal");
+			input = Input.GetAxis(playerInfo.input);
 
             //check for inputdelay
             if (Input.GetAxis("Horizontal") == 0 &&
