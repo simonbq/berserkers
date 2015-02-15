@@ -8,11 +8,13 @@ public class SoundStore : MonoBehaviour {
 	public AudioClip[] PositiveCheer;
 	public AudioClip[] NegativeCheer; 
 	public AudioClip[] KillSound;
+	public AudioClip[] OverkillSound;
 	public AudioClip[] KillShout;
 	public AudioClip[] DeathShout;
 	public AudioClip[] StunSoundWall;
 	public AudioClip[] StunSoundPlayer;
 	public AudioClip[] StunShout;
+	public AudioClip[] KillWall;
 	public AudioClip[] PowerUpPickUpSound;
 	public AudioClip[] PowerUpPickUpShout;
 	public AudioClip PowerUpSpawn;

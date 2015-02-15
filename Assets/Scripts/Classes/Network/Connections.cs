@@ -177,6 +177,10 @@ public class Connections : MonoBehaviour {
         MasterServer.RequestHostList("BerzerkasBananas");
     }
 
+	void Awake() {
+		localNickname = Prefs.GetName ();
+	}
+
 	void Start()
 	{
 		GameObject.DontDestroyOnLoad (this.gameObject);
@@ -266,6 +270,10 @@ public class Connections : MonoBehaviour {
 	[RPC]
 	void GotoScene(string name)
 	{
+		Debug.Log ("Name = " + localNickname);
+		Prefs.SetName (localNickname);
+		Prefs.SetVolume (AudioListener.volume);
+		Prefs.Save ();
 		Application.LoadLevel (name);
 		Debug.Log ("Going to Scene " + name);
 

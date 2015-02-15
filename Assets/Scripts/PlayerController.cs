@@ -296,7 +296,7 @@ public class PlayerController : MonoBehaviour {
                         Debug.Log("Kill player");
                         networkView.RPC("PlayDeathShout", RPCMode.All);
 
-                        networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up);
+                        networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, inOverKill, false);
 
                         
                     }
@@ -307,8 +307,8 @@ public class PlayerController : MonoBehaviour {
                         {
                             networkView.RPC("PlayDeathShout", RPCMode.All);
 
-                            networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up);
-                            hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id, Vector3.up);
+							networkView.RPC("Kill", RPCMode.All, hitPlayer.playerInfo.id, Vector3.up, inOverKill, false);
+							hitPlayer.networkView.RPC("Kill", RPCMode.All, playerInfo.id, Vector3.up, inOverKill, false);
                         }
                         else
                         {
@@ -324,7 +324,9 @@ public class PlayerController : MonoBehaviour {
 			{
                 if (inOverKill)
                 {
-                    networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal);
+					if (GameController.instance.state != GameController.GameState.ROUNDEND) {
+						networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal, inOverKill, true);
+					}
                 }
                 else
                 {
@@ -524,7 +526,7 @@ public class PlayerController : MonoBehaviour {
 
 
 	[RPC]
-	void Kill(int killerId, Vector3 dir)
+	void Kill(int killerId, Vector3 dir, bool overkill, bool wall)
 	{
         SetSpeed(startSpeed);
         SpawnSplatDecal(-dir);
@@ -543,7 +545,15 @@ public class PlayerController : MonoBehaviour {
 
 
         playerInfo.deaths++;
-        SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
+		if (overkill) {
+			if (wall)
+				SoundStore.instance.PlayRandom(SoundStore.instance.KillWall);
+			else
+				SoundStore.instance.PlayRandom(SoundStore.instance.OverkillSound);
+		}
+		else {
+        	SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
+		}
         if (GameController.instance.playersAlive < 2)
         {
             networkView.RPC("PlayWinSound", RPCMode.All);
