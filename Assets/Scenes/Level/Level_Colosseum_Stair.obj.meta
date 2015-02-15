@@ -5,11 +5,16 @@ ModelImporter:
   fileIDToRecycleName:
     100000: //RootNode
     100002: polyStair
+    100004: polyStairs
     400000: //RootNode
     400002: polyStair
+    400004: polyStairs
     2300000: polyStair
+    2300002: polyStairs
     3300000: polyStair
+    3300002: polyStairs
     4300000: polyStair
+    4300002: polyStairs
     9500000: //RootNode
   materials:
     importMaterials: 1

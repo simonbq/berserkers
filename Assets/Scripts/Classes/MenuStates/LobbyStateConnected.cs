@@ -79,7 +79,12 @@ public class LobbyStateConnected : MenuState {
 		}
         GUILayout.EndScrollView();
 
-        if (GUILayout.Button("Add local player"))
+		if (Connections.GetInstance().localPlayers.Count > 1 &&
+		    GUILayout.Button("Remove local player"))
+		{
+			Connections.GetInstance().KickLocalPlayer();
+		}
+		if (GUILayout.Button("Add local player"))
         {
             Connections.GetInstance().AddLocalPlayer();
         }

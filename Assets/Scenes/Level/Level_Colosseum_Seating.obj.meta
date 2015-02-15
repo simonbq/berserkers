@@ -5,11 +5,16 @@ ModelImporter:
   fileIDToRecycleName:
     100000: //RootNode
     100002: polySeatings
+    100004: polySeats
     400000: //RootNode
     400002: polySeatings
+    400004: polySeats
     2300000: polySeatings
+    2300002: polySeats
     3300000: polySeatings
+    3300002: polySeats
     4300000: polySeatings
+    4300002: polySeats
     9500000: //RootNode
   materials:
     importMaterials: 1

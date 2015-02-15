@@ -205,6 +205,14 @@ public class Connections : MonoBehaviour {
         }
     }
 
+	public void KickLocalPlayer()
+	{
+		if(_localPlayers.Count > 1)
+		{
+			networkView.RPC ("PlayerDisconnected", RPCMode.All, Network.player, _localPlayers[_localPlayers.Count - 1].id, true);
+		}
+	}
+	
 	void Awake() {
 		localNickname = Prefs.GetName ();
 	}
@@ -266,10 +274,25 @@ public class Connections : MonoBehaviour {
 
 			foreach(var d in disconnected)
 			{
-				players[d.id].connected = false;
-				_players.Remove(d.id);
-				networkView.RPC ("PlayerDisconnected", RPCMode.All, d.id);
+				networkView.RPC ("PlayerDisconnected", RPCMode.Others, player, d.id, false);
+				if(_players.ContainsKey (d.id))
+				{
+					_players[d.id].connected = false;
+					_players.Remove(d.id);
+				}
+
+				Debug.Log ("Removing player " + d.id);
 			}
+
+			_localPlayerCount.Remove (player);
+		}
+
+		else
+		{
+			int id = GetPlayerId(player);
+			networkView.RPC ("PlayerDisconnected", RPCMode.All, player, id, false);
+			players[id].connected = false;
+			_players.Remove(id);
 		}
 	}
 
@@ -278,6 +301,8 @@ public class Connections : MonoBehaviour {
 		 PlayerInfo playerInfo = new PlayerInfo (Network.player, 0, localNickname, true);
 		_players.Add (0, playerInfo);
 		_localPlayers.Add (playerInfo);
+		_localPlayerCount.Add (Network.player, new List<PlayerInfo>());
+		_localPlayerCount [Network.player].Add (playerInfo);
 		_connected = true;
 	}
 
@@ -316,8 +341,23 @@ public class Connections : MonoBehaviour {
 	}
 
 	[RPC]
-	void PlayerDisconnected(int id)
+	void PlayerDisconnected(NetworkPlayer player, int id, bool local)
 	{
+		if(local)
+		{
+			if(Network.isServer)
+			{
+				_localPlayerCount[player].RemoveAll(x => x.id == id);
+				Debug.Log ("A client removed a local player");
+			}
+			
+			if(_localPlayers.Exists (x => x.id == id))
+			{
+				_localPlayers.Remove (_localPlayers.Find (x => x.id == id));
+				Debug.Log ("Removed local player");
+			}
+		}
+
 		_players.Remove (id);
 	}
 
@@ -367,7 +407,7 @@ public class Connections : MonoBehaviour {
 					_localPlayerCount.Add(player, new List<PlayerInfo>());
 				}
 
-				if(_localPlayerCount[player].Count < 3)
+				if(_localPlayerCount[player].Count < 4)
 				{
 					int cId = GetPlayerId(player);
 		            int pId = players.Count;
