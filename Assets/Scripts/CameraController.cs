@@ -15,23 +15,25 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		var follow = toFollow.FindAll (x => x.state != PlayerController.PlayerState.DEAD);
+
 		Vector3 targetPos = Vector3.zero;
-		foreach(PlayerController player in toFollow)
+		foreach(PlayerController player in follow)
 		{
 			targetPos += player.transform.position;
 		}
 		targetPos /= toFollow.Count;
 
 		float dist = 0;
-		foreach(PlayerController player in toFollow)
+		foreach(PlayerController player in follow)
 		{
 			dist += Vector3.Distance(player.transform.position, targetPos);
 		}
 
 		dist /= toFollow.Count;
 		targetPos += cameraOffset;
-		targetPos.y += dist * 0.5f;
-		targetPos.z -= dist * 0.5f;
+		targetPos.y += dist * 0.7f;
+		targetPos.z -= dist * 0.66f;
 
 		targetPos = Vector3.Lerp (Vector3.zero, targetPos, lookOffset);
 

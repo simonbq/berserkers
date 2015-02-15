@@ -31,6 +31,7 @@ public class ScoreBoard : MenuBase {
 	private float est_maxSpeed = 0.6f;
 
 	private bool menuActive = false;
+	private float randomSpeed = 0;
 
 	private List<PlayerInfo> playas;
 	// Use this for initialization
@@ -92,10 +93,24 @@ public class ScoreBoard : MenuBase {
 		if(HUDSingleton.instance.onFire) {
 			f = Random.Range (0.9f, 1.1f);
 		}
-		speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / est_maxSpeed);
-		if(Event.current.rawType == EventType.repaint)
-			Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
-		GUI.Label (speedometer_textrect, (int)(Mathf.Pow(HUDSingleton.instance.speed, 3)/Mathf.Pow(est_maxSpeed, 3) * (quote_maxSpeed_endquote + (float)Random.Range(0, 2))) + "\nkm/h", GUI.skin.customStyles [1]); //
+
+		if(Connections.GetInstance().localPlayers.Count == 1)
+		{
+			speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / est_maxSpeed);
+			if(Event.current.rawType == EventType.repaint)
+				Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
+			GUI.Label (speedometer_textrect, (int)(Mathf.Pow(HUDSingleton.instance.speed, 3)/Mathf.Pow(est_maxSpeed, 3) * (quote_maxSpeed_endquote + (float)Random.Range(0, 2))) + "", GUI.skin.customStyles [1]); //
+		}
+
+		else
+		{
+			randomSpeed = Mathf.Lerp (randomSpeed, Random.Range (0f, 1f), 3 * Time.deltaTime);
+			speedometer_mat.SetFloat("_Cutoff", randomSpeed);
+
+			if(Event.current.rawType == EventType.repaint)
+				Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
+			GUI.Label (speedometer_textrect, "N/A", GUI.skin.customStyles [1]); //
+		}
 		if(currentAnnouncement != null) {
 			GUI.DrawTexture(announcerRect, currentAnnouncement);
 		}
