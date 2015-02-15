@@ -64,12 +64,12 @@ public class LobbyStateBrowser : MenuState
         GUILayout.BeginArea(connArea);
         GUILayout.Label("Open lobbies");
         lobbyScroll = GUILayout.BeginScrollView(lobbyScroll);
+		
+		var serverList = Connections.GetInstance ().serverList;
 
-		var serverlist = Connections.GetInstance ().serverList;
-
-		if(serverlist != null)
+		if(serverList != null)
 		{
-			foreach (HostData lobby in serverlist)
+	        foreach (HostData lobby in serverList)
 	        {
 	            if (GUILayout.Button(lobby.gameName + " (" + lobby.connectedPlayers + " / " + lobby.playerLimit + ")"))
 	            {
