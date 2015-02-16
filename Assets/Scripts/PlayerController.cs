@@ -470,7 +470,11 @@ public class PlayerController : MonoBehaviour {
 	void Firstblood()
 	{
 		firstblood = true;
-		networkView.RPC ("PlayFirstBlood", RPCMode.All);
+
+        if (Network.isServer)
+        {
+            networkView.RPC("PlayFirstBlood", RPCMode.All);
+        }
 	}
 
 	[RPC]
@@ -553,7 +557,8 @@ public class PlayerController : MonoBehaviour {
 		else {
         	SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
 		}
-        if (GameController.instance.playersAlive == 2 && !wall)
+        if (Network.isServer &&
+            GameController.instance.playersAlive == 2 && !wall)
         {
             networkView.RPC("PlayWinSound", RPCMode.All);
         }
@@ -597,13 +602,13 @@ public class PlayerController : MonoBehaviour {
                 SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
             }
 
-            Bobber.instance.startClimax(1, 1);
+            //Bobber.instance.startClimax(1, 1);
 
         }
 
         else
         {
-            Bobber.instance.startClimax(0.5f, 0.5f);
+            //Bobber.instance.startClimax(0.5f, 0.5f);
         }
 
 		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))

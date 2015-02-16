@@ -79,22 +79,15 @@ public class GameController : MonoBehaviour {
 			powerupSpawned = false;
 		}
 
-        if (GameController.instance.state != GameController.GameState.ROUNDEND)
-        {
-            int countAlive = 0;
-            foreach (GameObject player in GameController.instance.players)
-            {
-                if (player.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD)
-                    countAlive++;
-            }
+        playersAlive = players.FindAll(x => x.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD).Count;
 
+        if (Network.isServer &&
+            GameController.instance.state != GameController.GameState.ROUNDEND)
+        {
             /*if (countAlive != 0)
             {
                 Bobber.instance.cheerFactor = 1 - (1 / countAlive);
             }*/
-
-            playersAlive = countAlive;
-			Debug.Log ("Players: " + players.Count);
             if ((playersAlive < 2 && players.Count > 1) || (playersAlive < 1 && players.Count == 1))
             {
                 GameController.instance.state = GameController.GameState.ROUNDEND;
@@ -190,10 +183,10 @@ public class GameController : MonoBehaviour {
         if (spawnPowerups)
         {
             int spawnsLeft = spawnPoints.Count - powerupSpawns.Count;
-            int playersAlive = players.FindAll(x => x.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD).Count;
-            playersAlive = Mathf.CeilToInt((float)playersAlive / 2);
+            int alive = Mathf.CeilToInt((float)playersAlive / 2);
+            Debug.Log(alive);
             
-            for (int i = 0; i < Random.Range(1, Mathf.Min(spawnsLeft, playersAlive)); i++)
+            for (int i = 0; i < Random.Range(1, Mathf.Min(spawnsLeft, alive + 1)); i++)
             {
                 GameObject selectSpawnPoint = GetSpawn(ref powerupSpawns);
 
