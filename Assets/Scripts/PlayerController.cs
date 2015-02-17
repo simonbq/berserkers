@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject splat;
     public GameObject splatDecal;
     public GameObject nameText;
+    public GameObject confetti;
 
 	public Transform cam;
 
@@ -544,8 +545,6 @@ public class PlayerController : MonoBehaviour {
 		Debug.Log (playerInfo.id + " got killed by " + killerId);
 
         gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
-
-
 
         playerInfo.deaths++;
 		if (overkill) {

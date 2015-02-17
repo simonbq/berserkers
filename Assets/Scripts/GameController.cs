@@ -79,7 +79,8 @@ public class GameController : MonoBehaviour {
 			powerupSpawned = false;
 		}
 
-        playersAlive = players.FindAll(x => x.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD).Count;
+        List<GameObject> alivePlayersList = players.FindAll(x => x.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD);
+        playersAlive = alivePlayersList.Count;
 
         if (Network.isServer &&
             GameController.instance.state != GameController.GameState.ROUNDEND)
@@ -90,10 +91,15 @@ public class GameController : MonoBehaviour {
             }*/
             if ((playersAlive < 2 && players.Count > 1) || (playersAlive < 1 && players.Count == 1))
             {
+                if (alivePlayersList.Count == 1)
+                {
+                    alivePlayersList[0].GetComponent<PlayerController>().confetti.particleSystem.Play();
+                }
                 GameController.instance.state = GameController.GameState.ROUNDEND;
 
                 GameController.instance.Invoke("SpawnPlayers", 3);
                 
+
             }
         }
 
