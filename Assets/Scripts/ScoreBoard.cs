@@ -241,7 +241,7 @@ public class ScoreBoard : MenuBase {
 		}
 	}
 
-	public IEnumerator ambulance() {
+	private IEnumerator ambulance() {
 		if(Options.dynamicHud) {
 			Ambulance s = new Ambulance (new Rect (SCREEN_SIZE.x + 100, SCREEN_SIZE.y - ambulanceSize, ambulanceSize, ambulanceSize), ambulances[Random.Range(0, ambulances.Length)], ambulancesPerSheet, ambulanceSize);
 			ambulance_list.Add(s);
@@ -254,6 +254,10 @@ public class ScoreBoard : MenuBase {
 			}
 			s.die ();
 		}
+	}
+
+	public void spawnAmbulance() {
+		StartCoroutine (ambulance());
 	}
 
 	public void Display(Announcments announcment, float duration) {
