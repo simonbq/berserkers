@@ -91,10 +91,6 @@ public class GameController : MonoBehaviour {
             }*/
             if ((playersAlive < 2 && players.Count > 1) || (playersAlive < 1 && players.Count == 1))
             {
-                if (alivePlayersList.Count == 1)
-                {
-                    alivePlayersList[0].GetComponent<PlayerController>().confetti.particleSystem.Play();
-                }
                 GameController.instance.state = GameController.GameState.ROUNDEND;
 
                 GameController.instance.Invoke("SpawnPlayers", 3);
