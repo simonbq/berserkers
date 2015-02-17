@@ -37,7 +37,7 @@ public class Star : Starlike {
 
 public class StarAnchor : Starlike {
 
-	public void Add(Star star) {
+	public void Add(Starlike star) {
 		if(next == null) {
 			next = star;
 			next.previous = this;
