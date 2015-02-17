@@ -525,6 +525,7 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void PlayWinSound()
 	{
+        //This seems like as good a place as any to play a confetti particle system!
         confetti.particleSystem.Play();
 		SoundStore.instance.Play (SoundStore.instance.WinSound);
 	}
