@@ -105,13 +105,8 @@ public class ScoreBoard : MenuBase {
 		//speedometer_rect = new Rect (SCREEN_SIZE.x-600, 0, 600, 400);
 	}
 
-	private float next = 0.0f;
 	// Update is called once per frame
 	void Update () {
-		if(Time.time > next) {
-			next = Time.time + 5.0f;
-			StartCoroutine(convoy(Random.Range(1, 5)));
-		}
 		//ScreenShaker.instance.SetConstantShakyness (Mathf.Pow(HUDSingleton.instance.speed, 4) );
 		float width = Screen.width / SCREEN_SIZE.x;
 		float height = Screen.height / SCREEN_SIZE.y;
@@ -242,22 +237,24 @@ public class ScoreBoard : MenuBase {
 	}
 
 	private IEnumerator ambulance() {
-		if(Options.dynamicHud) {
-			Ambulance s = new Ambulance (new Rect (SCREEN_SIZE.x + 100, SCREEN_SIZE.y - ambulanceSize, ambulanceSize, ambulanceSize), ambulances[Random.Range(0, ambulances.Length)], ambulancesPerSheet, ambulanceSize);
-			ambulance_list.Add(s);
-			float delta = 0.0f;
-			while(delta < ambulanceDuration) {
-				delta += Time.deltaTime;
-				s.rect.x = (1 - ambulanceSpeedCurve.Evaluate( delta/ambulanceDuration)) * (SCREEN_SIZE.x + ambulanceSize) - ambulanceSize;
-				s.rect.y = ambulanceHopCurve.Evaluate(delta/ambulanceDuration) * ambulanceSize + SCREEN_SIZE.y - ambulanceSize;
-				yield return null;
-			}
-			s.die ();
+
+		Ambulance s = new Ambulance (new Rect (SCREEN_SIZE.x + 100, SCREEN_SIZE.y - ambulanceSize, ambulanceSize, ambulanceSize), ambulances[Random.Range(0, ambulances.Length)], ambulancesPerSheet, ambulanceSize);
+		ambulance_list.Add(s);
+		float delta = 0.0f;
+		while(delta < ambulanceDuration) {
+			delta += Time.deltaTime;
+			s.rect.x = (1 - ambulanceSpeedCurve.Evaluate( delta/ambulanceDuration)) * (SCREEN_SIZE.x + ambulanceSize) - ambulanceSize;
+			s.rect.y = ambulanceHopCurve.Evaluate(delta/ambulanceDuration) * ambulanceSize + SCREEN_SIZE.y - ambulanceSize;
+			yield return null;
 		}
+		s.die ();
+
 	}
 
 	public void spawnAmbulance() {
-		StartCoroutine (ambulance());
+		if(Options.dynamicHud) {
+			StartCoroutine (ambulance());
+		}
 	}
 
 	public void Display(Announcments announcment, float duration) {
