@@ -242,16 +242,18 @@ public class ScoreBoard : MenuBase {
 	}
 
 	public IEnumerator ambulance() {
-		Ambulance s = new Ambulance (new Rect (SCREEN_SIZE.x + 100, SCREEN_SIZE.y - ambulanceSize, ambulanceSize, ambulanceSize), ambulances[Random.Range(0, ambulances.Length)], ambulancesPerSheet, ambulanceSize);
-		ambulance_list.Add(s);
-		float delta = 0.0f;
-		while(delta < ambulanceDuration) {
-			delta += Time.deltaTime;
-			s.rect.x = (1 - ambulanceSpeedCurve.Evaluate( delta/ambulanceDuration)) * (SCREEN_SIZE.x + ambulanceSize) - ambulanceSize;
-			s.rect.y = ambulanceHopCurve.Evaluate(delta/ambulanceDuration) * ambulanceSize + SCREEN_SIZE.y - ambulanceSize;
-			yield return null;
+		if(Options.dynamicHud) {
+			Ambulance s = new Ambulance (new Rect (SCREEN_SIZE.x + 100, SCREEN_SIZE.y - ambulanceSize, ambulanceSize, ambulanceSize), ambulances[Random.Range(0, ambulances.Length)], ambulancesPerSheet, ambulanceSize);
+			ambulance_list.Add(s);
+			float delta = 0.0f;
+			while(delta < ambulanceDuration) {
+				delta += Time.deltaTime;
+				s.rect.x = (1 - ambulanceSpeedCurve.Evaluate( delta/ambulanceDuration)) * (SCREEN_SIZE.x + ambulanceSize) - ambulanceSize;
+				s.rect.y = ambulanceHopCurve.Evaluate(delta/ambulanceDuration) * ambulanceSize + SCREEN_SIZE.y - ambulanceSize;
+				yield return null;
+			}
+			s.die ();
 		}
-		s.die ();
 	}
 
 	public void Display(Announcments announcment, float duration) {
