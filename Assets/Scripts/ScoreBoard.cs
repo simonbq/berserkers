@@ -155,7 +155,7 @@ public class ScoreBoard : MenuBase {
 		{
 			GUILayout.BeginArea (area, GUI.skin.box);
 			GUILayout.BeginHorizontal ();
-			GUIShadow.LayoutLabel ("Name"); 
+			GUIShadow.LayoutLabel ("Name", GUILayout.Width(250)); 
 			GUIShadow.LayoutLabel ("Kills");
 			GUIShadow.LayoutLabel ("Deaths");
 			GUILayout.EndHorizontal ();
@@ -166,7 +166,7 @@ public class ScoreBoard : MenuBase {
 				GUILayout.BeginHorizontal ();
 				GUILayout.Box(playerIcons[p.id], skin.customStyles[0]);
 				GUI.color = Connections.GetInstance().playerColors[p.id];
-				GUIShadow.LayoutLabel (p.name); // Player name
+				GUIShadow.LayoutLabel (p.name, GUILayout.Width(250)); // Player name
 				GUI.color = Color.white;
 				GUIShadow.LayoutLabel (p.kills.ToString()); // Player score
 				GUIShadow.LayoutLabel (p.deaths.ToString()); // Player deaths
