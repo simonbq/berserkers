@@ -249,7 +249,7 @@ public class ScoreBoard : MenuBase {
 		s.die ();
 
 	}
-
+	[ContextMenu ("Spawn Ambulance")]
 	public void spawnAmbulance() {
 		if(Options.dynamicHud) {
 			StartCoroutine (ambulance());
