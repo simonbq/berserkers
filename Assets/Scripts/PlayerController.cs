@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour {
 
 	private float _input = 0;
 	private float startSpeed;
-	private float currentSpeed = 0;
+	public float currentSpeed = 0;
 
 	private bool firstblood = false;
 	private Vector3 netPosition = Vector3.zero;

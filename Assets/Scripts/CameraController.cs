@@ -29,11 +29,14 @@ public class CameraController : MonoBehaviour {
 			var follow = toFollow.FindAll (x => x.state != PlayerController.PlayerState.DEAD);
 
 			Vector3 targetPos = Vector3.zero;
+            float avgSpeed = 0;
 			foreach(PlayerController player in follow)
 			{
 				targetPos += player.transform.position;
+                avgSpeed += player.currentSpeed;
 			}
-			targetPos /= toFollow.Count;
+			targetPos /= follow.Count;
+            avgSpeed /= follow.Count;
 
 			float dist = 0;
 			foreach(PlayerController player in follow)
@@ -41,7 +44,7 @@ public class CameraController : MonoBehaviour {
 				dist += Vector3.Distance(player.transform.position, targetPos);
 			}
 
-			dist /= toFollow.Count;
+			dist /= follow.Count;
 			targetPos += cameraOffset;
 			targetPos.y += dist * 0.7f;
 			targetPos.z -= dist * 0.66f;
@@ -53,7 +56,7 @@ public class CameraController : MonoBehaviour {
 		        targetPos = Vector3.zero + Vector3.forward * cameraOffset.z * 1.5f + Vector3.up * 3f + cameraOffset;
 		    }
 
-			transform.position = Vector3.Lerp (transform.position, targetPos, ease * Time.fixedDeltaTime);
+			transform.position = Vector3.Lerp (transform.position, targetPos, (ease + ease * (avgSpeed / 0.55f)) * Time.fixedDeltaTime);
 		}
 		else {
 			transform.position = toFollow[0].cam.position;
