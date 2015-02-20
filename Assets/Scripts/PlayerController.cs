@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject splat;
     public GameObject splatDecal;
     public GameObject nameText;
+    public GameObject confetti;
 
 	public Transform cam;
 
@@ -139,7 +140,6 @@ public class PlayerController : MonoBehaviour {
 		state = PlayerState.IDLE;
         Invoke("MakeAlive", 2.0f);
 
-		Invoke ("AnnouncerStart", 2.0f);
 		Debug.Log ("Should play sound for round start soon");
 
         rigidbody.velocity = Vector3.zero;
@@ -170,6 +170,7 @@ public class PlayerController : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
+		Debug.Log (firstblood);
 		//Debug.Log ("ID: " + playerInfo.id + " State: " + state);
 		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 		{
@@ -467,17 +468,14 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-	void AnnouncerStart()
-	{
-		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo)) 
-			SoundStore.instance.Play (SoundStore.instance.AnnouncerStart);
-			Debug.Log ("Play round start sound now");
-	}
-
 	void Firstblood()
 	{
 		firstblood = true;
-		networkView.RPC ("PlayFirstBlood", RPCMode.All);
+
+        if (Network.isServer)
+        {
+            networkView.RPC("PlayFirstBlood", RPCMode.All);
+        }
 	}
 
 	[RPC]
@@ -527,6 +525,8 @@ public class PlayerController : MonoBehaviour {
 	[RPC]
 	void PlayWinSound()
 	{
+        //This seems like as good a place as any to play a confetti particle system!
+        confetti.particleSystem.Play();
 		SoundStore.instance.Play (SoundStore.instance.WinSound);
 	}
 
@@ -548,8 +548,6 @@ public class PlayerController : MonoBehaviour {
 
         gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
 
-
-
         playerInfo.deaths++;
 		if (overkill) {
 			if (wall)
@@ -560,7 +558,8 @@ public class PlayerController : MonoBehaviour {
 		else {
         	SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
 		}
-        if (GameController.instance.playersAlive < 2 && !wall)
+        if (Network.isServer &&
+            GameController.instance.playersAlive == 2 && !wall)
         {
             networkView.RPC("PlayWinSound", RPCMode.All);
         }
@@ -568,9 +567,10 @@ public class PlayerController : MonoBehaviour {
         //If you killed yourself, none of this applies
         if (playerInfo.id != killerId)
         {
-            Connections.GetInstance().players[killerId].killstreaks.Died();
+            //Connections.GetInstance().players[killerId].killstreaks.Died();
+			playerInfo.killstreaks.Died ();
 
-            if (GameController.instance.playersAlive == Connections.GetInstance().players.Count - 1 && !firstblood)
+            if (GameController.instance.playersAlive == Connections.GetInstance().players.Count && !firstblood)
             {
                 Firstblood();
             }
@@ -603,18 +603,19 @@ public class PlayerController : MonoBehaviour {
                 SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
             }
 
-            Bobber.instance.startClimax(1, 1);
+            //Bobber.instance.startClimax(1, 1);
 
         }
 
         else
         {
-            Bobber.instance.startClimax(0.5f, 0.5f);
+            //Bobber.instance.startClimax(0.5f, 0.5f);
         }
 
 		if(Connections.GetInstance().localPlayers.Exists(x => x == playerInfo))
 		{
 			ScreenShaker.instance.Shake (1, 1);
+            ScoreBoard.instance.spawnAmbulance();
 		}
 	}
 
