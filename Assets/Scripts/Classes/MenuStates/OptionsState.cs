@@ -8,7 +8,7 @@ public class OptionsState : MenuState {
 	private Slider volumeSlider;
 	private Slider graphicsSlider;
 	private ActionData data;
-
+	private float gSliderVal;
 	public OptionsState() {
 		Button b;
 		b = new Button (960 - 128, 400, Button.BUTTON_NORM);
@@ -31,6 +31,7 @@ public class OptionsState : MenuState {
 		b.setOnClick (ButtonActions.toggleMovingMenu);
 		buttons.Add (b);
 
+		gSliderVal = (float)QualitySettings.GetQualityLevel () / (float)(QualitySettings.names.Length-1);
 		//Ingen feedback så tog bort, använd ingame istället
 		/*b = new Button (960 - 128 + 256, 100, (int)Button.BUTTON_NORM.x, 64);
 		b.setText ("Dyn. HUD");
@@ -55,7 +56,11 @@ public class OptionsState : MenuState {
 			b.update(data);
 		}
 		AudioListener.volume = volumeSlider.update (AudioListener.volume);
-		float v = (float)QualitySettings.GetQualityLevel () / (QualitySettings.names.Length-1);
-		QualitySettings.SetQualityLevel ((int)(graphicsSlider.update (v) * (int)QualitySettings.names.Length));
+
+		int v2 = Mathf.RoundToInt( ((graphicsSlider.update (gSliderVal) ) * (QualitySettings.names.Length-1)));
+		gSliderVal = (float)v2 / (float)(QualitySettings.names.Length - 1);
+		if(Input.GetMouseButtonUp(0) && v2 != QualitySettings.GetQualityLevel()) {
+			QualitySettings.SetQualityLevel (v2);
+		}
 	}
 }
