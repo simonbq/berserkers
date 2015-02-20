@@ -192,7 +192,6 @@ public class ScoreBoard : MenuBase {
 		{
 			randomSpeed = Mathf.Lerp (randomSpeed, Random.Range (0f, 1f), 3 * Time.deltaTime);
 			speedometer_mat.SetFloat("_Cutoff", randomSpeed);
-			GUIUtility.ScaleAroundPivot(-Vector2.one, speedometer_rect.center);
 			if(Event.current.rawType == EventType.repaint)
 				Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
 			GUIUtility.ScaleAroundPivot(Vector2.one, speedometer_rect.center);
