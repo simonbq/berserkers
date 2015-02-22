@@ -258,6 +258,7 @@ public class Connections : MonoBehaviour {
             _connected = false;
             players.Clear();
 			_localPlayers.Clear();
+            _localPlayerCount.Clear();
         }
 	}
 
