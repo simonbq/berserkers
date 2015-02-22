@@ -78,7 +78,7 @@ public class LobbyStateConnected : MenuState {
 			GUI.color = Connections.GetInstance().playerColors[p.id];
 			GUILayout.BeginHorizontal();
 			string text = p.name;
-			GUIShadow.LayoutLabel(text, GUILayout.Width(380));
+			GUIShadow.LayoutLabel(text, GUILayout.Width(300));
 			GUI.color = Color.white;
 			GUIShadow.LayoutLabel (p.ready ? "Ready" : "Not ready");
 			GUILayout.EndHorizontal();

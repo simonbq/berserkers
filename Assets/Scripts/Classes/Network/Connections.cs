@@ -62,6 +62,8 @@ public class PlayerInfo : IComparable<PlayerInfo> {
 
 
 public class Connections : MonoBehaviour {
+
+    public int buildVersion = 1000;
 	public string localNickname = "Unnamed";
 	public string lobbyScene = "Lobby";
 	public Color[] playerColors;
@@ -197,12 +199,12 @@ public class Connections : MonoBehaviour {
     {
 		if (!Network.isServer)
         {
-            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, true);
+            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, _localPlayers[0].ready, buildVersion);
         }
 
         else
         {
-            SendPlayerInfo(Network.player, localNickname, true);
+            SendPlayerInfo(Network.player, localNickname, true, buildVersion);
         }
     }
 
@@ -310,7 +312,7 @@ public class Connections : MonoBehaviour {
 	void OnConnectedToServer()
 	{
 		Debug.Log ("Connected!");
-		networkView.RPC ("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, false);
+        networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, false, buildVersion);
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)
@@ -390,11 +392,12 @@ public class Connections : MonoBehaviour {
 	}
 
 	[RPC]
-	void SendPlayerInfo(NetworkPlayer player, string nickname, bool local)
+	void SendPlayerInfo(NetworkPlayer player, string nickname, bool local, int version)
 	{
 		if (Network.isServer) 
 		{
-			if(_players.Count >= Network.maxConnections)
+			if(_players.Count >= Network.maxConnections ||
+                version != buildVersion)
 			{
 				if(!_localPlayerCount.ContainsKey (player))
 				{
