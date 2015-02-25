@@ -17,6 +17,10 @@ public class LobbyStateBrowser : MenuState
     string ipNumber = "127.0.0.1";
     private Rect connArea = new Rect(960 - 256, 64, 512 + 64, 320);
     private Vector3 lobbyScroll = new Vector2();
+
+	private Rect errRect = new Rect(64, 128, 512, 256);
+	private float errMsgEnd = -1.0f;
+	private string errMsg = "";
     public LobbyStateBrowser()
     {
         data = new ActionData();
@@ -91,5 +95,15 @@ public class LobbyStateBrowser : MenuState
         {
             b.update(data);
         }
+
+		if(errMsgEnd > Time.time) {
+			GUI.Box(errRect, errMsg, GUI.skin.customStyles[1]);
+		}
     }
+
+	public void displayError(string msg) {
+		errMsg = msg;
+		errMsgEnd = Time.time + 7.0f;
+	}
+
 }

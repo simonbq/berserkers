@@ -67,7 +67,7 @@ public class ScoreBoard : MenuBase {
 	public Rect speedometer_rect = new Rect(0, 0, 512, 512);
 	public Rect speedometer_textrect = new Rect (0, 0, 512, 512);
 	public float quote_maxSpeed_endquote = 9000.0f;
-
+	public AnimationCurve accelloCurve;
 	public Rect gurka_rect = new Rect (0, 0, 525, 292);
 	public Texture gurka_tex;
 
@@ -102,6 +102,7 @@ public class ScoreBoard : MenuBase {
 	void Awake () {
 		instance = this;
 		setCurrent (new GameMenuState ());
+		Screen.showCursor = menuActive;
 		//speedometer_rect = new Rect (SCREEN_SIZE.x-600, 0, 600, 400);
 	}
 
@@ -121,6 +122,7 @@ public class ScoreBoard : MenuBase {
 		est_maxSpeed = Mathf.Max (est_maxSpeed, HUDSingleton.instance.speed);
 		if(Input.GetButtonUp("toggleMenu")) {
 			menuActive = !menuActive;
+			Screen.showCursor = menuActive;
 		}
 		current.update (this);
 	}
@@ -182,10 +184,11 @@ public class ScoreBoard : MenuBase {
 
 		if(Connections.GetInstance().localPlayers.Count == 1)
 		{
-			speedometer_mat.SetFloat ("_Cutoff", HUDSingleton.instance.speed / est_maxSpeed);
+			float perc = accelloCurve.Evaluate(HUDSingleton.instance.speed / est_maxSpeed);
+			speedometer_mat.SetFloat ("_Cutoff", perc);
 			if(Event.current.rawType == EventType.repaint)
 				Graphics.DrawTexture (speedometer_rect, speedometer_mat.mainTexture, speedometer_mat);
-			GUI.Label (speedometer_textrect, (int)(Mathf.Pow(HUDSingleton.instance.speed, 3)/Mathf.Pow(est_maxSpeed, 3) * (quote_maxSpeed_endquote + (float)Random.Range(0, 2))) + "", GUI.skin.customStyles [1]); //
+			GUI.Label (speedometer_textrect, (int)(perc * (quote_maxSpeed_endquote + (float)Random.Range(0, 2))) + "", GUI.skin.customStyles [1]); //
 		}
 
 		else
