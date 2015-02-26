@@ -225,6 +225,10 @@ public class ScoreBoard : MenuBase {
 	private IEnumerator tempdisplay (int id, float duration) {
 		Texture t = announcements [id];
 		currentAnnouncement = t;
+		announcerRect = new Rect (SCREEN_SIZE.x / 2 - currentAnnouncement.width / 2,
+		                          SCREEN_SIZE.y / 2 - currentAnnouncement.height / 2,
+		                          currentAnnouncement.width,
+		                          currentAnnouncement.height);
 		yield return new WaitForSeconds (duration);
 		if(currentAnnouncement == t)
 			currentAnnouncement = null;
@@ -260,37 +264,43 @@ public class ScoreBoard : MenuBase {
 	}
 
 	public void Display(Announcments announcment, float duration) {
-		switch(announcment) {
-		case Announcments.BRING_HONOR:
-			StartCoroutine(tempdisplay(0, duration));
-			break;
-		case Announcments.DOUBLE_KILL:
-			StartCoroutine(tempdisplay(1, duration));
-			break;
-		case Announcments.FIRST_BLOOD:
-			StartCoroutine(tempdisplay(2, duration));
-			break;
-		case Announcments.GO:
-			StartCoroutine(tempdisplay(3, duration));
-			break;
-		case Announcments.GOJIRA_KILL:
-			StartCoroutine(tempdisplay(4, duration));
-			break;
-		case Announcments.LOTS_OF_KILL_LITTLE_TIME:
-			StartCoroutine(tempdisplay(5, duration));
-			break;
-		case Announcments.MANY_KILL:
-			StartCoroutine(tempdisplay(6, duration));
-			break;
-		case Announcments.READY:
-			StartCoroutine(tempdisplay(7, duration));
-			break;
-		case Announcments.SET:
-			StartCoroutine(tempdisplay(8, duration));
-			break;
-		case Announcments.SOON:
-			StartCoroutine(tempdisplay(9, duration));
-			break;
+		if(Options.dynamicHud) {
+			switch(announcment) {
+			case Announcments.BRING_HONOR:
+				StartCoroutine(tempdisplay(0, duration));
+				break;
+			case Announcments.DOUBLE_KILL:
+				StartCoroutine(tempdisplay(1, duration));
+				break;
+			case Announcments.FIRST_BLOOD:
+				StartCoroutine(tempdisplay(2, duration));
+				break;
+			case Announcments.GO:
+				StartCoroutine(tempdisplay(3, duration));
+				break;
+			case Announcments.GOJIRA_KILL:
+				StartCoroutine(tempdisplay(4, duration));
+				break;
+			case Announcments.LOTS_OF_KILL_LITTLE_TIME:
+				StartCoroutine(tempdisplay(5, duration));
+				break;
+			case Announcments.MANY_KILL:
+				StartCoroutine(tempdisplay(6, duration));
+				break;
+			case Announcments.READY:
+				StartCoroutine(tempdisplay(7, duration));
+				break;
+			case Announcments.SET:
+				StartCoroutine(tempdisplay(8, duration));
+				break;
+			case Announcments.SOON:
+				StartCoroutine(tempdisplay(9, duration));
+				break;
+			}
 		}
+	}
+	[ContextMenu ("Announce")]
+	public void DisplayRandom() {
+		Display (Announcments.LOTS_OF_KILL_LITTLE_TIME, 3.0f);
 	}
 }
