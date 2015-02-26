@@ -21,8 +21,10 @@ public class LobbyStateBrowser : MenuState
 	private Rect errRect = new Rect(64, 128, 512, 256);
 	private float errMsgEnd = -1.0f;
 	private string errMsg = "";
+    public static LobbyStateBrowser instance;
     public LobbyStateBrowser()
     {
+        instance = this;
         data = new ActionData();
 
         Button b;
@@ -75,9 +77,10 @@ public class LobbyStateBrowser : MenuState
 		{
 	        foreach (HostData lobby in serverList)
 	        {
-	            if (GUILayout.Button(lobby.gameName + " (" + lobby.connectedPlayers + " / " + lobby.playerLimit + ")"))
+	            if (GUILayout.Button(lobby.gameName + " (" + lobby.connectedPlayers + " / " + (lobby.playerLimit - 1) + ")"))
 	            {
 	                Network.Connect(lobby);
+                    displayError("Connecting...");
 	            }
 	        }
 		}
@@ -105,5 +108,10 @@ public class LobbyStateBrowser : MenuState
 		errMsg = msg;
 		errMsgEnd = Time.time + 7.0f;
 	}
+
+    public void removeError()
+    {
+        errMsgEnd = Time.time;
+    }
 
 }

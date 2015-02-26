@@ -320,11 +320,12 @@ public class Connections : MonoBehaviour {
 	{
 		Debug.Log ("Connected!");
         networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, false, buildVersion);
+        LobbyStateBrowser.instance.removeError();
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)
 	{
-		Debug.Log ("Failed to connect! " + error);
+        LobbyStateBrowser.instance.displayError("Failed to connect! \n" + error);
 	}
 
     int GetPlayerId(NetworkPlayer player)
