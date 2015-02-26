@@ -15,6 +15,7 @@ public class PlayerInfo : IComparable<PlayerInfo> {
 
 	public bool ready = false;
     public bool connected = true;
+    public int wins = 0;
 	public int kills = 0;
 	public int deaths = 0;
 	public string input = "Horizontal";
@@ -155,6 +156,11 @@ public class Connections : MonoBehaviour {
 	{
 		return instance;
 	}
+
+    public void DisplaySomething(Announcments something, float duration)
+    {
+        networkView.RPC("DisplayMessage", RPCMode.All, (int)something, duration);
+    }
 
 	public void ToggleReady()
 	{
@@ -329,6 +335,15 @@ public class Connections : MonoBehaviour {
         }
 
         return -1;
+    }
+
+    [RPC]
+    void DisplayMessage(int msg, float duration)
+    {
+        if (Application.loadedLevelName == "Level")
+        {
+            ScoreBoard.instance.Display((Announcments)msg, duration);
+        }
     }
 
 	[RPC]

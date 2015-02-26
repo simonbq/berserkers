@@ -34,6 +34,7 @@ public class GameController : MonoBehaviour {
 
 	private bool powerupSpawned = true;
     private bool spawnPowerups = false;
+    private int countdown = 3;
 
     void StartSpawningPowerups()
     {
@@ -118,7 +119,9 @@ public class GameController : MonoBehaviour {
 
     public void SpawnPlayers()
     {
-		Invoke ("AnnouncerStart", 2.0f);
+		Invoke ("AnnouncerStart", 3.0f);
+        countdown = 3;
+        Countdown();
         state = GameState.INGAME;
         spawnPowerups = false;
         CancelInvoke("SpawnPowerUp");
@@ -228,6 +231,31 @@ public class GameController : MonoBehaviour {
         if (powerupSpawns.Contains(point))
         {
             powerupSpawns.Remove(point);
+        }
+    }
+
+    void Countdown()
+    {
+        switch (countdown)
+        {
+            case 3:
+                Connections.GetInstance().DisplaySomething(Announcments.READY, 10f);
+                break;
+            case 2:
+                Connections.GetInstance().DisplaySomething(Announcments.SET, 10f);
+                break;
+            case 1:
+                Connections.GetInstance().DisplaySomething(Announcments.SOON, 10f);
+                break;
+            case 0:
+                Connections.GetInstance().DisplaySomething(Announcments.GO, 1f);
+                break;
+        }
+
+        if (countdown != 0)
+        {
+            countdown--;
+            Invoke("Countdown", 1f);
         }
     }
 }

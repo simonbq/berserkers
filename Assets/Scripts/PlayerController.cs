@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour {
 
 	public void Reset () {
 		state = PlayerState.IDLE;
-        Invoke("MakeAlive", 2.0f);
+        Invoke("MakeAlive", 3.0f);
 
 		Debug.Log ("Should play sound for round start soon");
 
@@ -514,6 +514,7 @@ public class PlayerController : MonoBehaviour {
 	void PlayFirstBlood()
 	{ 
 		SoundStore.instance.Play (SoundStore.instance.AnnouncerFirstBlood);
+        ScoreBoard.instance.Display(Announcments.FIRST_BLOOD, 1f);
 	}
 
 	[RPC]
@@ -523,11 +524,12 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	[RPC]
-	void PlayWinSound()
+	void PlayWinSound(int killerId)
 	{
         //This seems like as good a place as any to play a confetti particle system!
         confetti.particleSystem.Play();
 		SoundStore.instance.Play (SoundStore.instance.WinSound);
+        Connections.GetInstance().players[killerId].wins++;
 	}
 
 
@@ -561,7 +563,7 @@ public class PlayerController : MonoBehaviour {
         if (Network.isServer &&
             GameController.instance.playersAlive == 2 && !wall)
         {
-            networkView.RPC("PlayWinSound", RPCMode.All);
+            networkView.RPC("PlayWinSound", RPCMode.All, killerId);
         }
 
         //If you killed yourself, none of this applies
@@ -585,22 +587,27 @@ public class PlayerController : MonoBehaviour {
             if (killerKillstreak.GetFastKills() == 2)
             {
                 SoundStore.instance.Play(SoundStore.instance.AnnouncerDoubleKill);
+                ScoreBoard.instance.Display(Announcments.DOUBLE_KILL, 1f);
             }
             else if (killerKillstreak.GetFastKills() == 3)
             {
                 SoundStore.instance.Play(SoundStore.instance.AnnouncerMultiKill);
+                ScoreBoard.instance.Display(Announcments.BRING_HONOR, 1f);
             }
             else if (killerKillstreak.GetKills() == 3)
             {
                 SoundStore.instance.Play(SoundStore.instance.AnnouncerThreeKills);
+                ScoreBoard.instance.Display(Announcments.MANY_KILL, 1f);
             }
             else if (killerKillstreak.GetKills() == 5)
             {
                 SoundStore.instance.Play(SoundStore.instance.AnnouncerFiveKills);
+                ScoreBoard.instance.Display(Announcments.LOTS_OF_KILL_LITTLE_TIME, 1f);
             }
             else if (killerKillstreak.GetKills() == 7)
             {
                 SoundStore.instance.Play(SoundStore.instance.AnnouncerSevenKills);
+                ScoreBoard.instance.Display(Announcments.GOJIRA_KILL, 1f);
             }
 
             //Bobber.instance.startClimax(1, 1);
