@@ -4,7 +4,7 @@ using System.Collections;
 public class AlphaMaterial : MonoBehaviour
 {
     private Material myMaterial;
-	public Color colorTint;
+    public Color colorTint;
 
     public GameObject affectedObject;
 
@@ -16,8 +16,8 @@ public class AlphaMaterial : MonoBehaviour
     private ParticleSystem ps;
 
     private bool activated = false;
-	void Start()
-	{
+    void Start()
+    {
         if (affectedObject != null)
         {
             if (affectedObject.particleSystem == null)
@@ -32,29 +32,23 @@ public class AlphaMaterial : MonoBehaviour
         }
 
         //ps = GetComponentInChildren
-		//changedMaterial = renderer.material;
-		colorTint = Color.black; //Setting the default value
-		//renderer.sharedMaterial = new Material (renderer.sharedMaterial);
-	}
-	void Update()//Here the color changes, darker values equals less effect, link the value to speed
-	{
-        /*if (lerpT < 1)
-        {*/
-            colorTint = Color.Lerp(startColor, endColor, lerpT);
-            lerpT += Time.deltaTime / lerpDuration;
-       // }
-        /*
-		if (Input.GetKeyDown (KeyCode.LeftShift)) { //temporarily linked with the sprint button
-			colorTint = Color.white;
-				} 
-		if (Input.GetKeyUp (KeyCode.LeftShift)){ //temporarily linked with the sprint button
-			colorTint = Color.grey;
-				}*/
-		//renderer.material.SetColor("_TintColor", colorTint);
-            if (myMaterial != null)
-            {
-                myMaterial.SetColor("_TintColor", colorTint);
-            }
+        //changedMaterial = renderer.material;
+        colorTint = Color.black; //Setting the default value
+        //renderer.sharedMaterial = new Material (renderer.sharedMaterial);
+    }
+    void Update()//Here the color changes, darker values equals less effect, link the value to speed
+    {
+
+        colorTint = Color.Lerp(startColor, endColor, lerpT);
+        lerpT += Time.deltaTime / lerpDuration;
+
+        if (colorTint == endColor && !activated)
+            affectedObject.SetActive(false);
+
+        if (myMaterial != null)
+        {
+            myMaterial.SetColor("_TintColor", colorTint);
+        }
     }//Setting the value to the _TintColor 
 
     public void SetActivated(bool mActivated)
@@ -62,12 +56,13 @@ public class AlphaMaterial : MonoBehaviour
         //Debug.Log("Set activated " + mActivated);
         if (mActivated && !activated)
         {
+            affectedObject.SetActive(true);
             startColor = Color.black;
             endColor = Color.gray;
             lerpT = 0;
             activated = true;
         }
-        if(!mActivated && activated)
+        if (!mActivated && activated)
         {
             startColor = Color.gray;
             endColor = Color.black;
