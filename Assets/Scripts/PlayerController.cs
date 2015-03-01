@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour {
 
 	public void Reset () {
 		state = PlayerState.IDLE;
-        Invoke("MakeAlive", 3.0f);
+        Invoke("MakeAlive", 2.0f);
 
 		Debug.Log ("Should play sound for round start soon");
 

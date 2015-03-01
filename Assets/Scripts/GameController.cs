@@ -94,7 +94,7 @@ public class GameController : MonoBehaviour {
             {
                 GameController.instance.state = GameController.GameState.ROUNDEND;
 
-                GameController.instance.Invoke("SpawnPlayers", 3);
+                GameController.instance.Invoke("SpawnPlayers", 5);
                 
 
             }
@@ -119,9 +119,9 @@ public class GameController : MonoBehaviour {
 
     public void SpawnPlayers()
     {
-		Invoke ("AnnouncerStart", 3.0f);
+		Invoke ("AnnouncerStart", 2.0f);
         countdown = 3;
-        Countdown();
+        //Countdown();
         state = GameState.INGAME;
         spawnPowerups = false;
         CancelInvoke("SpawnPowerUp");
