@@ -149,6 +149,7 @@ public class Connections : MonoBehaviour {
 	private Dictionary<int, PlayerInfo> _players = new Dictionary<int, PlayerInfo>();
 	private Dictionary<NetworkPlayer, List<PlayerInfo>> _localPlayerCount = new Dictionary<NetworkPlayer, List<PlayerInfo>>();
 	private List<PlayerInfo> _localPlayers = new List<PlayerInfo>();
+    private List<int> availableIds = new List<int>();
 	private static Connections instance;
 	public static int port = 61337;
 
@@ -205,7 +206,7 @@ public class Connections : MonoBehaviour {
     {
 		if (!Network.isServer)
         {
-            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, _localPlayers[0].ready, buildVersion);
+            networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, true, buildVersion);
         }
 
         else
@@ -265,6 +266,7 @@ public class Connections : MonoBehaviour {
             players.Clear();
 			_localPlayers.Clear();
             _localPlayerCount.Clear();
+            availableIds.Clear();
         }
 	}
 
@@ -285,6 +287,7 @@ public class Connections : MonoBehaviour {
 			foreach(var d in disconnected)
 			{
 				networkView.RPC ("PlayerDisconnected", RPCMode.Others, player, d.id, false);
+                availableIds.Add(d.id);
 				if(_players.ContainsKey (d.id))
 				{
 					_players[d.id].connected = false;
@@ -302,6 +305,7 @@ public class Connections : MonoBehaviour {
 			int id = GetPlayerId(player);
 			networkView.RPC ("PlayerDisconnected", RPCMode.All, player, id, false);
 			players[id].connected = false;
+            availableIds.Add(id);
 			_players.Remove(id);
 		}
 	}
@@ -314,9 +318,14 @@ public class Connections : MonoBehaviour {
 		_localPlayerCount.Add (Network.player, new List<PlayerInfo>());
 		_localPlayerCount [Network.player].Add (playerInfo);
 		_connected = true;
+
+        for (int i = 1; i < Network.maxConnections; i++)
+        {
+            availableIds.Add(i);
+        }
 	}
 
-	void OnConnectedToServer()
+    void OnConnectedToServer()
 	{
 		Debug.Log ("Connected!");
         networkView.RPC("SendPlayerInfo", RPCMode.Server, Network.player, localNickname, false, buildVersion);
@@ -432,7 +441,8 @@ public class Connections : MonoBehaviour {
 				if(_localPlayerCount[player].Count < 4)
 				{
 					int cId = GetPlayerId(player);
-		            int pId = players.Count;
+		            int pId = availableIds[0];
+                    availableIds.Remove(pId);
 
 					if(local)
 					{
