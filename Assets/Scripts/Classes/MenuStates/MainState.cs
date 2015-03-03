@@ -46,7 +46,7 @@ public class MainState : MenuState {
 	public override void render() {
         Rect version = new Rect(0, 0, 500, 64);
         version.y = 1080 - 32;
-        GUI.Label(version, "v" + ((float)Connections.GetInstance().buildVersion / 1000f).ToString("0.000"));
+        GUI.Label(version, "v" + ((float)Connections.GetInstance().buildVersion / 1000f).ToString("0.00"));
 		foreach(Button b in buttons) {
 			b.update(data);
 		}
