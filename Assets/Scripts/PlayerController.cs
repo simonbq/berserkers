@@ -122,17 +122,6 @@ public class PlayerController : MonoBehaviour {
 		state = PlayerState.IDLE;
 		Reset ();
 
-		if(model != null)
-		{
-	        foreach (Transform t in model.transform)
-	        {
-	            if (t.renderer != null)
-				{
-	                t.renderer.material = materials[playerInfo.id];
-					Debug.Log ("Changed material to " + materials[playerInfo.id].name);
-				}
-	        }
-		}
         SetSpeed(startSpeed);
         currentSpeed = 0;
 	}
@@ -639,5 +628,17 @@ public class PlayerController : MonoBehaviour {
 	{
 		playerInfo = Connections.GetInstance ().players [id];
 		nameText.GetComponent<PlayerNameScript>().SetName(playerInfo.name, Connections.GetInstance().localPlayers.Exists(x => x.id == id));
+
+        if (model != null)
+        {
+            foreach (Transform t in model.transform)
+            {
+                if (t.renderer != null)
+                {
+                    t.renderer.material = materials[playerInfo.id];
+                    Debug.Log("Changed material to " + materials[playerInfo.id].name);
+                }
+            }
+        }
 	}
 }
