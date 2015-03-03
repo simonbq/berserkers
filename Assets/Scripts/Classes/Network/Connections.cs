@@ -377,6 +377,7 @@ public class Connections : MonoBehaviour {
 			if(Network.isServer)
 			{
 				_localPlayerCount[player].RemoveAll(x => x.id == id);
+                availableIds.Add(id);
 				Debug.Log ("A client removed a local player");
 			}
 			
