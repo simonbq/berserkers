@@ -4,7 +4,9 @@ using System.Collections;
 public class Prefs : MonoBehaviour {
 
 	public static float GetVolume() {
-		return PlayerPrefs.GetFloat ("volume", 0.5f);
+        float returnValue = PlayerPrefs.GetFloat ("volume", 0.5f);
+        Debug.Log("Volume set to: " + returnValue);
+		return returnValue;
 	}
 
 	public static string GetName() {
