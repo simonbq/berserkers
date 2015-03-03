@@ -66,8 +66,8 @@ public class CameraController : MonoBehaviour {
 
 			dist /= follow.Count;
 			targetPos += cameraOffset;
-			targetPos.y += dist * 0.7f;
-			targetPos.z -= dist * 0.66f;
+			targetPos.y += dist * 0.33f;
+			targetPos.z -= dist * 0.5f;
 
 			targetPos = Vector3.Lerp (Vector3.zero, targetPos, lookOffset);
 
