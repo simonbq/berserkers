@@ -143,6 +143,11 @@ public class PlayerController : MonoBehaviour {
 
     void Update()
     {
+        if (!Connections.GetInstance().isConnected)
+        {
+            Destroy(this.gameObject);
+        }
+
         if (CheckNearbyPlayers(4.0f))
         {
             animator.SetBool("enemyclose", true);

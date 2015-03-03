@@ -14,6 +14,10 @@ public class PowerupScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        if (!Connections.GetInstance().isConnected)
+        {
+            Destroy(this.gameObject);
+        }
 	}
 
 	void Awake () {
@@ -51,6 +55,9 @@ public class PowerupScript : MonoBehaviour {
 
     void OnDestroy()
     {
-        GameController.instance.ReleaseRuneSpawn(spawnPoint);
+        if (Network.isServer)
+        {
+            GameController.instance.ReleaseRuneSpawn(spawnPoint);
+        }
     }
 }
