@@ -10,6 +10,7 @@ public class PowerupScript : MonoBehaviour {
 	void Start () {
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("DeadPlayer"), LayerMask.NameToLayer("Ragdoll"));
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("DeadPlayer"), LayerMask.NameToLayer("DeadPlayer"));
+        
 	}
 
 	// Update is called once per frame
@@ -21,6 +22,9 @@ public class PowerupScript : MonoBehaviour {
 	}
 
 	void Awake () {
+        if (Application.loadedLevelName == "Lobby" || !Connections.GetInstance().isConnected)
+            Destroy(this.gameObject);
+        else
 		SoundStore.instance.Play (SoundStore.instance.PowerUpSpawn);
 	}
 
