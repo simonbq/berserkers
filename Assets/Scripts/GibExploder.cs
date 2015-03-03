@@ -15,7 +15,7 @@ public class GibExploder : MonoBehaviour {
 					g.renderer.material = mat;
 				}
 			}
-			t.rigidbody.AddExplosionForce(force, transform.position - transform.up * 2, 30);
+			t.rigidbody.AddExplosionForce(force, transform.position - transform.up * 2 - new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f)), 30);
 		}
 	}
 	

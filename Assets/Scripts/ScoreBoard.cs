@@ -118,7 +118,7 @@ public class ScoreBoard : MenuBase {
 		PlayerInfo[] players = new PlayerInfo[Connections.GetInstance().players.Values.Count];
 		Connections.GetInstance().players.Values.CopyTo(players, 0);
 		playas = new List<PlayerInfo>(players);
-		playas.Sort();
+        
 		est_maxSpeed = Mathf.Max (est_maxSpeed, HUDSingleton.instance.speed);
 		if(Input.GetButtonUp("toggleMenu")) {
 			menuActive = !menuActive;
@@ -155,6 +155,13 @@ public class ScoreBoard : MenuBase {
 
 		if(Input.GetKey(KeyCode.Tab))
 		{
+            playas.Sort(delegate(PlayerInfo p1, PlayerInfo p2)
+            {
+                int winDiff = p2.wins.CompareTo(p1.wins);
+                if (winDiff != 0) return winDiff;
+                else return p2.kills.CompareTo(p1.kills);
+            });
+
 			GUILayout.BeginArea (area, GUI.skin.box);
 			GUILayout.BeginHorizontal ();
 			GUIShadow.LayoutLabel ("Name", GUILayout.Width(250)); 
@@ -264,6 +271,8 @@ public class ScoreBoard : MenuBase {
 	}
 
 	public void Display(Announcments announcment, float duration) {
+        //Design beordrade att detta skulle bort
+        /*
 		if(Options.dynamicHud) {
 			switch(announcment) {
 			case Announcments.BRING_HONOR:
@@ -297,7 +306,7 @@ public class ScoreBoard : MenuBase {
 				StartCoroutine(tempdisplay(9, duration));
 				break;
 			}
-		}
+		}*/
 	}
 	[ContextMenu ("Announce")]
 	public void DisplayRandom() {
