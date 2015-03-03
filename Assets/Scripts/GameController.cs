@@ -188,7 +188,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	void SpawnPowerUp(){
-        if (spawnPowerups)
+        if (spawnPowerups && Application.loadedLevelName!="Lobby")
         {
             int spawnsLeft = spawnPoints.Count - powerupSpawns.Count;
             int alive = Mathf.CeilToInt((float)playersAlive / 2);
