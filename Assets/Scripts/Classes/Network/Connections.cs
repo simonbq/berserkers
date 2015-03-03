@@ -450,7 +450,7 @@ public class Connections : MonoBehaviour {
 						nickname = nickname + "(" + (_localPlayerCount[player].Count + 1) + ")";
 					}
 
-		            PlayerInfo connected = new PlayerInfo(player, pId, nickname, false);
+		            PlayerInfo connected = new PlayerInfo(player, pId, nickname, players[cId].ready);
 					_localPlayerCount[player].Add (connected);
 
 		            if (!local)
