@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
 	public enum PlayerState { ALIVE = 0, DEAD, STUNNED, IDLE };
@@ -137,6 +138,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void Reset () {
+        CancelInvoke();
 		state = PlayerState.IDLE;
         Invoke("MakeAlive", 2.0f);
 
@@ -162,10 +164,6 @@ public class PlayerController : MonoBehaviour {
         }
         CheckOverkill();
 
-        if (GameController.instance.state == GameController.GameState.ROUNDEND)
-        {
-            CancelInvoke();
-        }
     }
 
 	// Update is called once per frame
@@ -331,9 +329,7 @@ public class PlayerController : MonoBehaviour {
 			{
                 if (inOverKill)
                 {
-					if (GameController.instance.state != GameController.GameState.ROUNDEND) {
-						networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal, true, true);
-					}
+					networkView.RPC("Kill", RPCMode.All, playerInfo.id, collision.contacts[0].normal, true, true);
                 }
                 else
                 {
@@ -404,19 +400,15 @@ public class PlayerController : MonoBehaviour {
 	public void Stunned(float duration, bool wall, Vector3 normal)
 	{
 		//stun stuff here
-        if (GameController.instance.state != GameController.GameState.ROUNDEND)
-        {
-            animator.SetBool("stunned", true);
-            state = PlayerState.STUNNED;
-            Invoke("MakeAlive", duration);
-            transform.forward = Vector3.Reflect(transform.forward, normal);
+        state = PlayerState.STUNNED;
+        Invoke("MakeAlive", duration);
+        transform.forward = Vector3.Reflect(transform.forward, normal);
 
 
-            rigidbody.AddExplosionForce(750, transform.position - transform.forward * 2, 0, 0);
-            networkView.RPC("PlayStunnedFX", RPCMode.All, wall);
-            SetSpeed(startSpeed);
-            currentSpeed = 0;
-        }
+        rigidbody.AddExplosionForce(750, transform.position - transform.forward * 2, 0, 0);
+        networkView.RPC("PlayStunnedFX", RPCMode.All, wall);
+        SetSpeed(startSpeed);
+        currentSpeed = 0;
         //ActivateEffects(false);
 	}
 
@@ -561,9 +553,18 @@ public class PlayerController : MonoBehaviour {
         	SoundStore.instance.PlayRandom(SoundStore.instance.KillSound);
 		}
         if (Network.isServer &&
-            GameController.instance.playersAlive == 2 && !wall)
+            GameController.instance.playersAlive == 2)
         {
-            networkView.RPC("PlayWinSound", RPCMode.All, killerId);
+            int winnerId = killerId;
+            if (wall)
+            {
+                //find the winner 
+                List<GameObject> alivePlayersList = GameController.instance.GetAlivePlayers();
+                if (alivePlayersList.Count < 2)
+                    winnerId = GameController.instance.GetAlivePlayers().ToArray()[0].GetComponent<PlayerController>().playerInfo.id;
+            }
+
+            networkView.RPC("PlayWinSound", RPCMode.All, winnerId);
         }
 
         //If you killed yourself, none of this applies

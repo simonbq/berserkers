@@ -80,7 +80,7 @@ public class GameController : MonoBehaviour {
 			powerupSpawned = false;
 		}
 
-        List<GameObject> alivePlayersList = players.FindAll(x => x.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD);
+        List<GameObject> alivePlayersList = GetAlivePlayers();
         playersAlive = alivePlayersList.Count;
 
         if (Network.isServer &&
@@ -110,6 +110,11 @@ public class GameController : MonoBehaviour {
 
 
 	}
+
+    public List<GameObject> GetAlivePlayers()
+    {
+        return players.FindAll(x => x.GetComponent<PlayerController>().state != PlayerController.PlayerState.DEAD);
+    }
 
 	void AnnouncerStart()
 	{
