@@ -463,11 +463,6 @@ public class Connections : MonoBehaviour {
 		                }
 		            }
 
-		            else
-		            {
-						connected.ready = true;
-		            }
-
 					networkView.RPC("PlayerConnected", RPCMode.All, connected.networkPlayer, connected.id, connected.name, connected.ready);
 				}
 			}
