@@ -94,8 +94,7 @@ public class GameController : MonoBehaviour {
             {
                 GameController.instance.state = GameController.GameState.ROUNDEND;
 
-                GameController.instance.Invoke("SpawnPlayers", 5);
-                
+                GameController.instance.Invoke("SpawnPlayers", 5);         
 
             }
         }
@@ -170,8 +169,7 @@ public class GameController : MonoBehaviour {
                     pc.Reset();
                 }
             }
-        }
-        
+        }       
     }
 
 	GameObject SpawnPlayer(int id){

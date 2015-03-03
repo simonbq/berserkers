@@ -137,8 +137,13 @@ public class PlayerController : MonoBehaviour {
         SetSpeed(startSpeed);
 		currentSpeed = 0;
 
-		networkView.RPC ("ForcePosition", RPCMode.All, transform.position);
         gameObject.layer = LayerMask.NameToLayer("Player");
+
+        if (Network.isServer &&
+            Connections.GetInstance().isConnected)
+        {
+            networkView.RPC("ForcePosition", RPCMode.All, transform.position);
+        }
 	}
 
     void Update()
