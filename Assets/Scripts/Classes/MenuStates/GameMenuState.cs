@@ -9,7 +9,7 @@ public class GameMenuState : MenuState {
 		data = new ActionData ();
 		Button b;
 
-		b = new Button ((int)Menu.SCREEN_SIZE.x / 2 - 128, 300, (int)Button.BUTTON_NORM.x, 128, 30.0f, 5.0f);
+		b = new Button ((int)Menu.SCREEN_SIZE.x / 2 - 128 - 32, 300, (int)Button.BUTTON_NORM.x+64, 128, 30.0f, 5.0f);
 		b.setText("Disconnect");
 		b.setOnClick (ButtonActions.disconnect);
 		buttons.Add (b);
