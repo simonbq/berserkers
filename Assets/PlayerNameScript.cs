@@ -33,7 +33,11 @@ public class PlayerNameScript : MonoBehaviour {
         textMesh.color = c;
         transform.forward = Camera.main.transform.forward;
 
-        transform.position = transform.parent.transform.position + Vector3.forward * 1.25f;
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.parent.position + Vector3.up * 2f);
+        screenPos.y += 64f * (Screen.height / 1080f);
+        screenPos.z = 2f;
+        transform.position = Camera.main.ScreenToWorldPoint(screenPos);
+        //transform.position = transform.parent.transform.position + Vector3.forward * 1.25f;
     }
 
     public void SetName(string name, bool local)
