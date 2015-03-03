@@ -226,7 +226,7 @@ public class ScoreBoard : MenuBase {
 		Texture t = announcements [id];
 		currentAnnouncement = t;
 		announcerRect = new Rect (SCREEN_SIZE.x / 2 - currentAnnouncement.width / 2,
-		                          SCREEN_SIZE.y / 2 - currentAnnouncement.height / 2,
+                                  currentAnnouncement.height,
 		                          currentAnnouncement.width,
 		                          currentAnnouncement.height);
 		yield return new WaitForSeconds (duration);

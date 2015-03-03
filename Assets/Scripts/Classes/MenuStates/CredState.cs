@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class CredState : MenuState {
-	private string text = "Rasmus Hofreus - Design\nSebastian Jarkeborn - Programming\nErik Thomasson Forsberg - Programming\nNiklas Lindblad - Programming\nSimon Bergqvist - Programming\nViktor Engstrom - Music\nVile Frans Kaathe - Sound, Voice Acting\nViktor Zryd - Sound, Voice Acting\nNiklas Bergwall - Animation, Voice Acting\nGustav Rosberg - Animation, Modeling\nMattias Lindblad - Modeling\nEvelina Waara - Animation, 2D Art";
+	private string text = "Rasmus Hofreus - Design\nSebastian Jarkeborn - Programming\nErik Thomasson Forsberg - Programming\nNiklas Lindblad - Programming\nSimon Bergqvist - Programming\nVictor Engstrom - Music\nVile Hartman - Sound, Voice Acting\nViktor Zryd - Sound, Voice Acting\nNiklas Bergwall - Animation, Voice Acting\nGustav Rosberg - Animation, Modeling\nMattias Lindblad - Modeling\nEvelina Waara - Animation, 2D Art";
 	private List<Button> buttons = new List<Button>();
 	private ActionData data;
 

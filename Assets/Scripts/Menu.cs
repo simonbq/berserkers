@@ -82,6 +82,7 @@ public class Menu : MenuBase {
 	private StarAnchor starsAnchor = new StarAnchor();
 	// Use this for initialization
 	void Awake () {
+        Screen.showCursor = true;
 		spinThingArea.center = SCREEN_SIZE / 2;
 		spinThingArea.y += 800;
 		spinThingArea.x += 300;
