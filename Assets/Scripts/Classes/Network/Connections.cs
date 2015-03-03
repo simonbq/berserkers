@@ -441,16 +441,18 @@ public class Connections : MonoBehaviour {
 
 				if(_localPlayerCount[player].Count < 4)
 				{
-					int cId = GetPlayerId(player);
 		            int pId = availableIds[0];
                     availableIds.Remove(pId);
 
+                    bool ready = false;
 					if(local)
 					{
-						nickname = nickname + "(" + (_localPlayerCount[player].Count + 1) + ")";
+                        int cId = GetPlayerId(player);
+                        nickname = nickname + "(" + (_localPlayerCount[player].Count + 1) + ")";
+                        ready = players[cId].ready;
 					}
 
-		            PlayerInfo connected = new PlayerInfo(player, pId, nickname, players[cId].ready);
+		            PlayerInfo connected = new PlayerInfo(player, pId, nickname, ready);
 					_localPlayerCount[player].Add (connected);
 
 		            if (!local)
