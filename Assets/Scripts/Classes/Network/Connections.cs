@@ -295,14 +295,19 @@ public class Connections : MonoBehaviour {
 			_localPlayerCount.Remove (player);
 		}
 
-		else if(_players.Any(x => x.Value.networkPlayer == player))
-		{
-			int id = GetPlayerId(player);
-			networkView.RPC ("PlayerDisconnected", RPCMode.All, player, id, false);
-			players[id].connected = false;
+        else if (_players.Any(x => x.Value.networkPlayer == player))
+        {
+            int id = GetPlayerId(player);
+            networkView.RPC("PlayerDisconnected", RPCMode.All, player, id, false);
+            players[id].connected = false;
             availableIds.Add(id);
-			_players.Remove(id);
-		}
+            _players.Remove(id);
+        }
+
+        else
+        {
+            Debug.Log("Disconnected invalid player");
+        }
 	}
 
 	void OnServerInitialized()
