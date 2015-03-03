@@ -226,6 +226,7 @@ public class PlayerController : MonoBehaviour {
                 animator.SetBool("stunned", true);
                 break;
             case PlayerState.IDLE:
+                animator.SetBool("stunned", false);
                 animator.SetBool("idle", true);
                 break;
         }
