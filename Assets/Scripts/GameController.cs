@@ -105,7 +105,7 @@ public class GameController : MonoBehaviour {
 		foreach(var d in disconnected)
 		{
 			players.Remove(d);
-			Destroy (d);
+			Network.Destroy (d);
 		}
 
 

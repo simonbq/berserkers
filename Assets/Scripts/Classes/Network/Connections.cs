@@ -272,10 +272,7 @@ public class Connections : MonoBehaviour {
 
     void OnPlayerConnected(NetworkPlayer player)
     {
-        if (_started)
-        {
-            Network.CloseConnection(player, true);
-        }
+
     }
 
 	void OnPlayerDisconnected(NetworkPlayer player)
@@ -293,14 +290,12 @@ public class Connections : MonoBehaviour {
 					_players[d.id].connected = false;
 					_players.Remove(d.id);
 				}
-
-				Debug.Log ("Removing player " + d.id);
 			}
 
 			_localPlayerCount.Remove (player);
 		}
 
-		else
+		else if(_players.Any(x => x.Value.networkPlayer == player))
 		{
 			int id = GetPlayerId(player);
 			networkView.RPC ("PlayerDisconnected", RPCMode.All, player, id, false);
@@ -345,6 +340,12 @@ public class Connections : MonoBehaviour {
         }
 
         return -1;
+    }
+
+    [RPC]
+    void DisplayError(string msg)
+    {
+        LobbyStateBrowser.instance.displayError(msg);
     }
 
     [RPC]
@@ -423,13 +424,28 @@ public class Connections : MonoBehaviour {
 	{
 		if (Network.isServer) 
 		{
-			if(_players.Count >= Network.maxConnections ||
-                version != buildVersion)
+			if( _started ||
+                version != buildVersion ||
+                _players.Count >= Network.maxConnections)
 			{
-				if(!_localPlayerCount.ContainsKey (player))
-				{
-					Network.CloseConnection (player, true);
-				}
+                if (_started)
+                {
+                    networkView.RPC("DisplayError", player, "Game has already started");
+
+                }
+
+                else if (version != buildVersion)
+                {
+                    networkView.RPC("DisplayError", player, "You are running a different version than the host");
+                }
+
+                else if (_players.Count >= Network.maxConnections)
+                {
+                    networkView.RPC("DisplayError", player, "Lobby is full");
+                }
+
+                Debug.Log("Refusing player");
+                Network.CloseConnection (player, true);
 			}
 
 			else
